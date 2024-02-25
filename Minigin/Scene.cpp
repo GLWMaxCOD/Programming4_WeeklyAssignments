@@ -1,8 +1,6 @@
 #include "Scene.h"
 #include "GameObject.h"
 
-#include <algorithm>
-
 using namespace dae;
 
 unsigned int Scene::m_idCounter = 0;
@@ -28,7 +26,7 @@ void Scene::RemoveAll()
 
 void Scene::Update([[maybe_unused]] const float deltaTime)
 {
-	for(auto& object : m_objects)
+	for (auto& object : m_objects)
 	{
 		object->Update(deltaTime);
 	}

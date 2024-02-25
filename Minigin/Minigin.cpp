@@ -36,19 +36,19 @@ void PrintSDLVersion()
 		version.major, version.minor, version.patch);
 
 	SDL_TTF_VERSION(&version)
-	printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
-		version.major, version.minor, version.patch);
+		printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
+			version.major, version.minor, version.patch);
 
 	version = *TTF_Linked_Version();
 	printf("We are linking against SDL_ttf version %u.%u.%u.\n",
 		version.major, version.minor, version.patch);
 }
 
-dae::Minigin::Minigin(const std::string &dataPath)
+dae::Minigin::Minigin(const std::string& dataPath)
 {
 	PrintSDLVersion();
-	
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
@@ -61,7 +61,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 		480,
 		SDL_WINDOW_OPENGL
 	);
-	if (g_window == nullptr) 
+	if (g_window == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
@@ -87,20 +87,19 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
+
 	// Testing fps
-	int frameCount{ 0 };
-	float fpsTimer{ 0.f };
+	//int frameCount{ 0 };
+	//float fpsTimer{ 0.f };
 
 	// todo: this update loop could use some work.
 
 	bool doContinue = true;
 	auto lastTime = std::chrono::high_resolution_clock::now();
-
 	while (doContinue)
 	{
 		const auto currentTime = high_resolution_clock::now();
 		const float deltaTime = duration<float>(currentTime - lastTime).count();
-
 		lastTime = currentTime;
 
 		doContinue = input.ProcessInput();
@@ -111,6 +110,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		// Render all the scenes
 		renderer.Render();
 
+		/*
 		// Update the frame counter
 		frameCount++;
 		fpsTimer += deltaTime;
@@ -119,9 +119,10 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		{
 			// We get how many frames we get in one second
 			float fps{ float(frameCount / fpsTimer) };
-			std::cout << fps << std::endl;
+			//std::cout << fps << std::endl;
 			fpsTimer = 0.f;
 			frameCount = 0;
 		}
+		*/
 	}
 }

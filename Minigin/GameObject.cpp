@@ -1,24 +1,64 @@
-#include <string>
 #include "GameObject.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
 
-dae::GameObject::~GameObject() = default;
 
-void dae::GameObject::Update([[maybe_unused]] const float deltaTime) {}
+dae::GameObject::GameObject()
+	: m_IsActive{ true }
+	, m_HasToRender{ false }
+	, m_pRenderCP{ nullptr }
+{
+	// All gameObjects have a transform component attach when created
+	m_pTransformCP = AddComponent<TransformComponent>();
+}
+
+dae::GameObject::~GameObject()
+{
+	for (auto& componentItr : m_vComponents)
+	{
+		delete componentItr;
+	}
+	m_vComponents.clear();
+}
+
+void dae::GameObject::Update([[maybe_unused]] const float deltaTime)
+{
+	for (auto& componentItr : m_vComponents)
+	{
+		componentItr->Update(deltaTime);
+	}
+}
 
 void dae::GameObject::Render() const
 {
-	const auto& pos = m_transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
+	if (HasARender() && m_pRenderCP != nullptr && m_pTransformCP != nullptr)
+	{
+		m_pRenderCP->Render(m_pTransformCP->GetPosition());
+	}
+
 }
 
-void dae::GameObject::SetTexture(const std::string& filename)
+void dae::GameObject::RemoveComponent(Component::ComponentType type)
 {
-	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+
+	for (auto componentItr = m_vComponents.begin(); componentItr != m_vComponents.end(); ++componentItr)
+	{
+		if ((*componentItr) != nullptr && (*componentItr)->Type() == type)
+		{
+			delete* componentItr;
+			m_vComponents.erase(componentItr);
+
+			if (type == Component::RenderCP)
+			{
+				// In case the render was delete it, we dont want to render anymore
+				m_HasToRender = false;
+			}
+
+			break;
+		}
+	}
 }
 
-void dae::GameObject::SetPosition(float x, float y)
+
+const bool dae::GameObject::HasARender() const
 {
-	m_transform.SetPosition(x, y, 0.0f);
+	return m_HasToRender;
 }

@@ -3,7 +3,7 @@
 
 void dae::SceneManager::Update([[maybe_unused]] const float deltaTime)
 {
-	for(auto& scene : m_scenes)
+	for (auto& scene : m_scenes)
 	{
 		scene->Update(deltaTime);
 	}
