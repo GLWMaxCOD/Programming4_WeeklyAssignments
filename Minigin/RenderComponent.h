@@ -9,7 +9,7 @@
 namespace dae {
 	class Texture2D;
 }
-class RenderComponent : public Component
+class RenderComponent final : public Component
 {
 public:
 	RenderComponent();
@@ -19,9 +19,10 @@ public:
 
 	void SetTexture(const std::string& filename);
 
+	void SetTexture(std::shared_ptr<dae::Texture2D> texture);
 
-protected:
+private:
 
 	std::shared_ptr<dae::Texture2D> m_texture{};
-	bool m_needsUpdate;
+
 };
