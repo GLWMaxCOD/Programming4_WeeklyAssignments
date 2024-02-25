@@ -11,6 +11,7 @@ Game::Game()
 {
 	m_pRenderer = &Renderer::GetInstance();
 	m_pSceneManager = &SceneManager::GetInstance();
+
 	if (m_pSceneManager != nullptr)
 	{
 		m_pScene = &m_pSceneManager->CreateScene("Demo");
@@ -18,7 +19,9 @@ Game::Game()
 
 	// Background 
 	go = std::make_shared<TextureObject>("background.tga");
+	//go.reset();
 	m_pScene->Add(go->GameObject());
+	//go->GameObject()->SetIsDead(true);
 
 	// Logo
 	go = std::make_shared<TextureObject>("logo.tga", glm::vec3{ 216, 180, 0 });
