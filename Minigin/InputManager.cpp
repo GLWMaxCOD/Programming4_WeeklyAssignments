@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include "InputManager.h"
 
+// If false means we want to close the game
 bool dae::InputManager::ProcessInput()
 {
 	SDL_Event e;

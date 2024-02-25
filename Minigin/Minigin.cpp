@@ -9,8 +9,12 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include <chrono>
+#include <iostream>
 
 SDL_Window* g_window{};
+
+using namespace std::chrono;
 
 void PrintSDLVersion()
 {
@@ -83,12 +87,41 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
+	// Testing fps
+	int frameCount{ 0 };
+	float fpsTimer{ 0.f };
+
 	// todo: this update loop could use some work.
+
 	bool doContinue = true;
+	auto lastTime = std::chrono::high_resolution_clock::now();
+
 	while (doContinue)
 	{
+		const auto currentTime = high_resolution_clock::now();
+		const float deltaTime = duration<float>(currentTime - lastTime).count();
+
+		lastTime = currentTime;
+
 		doContinue = input.ProcessInput();
-		sceneManager.Update();
+
+		// Update using a variable time step
+		sceneManager.Update(deltaTime);
+
+		// Render all the scenes
 		renderer.Render();
+
+		// Update the frame counter
+		frameCount++;
+		fpsTimer += deltaTime;
+
+		if (fpsTimer >= 1.0f)
+		{
+			// We get how many frames we get in one second
+			float fps{ float(frameCount / fpsTimer) };
+			std::cout << fps << std::endl;
+			fpsTimer = 0.f;
+			frameCount = 0;
+		}
 	}
 }
