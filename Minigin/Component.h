@@ -2,11 +2,17 @@
 #include <string>
 
 // BASE CLASS FOR ALL THE COMPONENTS 
+
+namespace dae 
+{
+	class GameObject;
+}
+
 class Component
 {
 public:
 
-	Component(const std::string& name);
+	Component(const std::string& name, dae::GameObject* pOwner);
 	virtual ~Component() = default;
 
 	Component(const Component& other) = delete;
@@ -19,6 +25,10 @@ public:
 
 	const std::string& GetName() const;
 
+private:
+	dae::GameObject* m_pOwner;
+
 protected:
 	std::string m_Name;
+
 };

@@ -13,7 +13,8 @@ namespace dae
 	{
 	public:
 
-		RenderComponent();
+		RenderComponent(dae::GameObject* pOwner);
+		RenderComponent(dae::GameObject* pOwner, const std::string& filename);
 		~RenderComponent();
 
 		virtual void Update([[maybe_unused]] const float deltaTime) override;
