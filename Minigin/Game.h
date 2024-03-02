@@ -1,8 +1,6 @@
 #pragma once
 
 #include <memory>
-#include "TextureObject.h"
-#include "TextObject.h"
 
 namespace dae
 {
@@ -10,6 +8,7 @@ namespace dae
 	class SceneManager;
 	class Scene;
 
+	class GameObject;
 	class Game final
 	{
 	public:
@@ -29,8 +28,5 @@ namespace dae
 		Renderer* m_pRenderer{};
 		SceneManager* m_pSceneManager{};
 		Scene* m_pScene{};
-		std::shared_ptr<GameObject> go;
-		//std::shared_ptr<TextObject> to;
-		//std::shared_ptr<TextObject> fpsObject;
 	};
 }

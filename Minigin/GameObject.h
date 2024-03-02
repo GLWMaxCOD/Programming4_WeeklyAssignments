@@ -26,14 +26,12 @@ namespace dae
 
 		void SendMessage(const std::string& message, const std::string& value);
 
-		void Destroy();
-
 		template <typename T, typename... Args> T* AddComponent(Args&&... args);
 		template <typename T> void RemoveComponent();
 		template <typename T> T* GetComponent() const;
 
 		const bool HasARender() const;
-		//template <typename T> bool HasComponentAlready() const;
+		template <typename T> bool HasComponentAlready() const;
 		const bool IsMarkedAsDead() const;
 
 		void SetIsActive(const bool isActive);
@@ -76,13 +74,11 @@ namespace dae
 
 		static_assert(std::is_base_of<Component, T>::value, "Incorrect type passed to AddComponent function");
 
-		/*
 		if (HasComponentAlready<T>())
 		{
 			// Component already added
 			return nullptr;
 		}
-		*/
 
 		// Create an instance of the component with the corresponding args
 		auto component = std::make_unique<T>(std::forward<Args>(args)...);
@@ -118,7 +114,12 @@ namespace dae
 					m_pRenderCP = nullptr;
 				}
 
-				SendMessage("RemoveComponent", component->GetName());
+				if (std::is_base_of<TransformComponent, T>::value)
+				{
+					m_pTransformCP = nullptr;
+				}
+
+				SendMessage("RemoveCP", component->GetName());
 
 				m_vComponents.erase(componentItr);  // With smart pointers this enough to delete the object
 
@@ -128,15 +129,13 @@ namespace dae
 		}
 	}
 
-	/*
-
 	template <typename T>
 	inline bool GameObject::HasComponentAlready() const
 	{
 		// Dont add the component if already added
 		for (const auto& component : m_vComponents)
 		{
-			if (dynamic_cast<T*>(component))
+			if (dynamic_cast<T*>(component.get()))
 			{
 				return true;
 			}
@@ -144,9 +143,5 @@ namespace dae
 
 		return false;
 	}
-
-	*/
-
-
 
 }
