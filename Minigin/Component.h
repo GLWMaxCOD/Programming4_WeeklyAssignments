@@ -30,5 +30,6 @@ private:
 
 protected:
 	std::string m_Name;
+	dae::GameObject* GetOwner() const;
 
 };

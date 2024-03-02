@@ -26,9 +26,18 @@ namespace dae
 
 		void SendMessage(const std::string& message, const std::string& value);
 
+		// COMPONENTS GAMEOBJECT
 		template <typename T, typename... Args> T* AddComponent(Args&&... args);
 		template <typename T> void RemoveComponent();
 		template <typename T> T* GetComponent() const;
+
+		// SCENEGRAPH
+		void SetParent(GameObject* parent, bool keepWorldPosition = true);
+		void SetPositionDirty();
+		void UpdateChildrenPosition();
+		const GameObject* getParent() const;
+		std::vector<GameObject*>& getChildren();
+		const glm::vec3 GetWorldPosition() const;
 
 		const bool HasARender() const;
 		template <typename T> bool HasComponentAlready() const;
@@ -39,7 +48,14 @@ namespace dae
 
 	private:
 
+		// SceneGraph
+		void RemoveChild(GameObject* child);
+		void AddChild(GameObject* child);
 
+		GameObject* m_pParent;
+		std::vector<GameObject*> m_vChildren;
+
+		// Components of the GameObject
 		std::vector<std::unique_ptr<Component>> m_vComponents;
 		RenderComponent* m_pRenderCP;
 		TransformComponent* m_pTransformCP;

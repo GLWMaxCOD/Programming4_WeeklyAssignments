@@ -14,3 +14,8 @@ const std::string& Component::GetName() const
 {
 	return m_Name;
 }
+
+dae::GameObject* Component::GetOwner() const
+{
+	return m_pOwner;
+}

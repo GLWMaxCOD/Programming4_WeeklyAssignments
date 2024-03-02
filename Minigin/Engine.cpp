@@ -100,12 +100,15 @@ void dae::Engine::Run(const std::function<void()>& load)
 
 		doContinue = input.ProcessInput();
 
+		// TO DO : FixedUpdate to fix the CPU usage?
 		// Update Game
 		pGame->Update(deltaTime);
 
 		// Render Game
 		pGame->Render();
 		
+		// Sleep to control framerate
+		std::this_thread::sleep_for(std::chrono::milliseconds(16));
 	}
 
 	delete pGame;
