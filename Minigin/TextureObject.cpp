@@ -36,5 +36,5 @@ void TextureObject::SetTexture(const std::string& filename)
 
 TextureObject::~TextureObject()
 {
-	//std::cout << "EntroTexture" << std::endl;
+	std::cout << "TextureObject destructor" << std::endl;
 }
