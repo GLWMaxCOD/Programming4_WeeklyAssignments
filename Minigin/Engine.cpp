@@ -10,6 +10,7 @@
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include "Game.h"
+#include <thread>
 #include <chrono>
 
 SDL_Window* g_window{};
@@ -107,8 +108,9 @@ void dae::Engine::Run(const std::function<void()>& load)
 		// Render Game
 		pGame->Render();
 		
-		// Sleep to control framerate
-		std::this_thread::sleep_for(std::chrono::milliseconds(16));
+		// TODO : Find a better way to control framerate
+		std::this_thread::sleep_for(std::chrono::milliseconds(8));
+
 	}
 
 	delete pGame;
