@@ -93,7 +93,7 @@ void GameObject::SendMessage(const std::string& message, const std::string& valu
 void GameObject::SetParent(GameObject* pNewParent, bool keepWorldPosition)
 {
 	// FIRST UPDATE THE LOCAL POSITION OF THE GAMEOBJECT
-	// TODO : Update scale and rotation too
+	// TODO : Update scale and rotation too / Check Slides on LEHO, incomplete SetParent
 	if (pNewParent == nullptr)
 	{
 		// This gameObject wont have parent --> LocalPosition = WorldPosition
@@ -150,10 +150,19 @@ void GameObject::RemoveChild(GameObject* child)
 		// Found
 		m_vChildren.erase(childItr);
 	}
+
+	//TODO: Incomplete Removechild implementation
+	//Remove itself as parent of the child
+	//First update your child before removing it
 }
 void GameObject::AddChild(GameObject* child)
 {
 	m_vChildren.push_back(child);
+
+	//TODO: Incomplete Addchild implementation
+	//Set a parent, and also check for if it is not a nullPtr Parent
+	//Set itself as the parent of its children lists
+	//Remove the child from the previous parent
 }
 
 const glm::vec3 GameObject::GetWorldPosition() const

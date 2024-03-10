@@ -42,11 +42,12 @@ Game::Game()
 	// FPS TEXT 
 	auto go_FPS = std::make_shared<GameObject>(glm::vec3{ 10, 20, 0 });
 	go_FPS->AddComponent<RenderComponent>(go_FPS.get());
-	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 15);
-	go_FPS->AddComponent<TextComponent>(go_FPS.get(), "Calculating FPS ...", font, SDL_Color{ 0, 255, 0 });
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
+	go_FPS->AddComponent<TextComponent>(go_FPS.get(), "Calculating FPS ...", font, SDL_Color{ 255, 255, 255 });
 	go_FPS->AddComponent<FPSComponent>(go_FPS.get());
 	m_pScene->Add(go_FPS);
 
+	//TODO: Chnage the need for shared pointers and read Tom's Presentation on march 4th
 	//Player Spaceship sprite
 	auto go_Player = std::make_shared<GameObject>(glm::vec3{ 200, 300, 0 });
 	go_Player->AddComponent<RenderComponent>(go_Player.get(), "Player.png");
@@ -57,8 +58,15 @@ Game::Game()
 	auto go_Enemy = std::make_shared<GameObject>(glm::vec3{ 330, 300, 0 });
 	go_Enemy->SetParent(go_Player.get(), true);
 	go_Enemy->AddComponent<RenderComponent>(go_Enemy.get(), "Enemy.png");
-	go_Enemy->AddComponent<RotatorComponent>(go_Enemy.get(), 20.f, 1.f);
+	go_Enemy->AddComponent<RotatorComponent>(go_Enemy.get(), 30.f, 1.f);
 	m_pScene->Add(go_Enemy);
+
+	//Enemy spaceship sprite
+	auto go_Enemy2 = std::make_shared<GameObject>(glm::vec3{ 430, 400, 0 });
+	go_Enemy2->SetParent(go_Enemy.get(), true);
+	go_Enemy2->AddComponent<RenderComponent>(go_Enemy2.get(), "Enemy.png");
+	go_Enemy2->AddComponent<RotatorComponent>(go_Enemy2.get(), 30.f, 1.f);
+	m_pScene->Add(go_Enemy2);
 
 }
 

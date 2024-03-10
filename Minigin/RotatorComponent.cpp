@@ -33,8 +33,10 @@ RotatorComponent::~RotatorComponent()
 
 void RotatorComponent::Update(const float deltaTime)
 {
+	//TODO? : Add a option to toggle between clockwise and anti-clockwise
 	// The less is the rotation time the faster the angle will be incremented 
-	m_Angle += FULL_ROTATION_VALUE * deltaTime / ROTATION_TIME;
+	m_Angle += FULL_ROTATION_VALUE * deltaTime / ROTATION_TIME;						//Clockwise
+	//m_Angle -= FULL_ROTATION_VALUE * deltaTime / ROTATION_TIME;					//Anti-clockwise
 
 	if (m_pTransformCP != nullptr)
 	{

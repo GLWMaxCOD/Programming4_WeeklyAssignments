@@ -93,7 +93,7 @@ void dae::Engine::Run(const std::function<void()>& load)
 
 	bool doContinue = true;
 
-	// Limiting the FPS and reduce CPU usage :)
+	// Limiting the FPS and reduce CPU usage :) / Human eye can't process FPS's higher then 120 about, varies by everyone
 	const int TARGET_FRAME_RATE{ 60 };
 	const int TARGET_FRAME_TIME{ 1000 / TARGET_FRAME_RATE };
 
