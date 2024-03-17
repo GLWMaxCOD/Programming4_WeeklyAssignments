@@ -12,7 +12,14 @@ Scene::~Scene() = default;
 
 void Scene::Add(std::shared_ptr<GameObject> object)
 {
-	m_objects.emplace_back(std::move(object));
+	if (!object->getParent())
+	{
+		m_objects.emplace_back(std::move(object));
+	}
+	else
+	{
+		std::cerr << " Error! Trying to add a gameObject that already has parent to the scene" << std::endl;
+	}
 }
 
 void Scene::Remove(std::shared_ptr<GameObject> object)
@@ -50,33 +57,13 @@ void Scene::RemoveAll()
 
 void Scene::Update(const float deltaTime)
 {
-	//bool isADeadObject = false;
 	for (auto& object : m_objects)
 	{
 		object->Update(deltaTime);
-
-		/*
-		if (!object->IsMarkedAsDead())
-		{
-			object->Update(deltaTime);
-		}
-		else
-		{
-			// Object needs to be delete it after updating all objects
-			isADeadObject = true;
-		}
-	}
-
-	if (isADeadObject)
-	{
-		// At least one game object is marked as "Dead" and needs to be removed 
-		RemoveDeadObjects();
-		*/
 	}
 
 	// Loop again to remove dead gameObjects if any
 	RemoveDeadObjects();
-
 }
 
 void Scene::Render() const
