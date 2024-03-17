@@ -18,13 +18,28 @@ void Scene::Add(std::shared_ptr<GameObject> object)
 	}
 	else
 	{
-		std::cerr << " Error! Trying to add a gameObject that already has parent to the scene" << std::endl;
+		std::cerr << " Error! Trying to add a gameObject that already has parent to the scene" << '\n';
 	}
 }
 
-void Scene::Remove(std::shared_ptr<GameObject> object)
+void Scene::Render() const
 {
-	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), object), m_objects.end());
+	for (const auto& object : m_objects)
+	{
+		object->Render();
+	}
+}
+
+void Scene::Update(const float deltaTime)
+{
+	for (auto& object : m_objects)
+	{
+		object->Update(deltaTime);
+	}
+
+	// Loop again to remove dead gameObjects if any
+	RemoveDeadObjects();
+
 }
 
 // Remove all "dead" objects after update
@@ -42,7 +57,7 @@ void Scene::RemoveDeadObjects()
 		{
 			if (m_objects[objectIdx]->HasChildren())
 			{
-				m_objects[objectIdx]->RemoveDeadChildren();
+				m_objects[objectIdx]->DeleteDeadChildren();
 			}
 
 			objectIdx++;
@@ -50,27 +65,13 @@ void Scene::RemoveDeadObjects()
 	}
 }
 
+void Scene::Remove(std::shared_ptr<GameObject> object)
+{
+	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), object), m_objects.end());
+}
+
 void Scene::RemoveAll()
 {
 	m_objects.clear();
-}
-
-void Scene::Update(const float deltaTime)
-{
-	for (auto& object : m_objects)
-	{
-		object->Update(deltaTime);
-	}
-
-	// Loop again to remove dead gameObjects if any
-	RemoveDeadObjects();
-}
-
-void Scene::Render() const
-{
-	for (const auto& object : m_objects)
-	{
-		object->Render();
-	}
 }
 

@@ -155,10 +155,13 @@ void dae::Renderer::UpdateImGui(TrashTheCache* pExercise1, TrashTheCache* pExerc
 
 void dae::Renderer::Render()
 {
-	/*
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
-	SDL_RenderClear(m_renderer); */
+	SDL_RenderClear(m_renderer);
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
 
 	SceneManager::GetInstance().Render();
 

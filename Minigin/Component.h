@@ -48,7 +48,7 @@ public:
 	}
 	*/
 
-	const std::string& GetName() const;
+	const std::string& GetName() const { return m_Name; };
 
 private:
 	dae::GameObject* m_pOwner;
@@ -56,7 +56,7 @@ private:
 
 protected:
 	std::string m_Name;
-	dae::GameObject* GetOwner() const;
+	dae::GameObject* GetOwner() const { return m_pOwner; };
 	// Handle a received message
 	//virtual void HandleMessage(const std::string& message, const void* value, size_t size) = 0;
 };
