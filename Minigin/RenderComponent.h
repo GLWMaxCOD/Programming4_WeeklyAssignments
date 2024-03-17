@@ -27,6 +27,10 @@ namespace dae
 	private:
 
 		std::shared_ptr<dae::Texture2D> m_texture{};
+		glm::vec2 m_Scale;
+		glm::vec2 m_TextureSize;
+		bool m_IsTextureDirty;
 
+		void SetScale();
 	};
 }
