@@ -9,7 +9,7 @@ MoveCommand::MoveCommand(dae::GameObject* actor, glm::vec3 direction, float spee
 	m_Direction = glm::normalize(direction);   // Normalized vector with the same direction but with lenght = 1
 }
 
-void MoveCommand::Execute([[maybe_unused]] float deltaTime)
+void MoveCommand::Execute(float deltaTime)
 {
 	auto transformCP = GetActor()->GetComponent<TransformComponent>();
 
@@ -21,5 +21,9 @@ void MoveCommand::Execute([[maybe_unused]] float deltaTime)
 
 		transformCP->SetLocalPosition(pos);
 	}
+}
 
+MoveCommand::~MoveCommand()
+{
+	std::cout << "MoveCommand destructor" << std::endl;
 }

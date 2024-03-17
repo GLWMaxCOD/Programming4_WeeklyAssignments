@@ -1,6 +1,4 @@
 #include <stdexcept>
-#define WIN32_LEAN_AND_MEAN 
-#include <windows.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -11,7 +9,6 @@
 #include "Game.h"
 #include <thread>
 #include <chrono>
-#include <iostream>
 #include "structs.h"
 
 SDL_Window* g_window{};

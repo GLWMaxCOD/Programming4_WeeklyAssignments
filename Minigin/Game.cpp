@@ -7,8 +7,8 @@
 #include "RotatorComponent.h"
 #include "TestComponent.h"
 #include "GameObject.h"
+#include "MoveComponent.h"
 #include "InputManager.h"
-#include "MoveCommand.h"
 #include <iostream>
 
 using namespace dae;
@@ -24,6 +24,10 @@ Game::Game(const Window& window)
 		m_pScene = &m_pSceneManager->CreateScene("Demo");
 	}
 
+	auto& input = dae::InputManager::GetInstance();
+	// Add a controller to be available to use for the user
+	input.NewAvailableController(0);
+
 	// Background 
 	auto go_Background = std::make_shared<GameObject>(nullptr, glm::vec3{ 0.f, 0.f, 0.f });
 	go_Background->AddComponent<RenderComponent>(go_Background.get(), "background.tga");
@@ -35,10 +39,6 @@ Game::Game(const Window& window)
 	go_Logo->AddComponent<RenderComponent>(go_Logo, "logo.tga");
 	//m_pScene->Add(go_Logo);
 
-	//go_Background->MarkAsDead();
-	//go_Logo->MarkAsDead();
-	//go_Logo->SetParent(nullptr);
-
 	// TEXT TITLE TEXTURE
 	GameObject* go_Title = new GameObject(go_Logo, glm::vec3{ 80, 20, 0 });
 	//auto go_Title = std::make_shared<GameObject>(glm::vec3{ 80, 20, 0 });
@@ -48,8 +48,6 @@ Game::Game(const Window& window)
 	//m_pScene->Add(go_Title);
 
 	//go_Title->SetParent(go_Logo);
-
-	//go_Title->MarkAsDead();
 
 	// FPS TEXT 
 	//auto go_FPS = std::make_shared<GameObject>(glm::vec3{ 10, 20, 0 });
@@ -62,40 +60,35 @@ Game::Game(const Window& window)
 
 	//go_FPS->SetParent(go_Logo);
 
-	//go_FPS->MarkAsDead();
-
 	//TODO: Change the need for shared pointers and read Tom's Presentation on march 4th
 	//Player Spaceship sprite
 	//GameObject* go_Player = new GameObject(go_Logo, glm::vec3{ 330, 300, 0 });
 	auto go_Player = std::make_shared<GameObject>(nullptr, glm::vec3{ 300, 300, 0 }, glm::vec2{ 1.5f, 1.5f });
 	go_Player->AddComponent<RenderComponent>(go_Player.get(), "Player.png");
+	go_Player->AddComponent<MoveComponent>(go_Player.get(), 100.f);
 	//go_Player->AddComponent<RotatorComponent>(go_Player.get(), 50.f, 3.f);
 	//go_Player->AddComponent<TestComponent>(go_Player.get());
 	m_pScene->Add(go_Player);
 
 	//Enemy spaceship sprite
-	//auto go_Enemy = std::make_shared<GameObject>(nullptr, glm::vec3{ 330, 300, 0 });
+	auto go_Enemy = std::make_shared<GameObject>(nullptr, glm::vec3{ 330, 300, 0 }, glm::vec2{ 1.5f, 1.5f });
 
-	GameObject* go_Enemy = new GameObject(go_Player.get(), glm::vec3{ 330, 300, 0 }, glm::vec2{ 1.5f, 1.5f });
-	go_Enemy->AddComponent<RenderComponent>(go_Enemy, "Enemy.png");
-	go_Enemy->AddComponent<RotatorComponent>(go_Enemy, 30.f, 1.f);
+	//GameObject* go_Enemy = new GameObject(go_Player.get(), glm::vec3{330, 300, 0}, glm::vec2{1.5f, 1.5f});
+	go_Enemy->AddComponent<RenderComponent>(go_Enemy.get(), "Enemy.png");
+	go_Enemy->AddComponent<MoveComponent>(go_Enemy.get(), 200.f, 0);
+	m_pScene->Add(go_Enemy);
+	//go_Enemy->AddComponent<RotatorComponent>(go_Enemy, 30.f, 1.f);
 	//m_pScene->Add(go_Enemy);
 
-	//go_Player->MarkAsDead();
+	//Enemy spaceship sprite 2
+	auto go_Enemy2 = std::make_shared<GameObject>(nullptr, glm::vec3{ 430, 400, 0 }, glm::vec2{ 1.5f, 1.5f });
 
-	//Enemy spaceship sprite
-	//auto go_Enemy2 = std::make_shared<GameObject>(nullptr, glm::vec3{ 430, 400, 0 });
-
-	GameObject* go_Enemy2 = new GameObject(go_Player.get(), glm::vec3{ 430, 400, 0 }, glm::vec2{ 1.5f, 1.5f });
-	go_Enemy2->AddComponent<RenderComponent>(go_Enemy2, "Enemy.png");
-	go_Enemy2->AddComponent<RotatorComponent>(go_Enemy2, 40.f, 1.f);
+	//GameObject* go_Enemy = new GameObject(go_Player.get(), glm::vec3{430, 400, 0}, glm::vec2{1.5f, 1.5f});
+	go_Enemy2->AddComponent<RenderComponent>(go_Enemy2.get(), "Enemy.png");
+	go_Enemy2->AddComponent<MoveComponent>(go_Enemy2.get(), 200.f, 0);
+	m_pScene->Add(go_Enemy2);
+	//go_Enemy->AddComponent<RotatorComponent>(go_Enemy2, 30.f, 1.f);
 	//m_pScene->Add(go_Enemy2);
-
-	auto& input = InputManager::GetInstance();
-	SDL_KeyCode key{ SDLK_a };
-
-	std::unique_ptr<Command> command = std::make_unique<MoveCommand>(go_Player.get(), glm::vec3{ -10, 0, 0 }, 60.f);
-	input.BindCommand(key, std::move(command));
 }
 
 Game::~Game()
