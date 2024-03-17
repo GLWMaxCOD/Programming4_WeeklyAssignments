@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_ENGINE_GAMEOBJECT
+#define GAME_ENGINE_GAMEOBJECT
 
 #include <vector>
 #include <type_traits>
@@ -34,12 +35,14 @@ namespace dae
 		void SetParent(GameObject* parent, bool keepWorldPosition = true);
 		void SetPositionDirty();
 		void UpdateChildrenPosition();
-		void IncCountDeadChildren();
 		void RemoveDeadChildren();
+		void RemoveParentFromChildren();
 		const GameObject* getParent() const;
 		bool HasChildren() const;
 		bool HasParent() const;
 		const glm::vec3 GetWorldPosition() const;
+
+		void SavePreviousWorldPosition(const glm::vec3& prevWorldPos);
 
 		const bool HasARender() const;
 		template <typename T> bool HasComponentAlready() const;
@@ -58,16 +61,16 @@ namespace dae
 
 		GameObject* m_pParent;
 		std::vector<std::unique_ptr<GameObject>> m_vChildren;		// Parent will own his children
-		int m_TotalDeadChildren;									// Keep track of how many children are "dead"
 
-		// Components of the GameObject
+		// COMPONENTS
 		std::vector<std::unique_ptr<Component>> m_vComponents;
 		RenderComponent* m_pRenderCP;
 		TransformComponent* m_pTransformCP{};
+		glm::vec3 m_PreviousWorldPosition{};
 
 		bool m_IsActive;
-		bool m_IsDead;			// If the gameObject needs to be removed after updating all gameObjects
-		bool m_HasToRender;		// Does this gameObject have a render component?
+		bool m_IsDead;											// If the gameObject needs to be removed after updating all gameObjects
+		bool m_HasToRender;										// Does this gameObject have a render component?
 
 	};
 
@@ -166,3 +169,5 @@ namespace dae
 	}
 
 }
+
+#endif

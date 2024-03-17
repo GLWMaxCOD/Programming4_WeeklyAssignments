@@ -20,3 +20,5 @@ namespace dae
 		Engine& operator=(Engine&& other) = delete;
 	};
 }
+
+#endif

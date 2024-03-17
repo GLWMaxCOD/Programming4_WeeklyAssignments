@@ -60,3 +60,5 @@ protected:
 	// Handle a received message
 	//virtual void HandleMessage(const std::string& message, const void* value, size_t size) = 0;
 };
+
+#endif

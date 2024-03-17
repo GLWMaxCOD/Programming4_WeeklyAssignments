@@ -16,5 +16,4 @@ struct Window
 
 };
 
-
 #endif

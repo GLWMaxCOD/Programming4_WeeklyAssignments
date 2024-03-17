@@ -1,4 +1,6 @@
-#pragma once
+#ifndef GAME_ENGINE_RENDERER
+#define GAME_ENGINE_RENDERER
+
 #include <SDL.h>
 #include "Singleton.h"
 
@@ -27,3 +29,5 @@ namespace dae
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
 	};
 }
+
+#endif

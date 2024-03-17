@@ -45,6 +45,9 @@ void TransformComponent::UpdateWorldPosition()
 				// Calculate the worldPosition with the parentWorldPos and the localPos of the child
 				m_WorldPosition = pOwner->getParent()->GetWorldPosition() + m_LocalPosition;
 			}
+
+			pOwner->SavePreviousWorldPosition(m_WorldPosition);
+
 			// Update children position to move along with the parent
 			pOwner->UpdateChildrenPosition();
 		}
