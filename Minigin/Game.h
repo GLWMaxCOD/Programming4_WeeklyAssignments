@@ -2,6 +2,9 @@
 #define GAME_ENGINE_GAME
 
 #include <memory>
+#include "structs.h"
+
+class TrashTheCache;
 
 namespace dae
 {
@@ -14,7 +17,7 @@ namespace dae
 	{
 	public:
 
-		Game();
+		Game(const Window& window);
 		~Game();
 		Game(const Game& other) = delete;
 		Game(Game&& other) = delete;
@@ -26,9 +29,13 @@ namespace dae
 
 	private:
 
+		const Window m_Window;
 		Renderer* m_pRenderer{};
 		SceneManager* m_pSceneManager{};
 		Scene* m_pScene{};
+
+		TrashTheCache* m_pExercise1{};
+		TrashTheCache* m_pExercise2{};
 	};
 }
 
