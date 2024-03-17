@@ -27,10 +27,17 @@ void Scene::RemoveDeadObjects()
 	{
 		if (m_objects[objectIdx]->IsMarkedAsDead())
 		{
+			// If removed dont increase the itr
+			// If parent is removed, no need to check children because they will be destoyed too
 			Remove(m_objects[objectIdx]);
 		}
 		else
 		{
+			if (m_objects[objectIdx]->HasChildren())
+			{
+				m_objects[objectIdx]->RemoveDeadChildren();
+			}
+
 			objectIdx++;
 		}
 	}
@@ -43,9 +50,12 @@ void Scene::RemoveAll()
 
 void Scene::Update(const float deltaTime)
 {
-	bool isADeadObject = false;
+	//bool isADeadObject = false;
 	for (auto& object : m_objects)
 	{
+		object->Update(deltaTime);
+
+		/*
 		if (!object->IsMarkedAsDead())
 		{
 			object->Update(deltaTime);
@@ -61,7 +71,12 @@ void Scene::Update(const float deltaTime)
 	{
 		// At least one game object is marked as "Dead" and needs to be removed 
 		RemoveDeadObjects();
+		*/
 	}
+
+	// Loop again to remove dead gameObjects if any
+	RemoveDeadObjects();
+
 }
 
 void Scene::Render() const

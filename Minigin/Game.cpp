@@ -26,53 +26,75 @@ Game::Game()
 	go_Background->AddComponent<TransformComponent>(go_Background.get());
 	m_pScene->Add(go_Background);
 
-	// Previous gameObject is not deleted since inside the scene there is still a shared_ptr owning the original one
 	// LOGO
-	auto go_Logo = std::make_shared<GameObject>(glm::vec3{ 216, 180, 0 });
-	go_Logo->AddComponent<RenderComponent>(go_Logo.get(), "logo.tga");
-	m_pScene->Add(go_Logo);
+	GameObject* go_Logo = new GameObject(glm::vec3{ 216, 180, 0 });
+	go_Logo->AddComponent<RenderComponent>(go_Logo, "logo.tga");
+	go_Logo->SetParent(go_Background.get());
+	//m_pScene->Add(go_Logo);
+
+	//go_Background->MarkAsDead();
+	go_Logo->MarkAsDead();
+	//go_Logo->SetParent(nullptr);
 
 	// TEXT TITLE TEXTURE
-	auto go_Title = std::make_shared<GameObject>(glm::vec3{ 80, 20, 0 });
-	go_Title->AddComponent<RenderComponent>(go_Title.get());
+	GameObject* go_Title = new GameObject(glm::vec3{ 80, 20, 0 });
+	//auto go_Title = std::make_shared<GameObject>(glm::vec3{ 80, 20, 0 });
+	go_Title->AddComponent<RenderComponent>(go_Title);
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	go_Title->AddComponent<TextComponent>(go_Title.get(), "Programming 4 Assignment", font);
-	m_pScene->Add(go_Title);
+	go_Title->AddComponent<TextComponent>(go_Title, "Programming 4 Assignment", font);
+	//m_pScene->Add(go_Title);
+
+	go_Title->SetParent(go_Logo);
+
+	//go_Title->MarkAsDead();
 
 	// FPS TEXT 
-	auto go_FPS = std::make_shared<GameObject>(glm::vec3{ 10, 20, 0 });
-	go_FPS->AddComponent<RenderComponent>(go_FPS.get());
+	//auto go_FPS = std::make_shared<GameObject>(glm::vec3{ 10, 20, 0 });
+	GameObject* go_FPS = new GameObject(glm::vec3{ 10, 20, 0 });
+	go_FPS->AddComponent<RenderComponent>(go_FPS);
 	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-	go_FPS->AddComponent<TextComponent>(go_FPS.get(), "Calculating FPS ...", font, SDL_Color{ 255, 255, 255 });
-	go_FPS->AddComponent<FPSComponent>(go_FPS.get());
-	m_pScene->Add(go_FPS);
+	go_FPS->AddComponent<TextComponent>(go_FPS, "Calculating FPS ...", font, SDL_Color{ 0, 255, 0 });
+	go_FPS->AddComponent<FPSComponent>(go_FPS);
+	//m_pScene->Add(go_FPS);
 
-	//TODO: Chnage the need for shared pointers and read Tom's Presentation on march 4th
+	go_FPS->SetParent(go_Logo);
+
+	//go_FPS->MarkAsDead();
+
+	//TODO: Change the need for shared pointers and read Tom's Presentation on march 4th
 	//Player Spaceship sprite
-	auto go_Player = std::make_shared<GameObject>(glm::vec3{ 200, 300, 0 });
-	go_Player->AddComponent<RenderComponent>(go_Player.get(), "Player.png");
-	go_Player->AddComponent<RotatorComponent>(go_Player.get(), 50.f, 3.f);
-	m_pScene->Add(go_Player);
+	GameObject* go_Player = new GameObject(glm::vec3{ 330, 300, 0 });
+	//auto go_Player = std::make_shared<GameObject>(glm::vec3{ 300, 300, 0 });
+	go_Player->AddComponent<RenderComponent>(go_Player, "Player.png");
+	go_Player->AddComponent<RotatorComponent>(go_Player, 50.f, 3.f);
+	go_Player->SetParent(go_Background.get());
+	//m_pScene->Add(go_Player);
 
 	//Enemy spaceship sprite
-	auto go_Enemy = std::make_shared<GameObject>(glm::vec3{ 330, 300, 0 });
-	go_Enemy->SetParent(go_Player.get(), true);
-	go_Enemy->AddComponent<RenderComponent>(go_Enemy.get(), "Enemy.png");
-	go_Enemy->AddComponent<RotatorComponent>(go_Enemy.get(), 30.f, 1.f);
-	m_pScene->Add(go_Enemy);
+	//auto go_Enemy = std::make_shared<GameObject>(glm::vec3{ 330, 300, 0 });
+	GameObject* go_Enemy = new GameObject(glm::vec3{ 330, 300, 0 });
+	go_Enemy->SetParent(go_Player, true);
+	go_Enemy->AddComponent<RenderComponent>(go_Enemy, "Enemy.png");
+	go_Enemy->AddComponent<RotatorComponent>(go_Enemy, 20.f, 1.f);
+	//m_pScene->Add(go_Enemy);
+
+	//go_Enemy->MarkAsDead();
 
 	//Enemy spaceship sprite
-	auto go_Enemy2 = std::make_shared<GameObject>(glm::vec3{ 430, 400, 0 });
-	go_Enemy2->SetParent(go_Enemy.get(), true);
-	go_Enemy2->AddComponent<RenderComponent>(go_Enemy2.get(), "Enemy.png");
-	go_Enemy2->AddComponent<RotatorComponent>(go_Enemy2.get(), 30.f, 1.f);
-	m_pScene->Add(go_Enemy2);
+	//auto go_Enemy2 = std::make_shared<GameObject>(glm::vec3{ 430, 400, 0 });
+	GameObject* go_Enemy2 = new GameObject(glm::vec3{ 430, 400, 0 });
+	go_Enemy2->SetParent(go_Player, true);
+	go_Enemy2->AddComponent<RenderComponent>(go_Enemy2, "Enemy.png");
+	go_Enemy2->AddComponent<RotatorComponent>(go_Enemy2, 30.f, 1.f);
+	//m_pScene->Add(go_Enemy2);
+
+	//go_Enemy2->MarkAsDead();
 
 }
 
 Game::~Game()
 {
-
+	std::cout << "Game destructor" << std::endl;
 }
 
 void Game::Update([[maybe_unused]] const float deltaTime)
