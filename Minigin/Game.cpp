@@ -75,6 +75,8 @@ Game::Game(const Window& window)
 	m_pScene->Add(go_Enemy);
 	//go_Enemy->AddComponent<RotatorComponent>(go_Enemy, 30.f, 1.f);
 	//m_pScene->Add(go_Enemy);
+	
+	//go_Enemy->MarkAsDead();
 
 	//Enemy spaceship sprite 2
 	auto go_Enemy2 = std::make_shared<GameObject>(nullptr, glm::vec3{ 430, 400, 0 }, glm::vec2{ 1.5f, 1.5f });
@@ -83,8 +85,10 @@ Game::Game(const Window& window)
 	go_Enemy2->AddComponent<RenderComponent>(go_Enemy2.get(), "Enemy.png");
 	go_Enemy2->AddComponent<MoveComponent>(go_Enemy2.get(), 200.f, 0);
 	m_pScene->Add(go_Enemy2);
-	//go_Enemy->AddComponent<RotatorComponent>(go_Enemy2, 30.f, 1.f);
+	//go_Enemy2->AddComponent<RotatorComponent>(go_Enemy2, 30.f, 1.f);
 	//m_pScene->Add(go_Enemy2);
+
+	//go_Enemy2->MarkAsDead();
 }
 
 Game::~Game()

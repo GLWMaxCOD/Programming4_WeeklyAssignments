@@ -188,6 +188,7 @@
     <ClInclude Include="..\3rdParty\imgui-1.90.4\imstb_truetype.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Component.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="MoveCommand.h" />
     <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -205,6 +207,7 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="TestComponent.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture2D.h" />
@@ -221,6 +224,7 @@
     <ClCompile Include="..\3rdParty\imgui-1.90.4\imgui_widgets.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -238,6 +242,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="structs.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TestComponent.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture2D.cpp" />
