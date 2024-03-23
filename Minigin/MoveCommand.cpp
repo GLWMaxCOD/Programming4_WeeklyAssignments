@@ -3,7 +3,8 @@
 #include <iostream>
 
 MoveCommand::MoveCommand(dae::GameObject* actor, glm::vec3 direction, float speed)
-	: Command(actor)
+	: Command()
+	, m_Actor(actor)
 	, m_Speed{ speed }
 {
 	m_Direction = glm::normalize(direction);   // Normalized vector with the same direction but with lenght = 1
@@ -11,7 +12,7 @@ MoveCommand::MoveCommand(dae::GameObject* actor, glm::vec3 direction, float spee
 
 void MoveCommand::Execute(float deltaTime)
 {
-	auto transformCP = GetActor()->GetComponent<TransformComponent>();
+	auto transformCP = m_Actor->GetComponent<TransformComponent>();
 
 	if (transformCP)
 	{
