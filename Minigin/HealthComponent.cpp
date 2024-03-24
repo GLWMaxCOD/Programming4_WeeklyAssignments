@@ -1,11 +1,19 @@
 #include "HealthComponent.h"
+#include "GameObject.h"
+#include "Event.h"
+#include "LivesUIComponent.h"
 #include <iostream>
 
 HealthComponent::HealthComponent(dae::GameObject* pOwner, unsigned int lives)
 	: Component("HealthCP", pOwner)
 	, m_Lives{ lives }
 {
+	m_ActorDiedEvent = std::make_unique<Subject>();
 
+	if (pOwner != nullptr)
+	{
+		m_ActorDiedEvent->AddObserver(pOwner->GetComponent<LivesUIComponent>());
+	}
 }
 
 HealthComponent::~HealthComponent()
@@ -20,13 +28,19 @@ void HealthComponent::Update([[maybe_unused]] const float deltaTime)
 
 void HealthComponent::DecrementHealth(unsigned int amount)
 {
-	if (amount > m_Lives)
+	if (m_Lives > 0)
 	{
-		m_Lives = 0;
-	}
-	else
-	{
-		m_Lives -= amount;
+		if (amount > m_Lives)
+		{
+			m_Lives = 0;
+		}
+		else
+		{
+			m_Lives -= amount;
+		}
+
+		Event HealthDecEvent{ "HealthDecremented" };
+		m_ActorDiedEvent->NotifyObservers(GetOwner(), HealthDecEvent);
 	}
 }
 
