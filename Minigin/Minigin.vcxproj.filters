@@ -123,6 +123,15 @@
     <ClInclude Include="Subject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HealthComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KillCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LivesUIComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -222,6 +231,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Subject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KillCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LivesUIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
