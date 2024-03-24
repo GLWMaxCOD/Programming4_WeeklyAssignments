@@ -82,11 +82,6 @@ void RenderComponent::Render(const glm::vec3& position) const
 	if (m_texture != nullptr)
 	{
 		dae::Renderer::GetInstance().RenderTexture(*m_texture, position.x, position.y, m_TextureSize.x, m_TextureSize.y);
-
-		for (auto pos : m_vExtraPosToRender)
-		{
-			dae::Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, m_TextureSize.x, m_TextureSize.y);
-		}
 	}
 }
 
@@ -107,11 +102,6 @@ void RenderComponent::CalculateTextureSize()
 	m_TextureSize.y = textureSize.y * m_Scale.y;
 
 	m_IsTextureDirty = false;
-}
-
-void RenderComponent::SetPositionsToRender(const std::vector<glm::vec2>& positionsToRender)
-{
-	m_vExtraPosToRender = positionsToRender;
 }
 
 const glm::vec2 RenderComponent::GetTextureSize()
