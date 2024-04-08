@@ -208,6 +208,9 @@
     <ClInclude Include="RotatorComponent.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ScoreComponent.h" />
+    <ClInclude Include="ScoreDisplayComponent.h" />
+    <ClInclude Include="ScoreIncreaseCommand.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="structs.h" />
     <ClInclude Include="Subject.h" />
@@ -247,6 +250,9 @@
     <ClCompile Include="RotatorComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ScoreComponent.cpp" />
+    <ClCompile Include="ScoreDisplayComponent.cpp" />
+    <ClCompile Include="ScoreIncreaseCommand.cpp" />
     <ClCompile Include="structs.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TestComponent.cpp" />
