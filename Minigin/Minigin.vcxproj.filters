@@ -21,10 +21,6 @@
     <Filter Include="Engine Files\imgui">
       <UniqueIdentifier>{e7cff674-a573-4970-ac9c-25f7357a0b06}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">

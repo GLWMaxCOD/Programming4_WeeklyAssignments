@@ -6,7 +6,7 @@
 #include "RenderComponent.h"
 #include "TransformComponent.h"
 
-namespace dae
+namespace engine
 {
 
 	class GameObject final
@@ -64,7 +64,7 @@ namespace dae
 		std::vector<std::unique_ptr<GameObject>> m_vChildren;		// Parent will own his children
 
 		// COMPONENTS
-		std::vector<std::unique_ptr<Component>> m_vComponents;
+		std::vector<std::unique_ptr<engine::Component>> m_vComponents;
 		RenderComponent* m_pRenderCP;
 		TransformComponent* m_pTransformCP{};
 		glm::vec3 m_PreviousWorldPosition{};
@@ -77,7 +77,7 @@ namespace dae
 
 	// Look for the component in the container and returns if found. (Nullptr otherwise)
 	template <typename T>
-	inline T* dae::GameObject::GetComponent() const
+	inline T* engine::GameObject::GetComponent() const
 	{
 		for (auto& componentItr : m_vComponents)
 		{
@@ -97,7 +97,7 @@ namespace dae
 	template <typename T, typename... Args>
 	inline T* GameObject::AddComponent(Args&&... args)
 	{
-		static_assert(std::is_base_of<Component, T>::value, "Incorrect type passed to AddComponent function");
+		static_assert(std::is_base_of<engine::Component, T>::value, "Incorrect type passed to AddComponent function");
 
 		if (HasComponentAlready<T>())
 		{

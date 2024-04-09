@@ -4,11 +4,13 @@
 #include <memory>
 #include "structs.h"
 
-namespace dae
+namespace engine
 {
 	class Scene;
-	class Game final
-	{
+}
+
+class Game final
+{
 	public:
 
 		Game(const Window& window);
@@ -24,7 +26,6 @@ namespace dae
 
 		const Window m_Window;
 
-	};
-}
+};
 
 #endif

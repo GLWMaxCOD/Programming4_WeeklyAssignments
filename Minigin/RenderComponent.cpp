@@ -5,9 +5,7 @@
 #include "GameObject.h"
 #include <iostream>
 
-using namespace dae;
-
-RenderComponent::RenderComponent(GameObject* pOwner)
+engine::RenderComponent::RenderComponent(GameObject* pOwner)
 	: Component("RenderCP", pOwner),
 	m_texture{ nullptr },
 	m_Scale{ glm::vec2{ 1.f, 1.f } },
@@ -17,7 +15,7 @@ RenderComponent::RenderComponent(GameObject* pOwner)
 	SetScale();
 }
 
-RenderComponent::RenderComponent(GameObject* pOwner, const std::string& filename)
+engine::RenderComponent::RenderComponent(GameObject* pOwner, const std::string& filename)
 	: Component("RenderCP", pOwner),
 	m_Scale{ glm::vec2{ 1.f, 1.f } },
 	m_TextureSize{ glm::vec2{} },
@@ -33,7 +31,7 @@ RenderComponent::RenderComponent(GameObject* pOwner, const std::string& filename
 // It doesn't actually change the size of the texture, is only used for the render
 // visually scale the texture
 // -----------------------------------------------------------------------------
-void RenderComponent::SetScale()
+void engine::RenderComponent::SetScale()
 {
 	GameObject* pOwner{ GetOwner() };
 	if (pOwner != nullptr)
@@ -47,9 +45,9 @@ void RenderComponent::SetScale()
 }
 
 // Try to create a new texture in the resourceManager and returns it created
-void RenderComponent::SetTexture(const std::string& filename)
+void engine::RenderComponent::SetTexture(const std::string& filename)
 {
-	m_texture = dae::ResourceManager::GetInstance().LoadTexture(filename);
+	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
 
 	if (m_texture != nullptr)
 	{
@@ -59,7 +57,7 @@ void RenderComponent::SetTexture(const std::string& filename)
 
 }
 
-void RenderComponent::Update([[maybe_unused]] const float deltaTime)
+void engine::RenderComponent::Update([[maybe_unused]] const float deltaTime)
 {
 	if (m_IsTextureDirty)
 	{
@@ -67,25 +65,25 @@ void RenderComponent::Update([[maybe_unused]] const float deltaTime)
 	}
 }
 
-void RenderComponent::ReceiveMessage([[maybe_unused]] const std::string& message, [[maybe_unused]] const std::string& value)
+void engine::RenderComponent::ReceiveMessage([[maybe_unused]] const std::string& message, [[maybe_unused]] const std::string& value)
 {
 
 }
 
-RenderComponent::~RenderComponent()
+engine::RenderComponent::~RenderComponent()
 {
 	std::cout << "RenderComponent destructor" << std::endl;
 }
 
-void RenderComponent::Render(const glm::vec3& position) const
+void engine::RenderComponent::Render(const glm::vec3& position) const
 {
 	if (m_texture != nullptr)
 	{
-		dae::Renderer::GetInstance().RenderTexture(*m_texture, position.x, position.y, m_TextureSize.x, m_TextureSize.y);
+		Renderer::GetInstance().RenderTexture(*m_texture, position.x, position.y, m_TextureSize.x, m_TextureSize.y);
 	}
 }
 
-void RenderComponent::SetTexture(std::shared_ptr<dae::Texture2D> texture)
+void engine::RenderComponent::SetTexture(std::shared_ptr<engine::Texture2D> texture)
 {
 	m_texture = texture;
 
@@ -94,7 +92,7 @@ void RenderComponent::SetTexture(std::shared_ptr<dae::Texture2D> texture)
 		m_IsTextureDirty = true;
 	}
 }
-void RenderComponent::CalculateTextureSize()
+void engine::RenderComponent::CalculateTextureSize()
 {
 	glm::ivec2 textureSize{ m_texture->GetSize() };
 	// Scale the texture 
@@ -104,7 +102,7 @@ void RenderComponent::CalculateTextureSize()
 	m_IsTextureDirty = false;
 }
 
-const glm::vec2 RenderComponent::GetTextureSize()
+const glm::vec2 engine::RenderComponent::GetTextureSize()
 {
 	if (m_IsTextureDirty)
 	{

@@ -3,15 +3,12 @@
 
 #include "Component.h"
 
-
-namespace dae
+class TextComponent;
+class FPSComponent final : public engine::Component
 {
-	class TextComponent;
-	class FPSComponent final : public Component
-	{
 	public:
 
-		FPSComponent(GameObject* pOwner);
+		FPSComponent(engine::GameObject* pOwner);
 		virtual ~FPSComponent() override;
 
 		void Update(const float deltaTime) override;
@@ -25,7 +22,6 @@ namespace dae
 
 		TextComponent* m_pTextCP;
 
-	};
-}
+};
 
 #endif

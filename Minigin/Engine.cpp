@@ -43,7 +43,7 @@ void PrintSDLVersion()
 		version.major, version.minor, version.patch);
 }
 
-dae::Engine::Engine(const std::string& dataPath, const Window& window)
+engine::Engine::Engine(const std::string& dataPath, const Window& window)
 {
 	PrintSDLVersion();
 
@@ -71,7 +71,7 @@ dae::Engine::Engine(const std::string& dataPath, const Window& window)
 	ResourceManager::GetInstance().Init(dataPath);
 }
 
-dae::Engine::~Engine()
+engine::Engine::~Engine()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
@@ -79,7 +79,7 @@ dae::Engine::~Engine()
 	SDL_Quit();
 }
 
-void dae::Engine::Run()
+void engine::Engine::Run()
 {
 	auto& input = InputManager::GetInstance();
 	auto& renderer = Renderer::GetInstance();
