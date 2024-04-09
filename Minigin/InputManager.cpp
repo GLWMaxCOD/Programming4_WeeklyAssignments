@@ -47,6 +47,12 @@ void dae::InputManager::CheckControllerConnected()
 
 }
 
+// -----------------------------------------------------------------------------
+//							*PROCESS KEYBOARD INPUT*
+// SDL_PollEven -> To check if a key is beind pressed (down once) or released (up once)
+// SDL_GetKeyboardState -> is used to check if a key is being pressed continuously 
+// between frames.
+// -----------------------------------------------------------------------------
 bool dae::InputManager::ProcessKeyboardInput(float deltaTime)
 {
 	SDL_Event e;
@@ -59,45 +65,45 @@ bool dae::InputManager::ProcessKeyboardInput(float deltaTime)
 		}
 		if (e.type == SDL_KEYDOWN)
 		{
-			// Check if the key pressed is binded to any command..
 			auto keyDown{ e.key.keysym.sym };
-			KeyTypeKeyPair keyPair{ std::make_pair(keyDown, dae::InputType::Pressed) };
+			KeyTypeKeyPair keyPair{ std::make_pair(keyDown, dae::InputType::Down) };
 
-			if (m_KeyBoardCommands.find(keyPair) != m_KeyBoardCommands.end())
+			auto commandItr = m_KeyBoardCommands.find(keyPair);
+			if (commandItr != m_KeyBoardCommands.end())
 			{
-				m_KeyboardCommandItr = m_KeyBoardCommands.find(keyPair);
-				m_LastKeyPressed = keyDown;
-				m_Pressed = true;
+				// Founded a key binded to a Command -> Execute it
+				commandItr->second->Execute(deltaTime);
 			}
 		}
 
 		if (e.type == SDL_KEYUP)
 		{
-			SDL_Keycode keyUp{ e.key.keysym.sym };
-			if (m_LastKeyPressed == keyUp)
+			auto keyUp{ e.key.keysym.sym };
+			KeyTypeKeyPair keyPair{ std::make_pair(keyUp, dae::InputType::Up) };
+
+			auto commandItr = m_KeyBoardCommands.find(keyPair);
+			if (commandItr != m_KeyBoardCommands.end())
 			{
-				m_KeyboardCommandItr = m_KeyBoardCommands.end();
-				m_LastKeyPressed = SDLK_UNKNOWN; // Reset last pressed key
-				m_Pressed = false;
-			}
-			else
-			{
-				KeyTypeKeyPair keyPair{ std::make_pair(keyUp, dae::InputType::Up) };
-				if (m_KeyBoardCommands.find(keyPair) != m_KeyBoardCommands.end())
-				{
-					m_KeyboardCommandItr = m_KeyBoardCommands.find(keyPair);
-					m_KeyboardCommandItr->second->Execute(deltaTime);
-				}
+				commandItr->second->Execute(deltaTime);
 			}
 		}
 		//Process event for IMGUI
 		ImGui_ImplSDL2_ProcessEvent(&e);
 	}
 
-	if (m_KeyboardCommandItr != m_KeyBoardCommands.end() && m_Pressed)
+	// CHECK IF ANY KEY IS BEING HOLD CONTINUOUSLY
+	const Uint8* state = SDL_GetKeyboardState(NULL);
+	for (const auto& keyBoardCommand : m_KeyBoardCommands)
 	{
-		// A key binded to a Command is being pressed -> Execute the command
-		m_KeyboardCommandItr->second->Execute(deltaTime);
+		auto inputType = keyBoardCommand.first.second;
+		if (inputType == dae::InputType::Pressed)
+		{
+			// keyInput == Pressed -> Check if the key is being pressed
+			if (state[SDL_GetScancodeFromKey(keyBoardCommand.first.first)])
+			{
+				keyBoardCommand.second->Execute(deltaTime);
+			}
+		}
 	}
 
 	return true;
@@ -161,7 +167,7 @@ void dae::InputManager::BindCommand(std::unique_ptr<Command> command, SDL_Keycod
 {
 	if (type == InputType::Default)
 	{
-		type = InputType::Pressed;
+		type = InputType::Down;
 	}
 
 	KeyTypeKeyPair keyPair{ std::make_pair(key, type) };
@@ -184,7 +190,7 @@ void  dae::InputManager::UnbindCommand(SDL_Keycode key, dae::InputType type)
 {
 	if (type == InputType::Default)
 	{
-		type = InputType::Pressed;
+		type = InputType::Down;
 	}
 
 	KeyTypeKeyPair keyPair{ std::make_pair(key, type) };
