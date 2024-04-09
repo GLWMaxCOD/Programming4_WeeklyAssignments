@@ -249,7 +249,6 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="KillCommand.cpp" />
     <ClCompile Include="LivesUIComponent.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />

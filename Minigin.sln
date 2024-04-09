@@ -5,10 +5,7 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Minigin", "Minigin\Minigin.vcxproj", "{41B0EC47-D48C-4B0F-951B-D98595FFAE0A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Galaga", "Game\Galaga\Galaga.vcxproj", "{FDC95F24-B9C7-4511-9787-F0AAE189D940}"
-	ProjectSection(ProjectDependencies) = postProject
-		{41B0EC47-D48C-4B0F-951B-D98595FFAE0A} = {41B0EC47-D48C-4B0F-951B-D98595FFAE0A}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Galaga", "Galaga\Galaga.vcxproj", "{871E62EE-E5F4-4675-859A-98496BC4BCEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,14 +23,14 @@ Global
 		{41B0EC47-D48C-4B0F-951B-D98595FFAE0A}.Release|x64.Build.0 = Release|x64
 		{41B0EC47-D48C-4B0F-951B-D98595FFAE0A}.Release|x86.ActiveCfg = Release|Win32
 		{41B0EC47-D48C-4B0F-951B-D98595FFAE0A}.Release|x86.Build.0 = Release|Win32
-		{FDC95F24-B9C7-4511-9787-F0AAE189D940}.Debug|x64.ActiveCfg = Debug|x64
-		{FDC95F24-B9C7-4511-9787-F0AAE189D940}.Debug|x64.Build.0 = Debug|x64
-		{FDC95F24-B9C7-4511-9787-F0AAE189D940}.Debug|x86.ActiveCfg = Debug|Win32
-		{FDC95F24-B9C7-4511-9787-F0AAE189D940}.Debug|x86.Build.0 = Debug|Win32
-		{FDC95F24-B9C7-4511-9787-F0AAE189D940}.Release|x64.ActiveCfg = Release|x64
-		{FDC95F24-B9C7-4511-9787-F0AAE189D940}.Release|x64.Build.0 = Release|x64
-		{FDC95F24-B9C7-4511-9787-F0AAE189D940}.Release|x86.ActiveCfg = Release|Win32
-		{FDC95F24-B9C7-4511-9787-F0AAE189D940}.Release|x86.Build.0 = Release|Win32
+		{871E62EE-E5F4-4675-859A-98496BC4BCEA}.Debug|x64.ActiveCfg = Debug|x64
+		{871E62EE-E5F4-4675-859A-98496BC4BCEA}.Debug|x64.Build.0 = Debug|x64
+		{871E62EE-E5F4-4675-859A-98496BC4BCEA}.Debug|x86.ActiveCfg = Debug|Win32
+		{871E62EE-E5F4-4675-859A-98496BC4BCEA}.Debug|x86.Build.0 = Debug|Win32
+		{871E62EE-E5F4-4675-859A-98496BC4BCEA}.Release|x64.ActiveCfg = Release|x64
+		{871E62EE-E5F4-4675-859A-98496BC4BCEA}.Release|x64.Build.0 = Release|x64
+		{871E62EE-E5F4-4675-859A-98496BC4BCEA}.Release|x86.ActiveCfg = Release|Win32
+		{871E62EE-E5F4-4675-859A-98496BC4BCEA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
