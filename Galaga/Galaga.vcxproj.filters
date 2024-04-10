@@ -63,7 +63,7 @@
     <ClCompile Include="ShootCommand.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="MissileManager.cpp">
+    <ClCompile Include="MissileManagerCP.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>

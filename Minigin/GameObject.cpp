@@ -4,12 +4,13 @@
 
 using namespace engine;
 
-GameObject::GameObject(GameObject* pParent, glm::vec3 startPosition, glm::vec2 scale)
+GameObject::GameObject(GameObject* pParent, const std::string& tag, glm::vec3 startPosition, glm::vec2 scale)
 	: m_pParent{ nullptr },
 	m_IsActive{ true },
 	m_IsDead{ false },
 	m_HasToRender{ false },
-	m_pRenderCP{ nullptr }
+	m_pRenderCP{ nullptr },
+	m_Tag{ tag }
 {
 	// All gameObjects have a transform component attach when created
 	m_pTransformCP = AddComponent<TransformComponent>(this, startPosition, scale);
@@ -263,6 +264,11 @@ bool GameObject::HasParent() const
 void GameObject::SetIsActive(const bool isActive)
 {
 	m_IsActive = isActive;
+	if (m_IsActive && m_pTransformCP)
+	{
+		// Ask for the world position so it will update its position if moved
+		m_pTransformCP->GetWorldPosition();
+	}
 }
 
 bool GameObject::IsActive() const
@@ -291,6 +297,11 @@ void GameObject::SetPositionDirty()
 void GameObject::SavePreviousWorldPosition(const glm::vec3& prevWorldPos)
 {
 	m_PreviousWorldPosition = prevWorldPos;
+}
+
+std::string GameObject::Tag() const
+{
+	return m_Tag;
 }
 
 GameObject::~GameObject()

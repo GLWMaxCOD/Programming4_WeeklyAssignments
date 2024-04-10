@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "MoveComponent.h"
 #include "HealthComponent.h"
+#include "Event.h"
 #include <iostream>
 
 MissileBehaviourCP::MissileBehaviourCP(engine::GameObject* pOwner)
@@ -24,6 +25,14 @@ void MissileBehaviourCP::Update([[maybe_unused]] const float deltaTime)
 			// Bullet outside boundaries -> Deactivate it
 			GetOwner()->SetIsActive(false);
 		}
+	}
+}
+
+void MissileBehaviourCP::OnNotify([[maybe_unused]] engine::GameObject* gameObject, const engine::Event& event)
+{
+	if (event.IsSameEvent("Collision with an enemy"))
+	{
+		GetOwner()->SetIsActive(false);
 	}
 }
 

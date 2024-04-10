@@ -160,7 +160,7 @@
     <ClCompile Include="KillCommand.cpp" />
     <ClCompile Include="LivesUIComponent.cpp" />
     <ClCompile Include="MissileBehaviourCP.cpp" />
-    <ClCompile Include="MissileManager.cpp" />
+    <ClCompile Include="MissileManagerCP.cpp" />
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="ParallaxScrollingCP.cpp" />

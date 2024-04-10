@@ -1,5 +1,6 @@
 #include "TransformComponent.h"
 #include "GameObject.h"
+#include "CollisionComponent.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include <iostream>
 
@@ -9,7 +10,8 @@ engine::TransformComponent::TransformComponent(engine::GameObject* pOwner, glm::
 	m_LocalPosition{ glm::vec3{ 0,0,0 } },
 	m_Scale{ scale },						// TODO : Local and World Scale and local and world rotation
 	m_CenterOffset{ glm::vec3{ 0,0,0 } },
-	m_IsPositionDirty{ true }
+	m_IsPositionDirty{ true },
+	m_pCollisionCP{ nullptr }
 {
 	// World position will automatically be updated when required
 	SetLocalPosition(position);
@@ -60,6 +62,12 @@ void engine::TransformComponent::UpdateWorldPosition()
 
 			pOwner->SavePreviousWorldPosition(m_WorldPosition);
 
+			// If there is a collisionCP update its boundingBox with the position
+			if (m_pCollisionCP)
+			{
+				m_pCollisionCP->SetBoundingBox(m_WorldPosition);
+			}
+
 			// Update children position to move along with the parent
 			//pOwner->UpdateChildrenPosition();
 		}
@@ -90,14 +98,25 @@ void engine::TransformComponent::SetCenterOffset(const glm::vec3& centerOffset)
 	m_IsPositionDirty = true;
 }
 
+void engine::TransformComponent::AddCollisionCP(engine::CollisionComponent* pComponent)
+{
+	m_pCollisionCP = pComponent;
+}
+
 const glm::vec2 engine::TransformComponent::GetScale() const
 {
 	return m_Scale;
 }
 
-void engine::TransformComponent::ReceiveMessage([[maybe_unused]] const std::string& message, [[maybe_unused]] const std::string& value)
+void engine::TransformComponent::ReceiveMessage(const std::string& message, const std::string& value)
 {
-
+	if (message == "RemoveCP")
+	{
+		if (value == "CollisionCP")
+		{
+			m_pCollisionCP = nullptr;
+		}
+	}
 }
 
 engine::TransformComponent::~TransformComponent()
