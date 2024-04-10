@@ -39,6 +39,7 @@ void HealthComponent::DecrementHealth(unsigned int amount)
 		if (amount > m_Lives)
 		{
 			m_Lives = 0;
+			GetOwner()->MarkAsDead();
 		}
 		else
 		{
@@ -51,6 +52,19 @@ void HealthComponent::DecrementHealth(unsigned int amount)
 			m_ActorDiedEvent->NotifyObservers(GetOwner(), HealthDecEvent);
 		}
 	}
+}
+
+void HealthComponent::Kill()
+{
+	m_Lives = 0;
+
+	if (m_ActorDiedEvent != nullptr)
+	{
+		engine::Event dieEvent{ "GameObjectDied" };
+		m_ActorDiedEvent->NotifyObservers(GetOwner(), dieEvent);
+	}
+
+	GetOwner()->MarkAsDead();
 }
 
 void HealthComponent::ReceiveMessage([[maybe_unused]] const std::string& message, [[maybe_unused]] const std::string& value)
