@@ -160,15 +160,19 @@
     <ClCompile Include="KillCommand.cpp" />
     <ClCompile Include="LivesUIComponent.cpp" />
     <ClCompile Include="MissileBehaviourCP.cpp" />
+    <ClCompile Include="MissileManager.cpp" />
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="ParallaxScrollingCP.cpp" />
     <ClCompile Include="PlayerInputCP.cpp" />
     <ClCompile Include="RotatorComponent.cpp" />
+    <ClCompile Include="ShootCommand.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="TrashTheCache.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MissileManagerCP.h" />
+    <ClInclude Include="ShootCommand.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameIncludes.h" />

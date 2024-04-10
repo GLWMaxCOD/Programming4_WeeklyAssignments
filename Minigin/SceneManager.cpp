@@ -56,3 +56,12 @@ void engine::SceneManager::AddToActiveScene(GameObject* gameObject)
 		std::cerr << "Error! Trying to add a gameObject that already has parent to the scene" << '\n';
 	}
 }
+
+void engine::SceneManager::AddToActiveScene(std::shared_ptr<GameObject> object)
+{
+	if (m_ActiveScene >= 0 && m_ActiveScene < (int)m_scenes.size())
+	{
+		// There is an active scene --> Add the gameObject to it
+		m_scenes.at(m_ActiveScene)->Add(object);
+	}
+}

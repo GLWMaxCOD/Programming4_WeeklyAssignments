@@ -1,7 +1,7 @@
 #include "PlayerInputCP.h"
 #include "InputManager.h"
 #include "MoveCommand.h"
-#include "KillCommand.h"
+#include "ShootCommand.h"
 #include "GameObject.h"
 #include "Controller.h"
 
@@ -13,14 +13,17 @@ PlayerInputCP::PlayerInputCP(engine::GameObject* pOwner)
 	// Keys A and D will be used to move Player from left to right
 	SDL_KeyCode keyA{ SDLK_a };
 	SDL_KeyCode keyD{ SDLK_d };
+	SDL_KeyCode key_Space{ SDLK_SPACE };
 
 	std::unique_ptr<Command> moveLeftCommand = std::make_unique<MoveCommand>(pOwner, glm::vec3{ -1, 0, 0 });
 	std::unique_ptr<Command> moveRightCommand = std::make_unique<MoveCommand>(pOwner, glm::vec3{ 1, 0, 0 });
+	std::unique_ptr<Command> shootCommand = std::make_unique<ShootCommand>(pOwner, glm::vec3{ 0, -1, 0 });
+
 	// Bind all commands with their corresponding keys
 	input.BindCommand(std::move(moveLeftCommand), keyA, engine::InputType::Pressed);
 	input.BindCommand(std::move(moveRightCommand), keyD, engine::InputType::Pressed);
 
-
+	input.BindCommand(std::move(shootCommand), key_Space, engine::InputType::Down);
 }
 
 PlayerInputCP::PlayerInputCP(engine::GameObject* pOwner, unsigned controllerIdx)

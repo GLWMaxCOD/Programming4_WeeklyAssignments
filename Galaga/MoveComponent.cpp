@@ -3,7 +3,7 @@
 
 MoveComponent::MoveComponent(engine::GameObject* pOwner, float speed, const Boundaries& boundaries)
 	: Component("MoveCP", pOwner),
-	m_Speed{ speed },
+	SPEED{ speed },
 	m_Boundaries{ boundaries },
 	m_GObjectSize{ },
 	m_AutoMovement{ false },
@@ -34,7 +34,7 @@ void MoveComponent::Move(float deltaTime, const glm::vec3& direction)
 	{
 		glm::vec3 pos = transformCP->GetLocalPosition();
 
-		pos += direction * m_Speed * deltaTime;
+		pos += direction * SPEED * deltaTime;
 
 		// Check if GameObject inside boundaries
 		if (pos.x > m_Boundaries.leftLimit && pos.x + m_GObjectSize.x
@@ -46,6 +46,8 @@ void MoveComponent::Move(float deltaTime, const glm::vec3& direction)
 			{
 				// Inside boundaries
 				m_IsInsideBoundaries = true;
+				transformCP->SetLocalPosition(pos);
+				return;
 			}
 			else
 			{
@@ -57,14 +59,7 @@ void MoveComponent::Move(float deltaTime, const glm::vec3& direction)
 			m_IsInsideBoundaries = false;
 		}
 
-		if (m_Boundaries.isMoveRestricted == true)
-		{
-			if (m_IsInsideBoundaries == true)
-			{
-				transformCP->SetLocalPosition(pos);
-			}
-		}
-		else
+		if (m_Boundaries.isMoveRestricted == false)
 		{
 			// There is no movement restriction
 			transformCP->SetLocalPosition(pos);
@@ -77,6 +72,15 @@ void MoveComponent::Update(const float deltaTime)
 	if (m_AutoMovement)
 	{
 		Move(deltaTime, m_Direction);
+	}
+}
+
+void MoveComponent::ChangeDirection(const glm::vec3& newDirection)
+{
+	if (m_AutoMovement)
+	{
+		// Only change direction if autoMovement 
+		m_Direction = glm::normalize(newDirection);
 	}
 }
 

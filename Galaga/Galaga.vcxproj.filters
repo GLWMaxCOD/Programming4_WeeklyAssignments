@@ -60,6 +60,12 @@
     <ClCompile Include="MissileBehaviourCP.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="ShootCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="MissileManager.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FPSComponent.h">
@@ -103,6 +109,12 @@
     </ClInclude>
     <ClInclude Include="GameIncludes.h">
       <Filter>General Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShootCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="MissileManagerCP.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
