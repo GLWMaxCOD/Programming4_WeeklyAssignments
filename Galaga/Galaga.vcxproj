@@ -162,6 +162,7 @@
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="ParallaxScrollingCP.cpp" />
+    <ClCompile Include="PlayerInputCP.cpp" />
     <ClCompile Include="RotatorComponent.cpp" />
     <ClCompile Include="TestComponent.cpp" />
     <ClCompile Include="TextComponent.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="MoveCommand.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="ParallaxScrollingCP.h" />
+    <ClInclude Include="PlayerInputCP.h" />
     <ClInclude Include="RotatorComponent.h" />
     <ClInclude Include="TestComponent.h" />
     <ClInclude Include="TextComponent.h" />
