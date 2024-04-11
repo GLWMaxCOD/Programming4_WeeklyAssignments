@@ -153,13 +153,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EnemyCP.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="Galaga.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="KillCommand.cpp" />
     <ClCompile Include="LivesUIComponent.cpp" />
-    <ClCompile Include="MissileBehaviourCP.cpp" />
+    <ClCompile Include="MissileCP.cpp" />
     <ClCompile Include="MissileManagerCP.cpp" />
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="TrashTheCache.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EnemyCP.h" />
     <ClInclude Include="MissileManagerCP.h" />
     <ClInclude Include="ShootCommand.h" />
     <ClInclude Include="FPSComponent.h" />
@@ -179,7 +181,7 @@
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="KillCommand.h" />
     <ClInclude Include="LivesUIComponent.h" />
-    <ClInclude Include="MissileBehaviourCP.h" />
+    <ClInclude Include="MissileCP.h" />
     <ClInclude Include="MoveCommand.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="ParallaxScrollingCP.h" />

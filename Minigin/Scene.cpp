@@ -38,15 +38,14 @@ void Scene::Update(const float deltaTime)
 		object->Update(deltaTime);
 	}
 
-	// First check Collisions between gameObjects
+	// TODO: Use space partitioning (Seen in Gameplay Programming, semester 3)
+	// Check collisions between the gameObjects that have collisionCP
 	for (size_t objectIdx1{ 0 }; objectIdx1 < m_objects.size(); ++objectIdx1)
 	{
 		auto object = m_objects.at(objectIdx1);
-
 		if (object->IsActive())
 		{
 			auto collisionCP = m_objects.at(objectIdx1)->GetComponent<engine::CollisionComponent>();
-
 			if (collisionCP)
 			{
 				for (size_t objectIdx2{ 0 }; objectIdx2 < m_objects.size(); ++objectIdx2)
