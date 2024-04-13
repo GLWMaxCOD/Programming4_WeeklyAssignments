@@ -31,6 +31,9 @@ namespace engine
 		void UnbindCommand(unsigned int controllerIdx, const Controller::XboxControllerButton& button, InputType type);
 		void UnbindAllCommands();
 
+		int GetFreeController() const;
+		bool IsPlayer1Connected() const;
+
 	private:
 		bool ProcessKeyboardInput(float deltaTime);
 		bool ProcessControllersInput(float deltaTime);

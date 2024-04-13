@@ -33,9 +33,6 @@
     <ClCompile Include="MoveCommand.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="FPSComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="HealthComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
@@ -69,11 +66,11 @@
     <ClCompile Include="EnemyCP.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerCP.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FPSComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="HealthComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
@@ -120,6 +117,9 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="EnemyCP.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCP.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>

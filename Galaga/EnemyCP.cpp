@@ -39,5 +39,10 @@ void EnemyCP::OnNotify([[maybe_unused]] engine::GameObject* gameObject, const en
 		{
 			healthCP->DecrementHealth(1);
 		}
+		if (event.IsSameEvent("CollisionWith PlayerMissile"))
+		{
+			// Deactivate the missile
+			gameObject->SetIsActive(false);
+		}
 	}
 }

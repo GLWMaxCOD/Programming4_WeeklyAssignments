@@ -32,7 +32,7 @@ void MissileCP::OnNotify([[maybe_unused]] engine::GameObject* gameObject, const 
 	if (event.IsSameEvent("CollisionWith Enemy"))
 	{
 		// Missile collision with an enemy
-		GetOwner()->SetIsActive(false);
+		//GetOwner()->SetIsActive(false);
 	}
 
 }

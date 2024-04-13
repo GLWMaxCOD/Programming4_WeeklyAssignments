@@ -154,7 +154,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="EnemyCP.cpp" />
-    <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="Galaga.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
@@ -165,6 +164,7 @@
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="ParallaxScrollingCP.cpp" />
+    <ClCompile Include="PlayerCP.cpp" />
     <ClCompile Include="PlayerInputCP.cpp" />
     <ClCompile Include="RotatorComponent.cpp" />
     <ClCompile Include="ShootCommand.cpp" />
@@ -174,8 +174,8 @@
   <ItemGroup>
     <ClInclude Include="EnemyCP.h" />
     <ClInclude Include="MissileManagerCP.h" />
+    <ClInclude Include="PlayerCP.h" />
     <ClInclude Include="ShootCommand.h" />
-    <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameIncludes.h" />
     <ClInclude Include="HealthComponent.h" />
