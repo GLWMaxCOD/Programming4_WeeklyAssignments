@@ -27,9 +27,18 @@ class Game final
 		void Initialize();			// Initialize everything needed for the Game
 		void SetupBackground();
 
-		const engine::Window m_Window;
+		// ALL GAME SCENES
+		const std::string FIRST_STAGE;
+		const std::string SECOND_STAGE;
+		const std::string THIRD_STAGE;
 
-		std::vector <std::shared_ptr<engine::GameObject>> m_vSceneGObjects;		// All gameObjects from the scene
+		// GAMEOBJECT TAGS
+		const std::string ENEMY_TAG;
+		const std::string PLAYER_TAG;
+		const std::string LEVEL_TAG;
+		const std::string UI_TAG;
+
+		const engine::Window m_Window;
 };
 
 #endif

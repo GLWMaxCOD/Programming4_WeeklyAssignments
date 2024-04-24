@@ -105,3 +105,8 @@ void Scene::RemoveAll()
 	m_objects.clear();
 }
 
+const std::string& Scene::Name() const
+{
+	return m_name;
+}
+

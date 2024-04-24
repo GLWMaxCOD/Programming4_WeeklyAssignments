@@ -15,17 +15,25 @@ namespace engine
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
-		Scene& CreateScene(const std::string& name);
+		Scene& CreateScene(const std::string& sceneName);
 
-		void AddToActiveScene(GameObject* gameObject);
-		void AddToActiveScene(std::shared_ptr<GameObject> gameObject);
 		void Update(const float deltaTime);
 		void Render();
+
+		// Adding GameObjects to scenes
+		void AddToActiveScene(GameObject* gameObject);
+		void AddToActiveScene(std::shared_ptr<GameObject> gameObject);
+		void AddToScene(const std::string& sceneName, std::shared_ptr<GameObject> object);
+
+		void SetActiveScene(const std::string& sceneName);
+		Scene& GetActiveScene();
 
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager();
+
 		std::vector<std::shared_ptr<Scene>> m_scenes;
+		const int INVALID_SCENE;
 		int m_ActiveScene;
 		const engine::Window* m_Window;
 	};
