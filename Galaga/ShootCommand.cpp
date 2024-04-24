@@ -16,10 +16,13 @@ ShootCommand::~ShootCommand()
 
 void ShootCommand::Execute([[maybe_unused]] float deltaTime)
 {
-	auto missileManagerCP = m_Actor->GetComponent<MissileManagerCP>();
-
-	if (missileManagerCP != nullptr)
+	if (m_Actor->IsActive())
 	{
-		missileManagerCP->Fire(m_Direction);
+		auto missileManagerCP = m_Actor->GetComponent<MissileManagerCP>();
+
+		if (missileManagerCP != nullptr)
+		{
+			missileManagerCP->Fire(m_Direction);
+		}
 	}
 }
