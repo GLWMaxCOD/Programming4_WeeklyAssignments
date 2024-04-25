@@ -69,9 +69,6 @@
     <ClCompile Include="PlayerCP.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Null_Sound_System.cpp">
-      <Filter>General Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HealthComponent.h">
@@ -124,9 +121,6 @@
     </ClInclude>
     <ClInclude Include="PlayerCP.h">
       <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Minigin\Null_Sound_System.h">
-      <Filter>General Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

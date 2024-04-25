@@ -163,7 +163,6 @@
     <ClCompile Include="MissileManagerCP.cpp" />
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
-    <ClCompile Include="Null_Sound_System.cpp" />
     <ClCompile Include="ParallaxScrollingCP.cpp" />
     <ClCompile Include="PlayerCP.cpp" />
     <ClCompile Include="PlayerInputCP.cpp" />
@@ -173,7 +172,6 @@
     <ClCompile Include="TrashTheCache.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Minigin\Null_Sound_System.h" />
     <ClInclude Include="EnemyCP.h" />
     <ClInclude Include="MissileManagerCP.h" />
     <ClInclude Include="PlayerCP.h" />

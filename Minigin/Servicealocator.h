@@ -16,8 +16,8 @@ namespace engine
 			_ss_instance = &_default_ss;
 		}
 		static engine::SoundSystem& Get_Sound_System() { return *_ss_instance; }
-		static void Register_sound_system(engine::SoundSystem* ss)
-		{
+		static void Register_sound_system(engine::SoundSystem* ss) 
+		{ 
 			if (ss == nullptr)
 			{
 				// If service provide is null -> We use or null object
