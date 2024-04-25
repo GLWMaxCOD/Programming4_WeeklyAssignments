@@ -26,7 +26,7 @@ void Game::Initialize()
 
 	auto& scene = sceneManager.GetActiveScene();
 
-
+	SetupSounds();
 	SetupBackground();
 
 	// PLAYER 1
@@ -35,7 +35,7 @@ void Game::Initialize()
 	go_Player->AddComponent<PlayerCP>(go_Player.get(), 1, glm::vec2{ m_Window.width, m_Window.height });
 	scene.Add(go_Player);
 
-	// ENEMY
+	// ENEMIES
 	glm::vec3 startPos2{ m_Window.width / 3.f, 200.f, 0.f };
 	auto go_Enemy = std::make_shared<engine::GameObject>(nullptr, ENEMY_TAG, startPos2, glm::vec2{ 2.f, 2.f });
 	go_Enemy->AddComponent<EnemyCP>(go_Enemy.get(), 1);
@@ -57,10 +57,6 @@ void Game::Initialize()
 	scene.Add(go_Enemy4);
 
 	//go_Player->SetIsActive(false);
-
-	auto& soundSystem = engine::Servicealocator::Get_Sound_System();
-
-	soundSystem.PlaySound(10, 70);
 }
 
 // Draw two backgrounds one on top of each other to give a scrolling parallax effect
@@ -85,6 +81,15 @@ void Game::SetupBackground()
 	go_Background2->AddComponent<engine::RenderComponent>(go_Background2.get(), "background.png");
 	go_Background2->AddComponent<ParallaxScrollingCP>(go_Background2.get());
 	scene.Add(go_Background2);
+}
+
+void Game::SetupSounds()
+{
+	auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+
+	// Create sounds with its path (dont load them yet)
+	soundSystem.CreateSound(short(Sounds::playerFire), "../Data/PlayerShoot.wav", 50);
+	soundSystem.CreateSound(short(Sounds::enemyDie), "../Data/EnemyDies.wav", 70);
 }
 
 Game::~Game()

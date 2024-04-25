@@ -26,6 +26,7 @@ class Game final
 
 		void Initialize();			// Initialize everything needed for the Game
 		void SetupBackground();
+		void SetupSounds();
 
 		// ALL GAME SCENES
 		const std::string FIRST_STAGE;
