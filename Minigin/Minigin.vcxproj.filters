@@ -21,6 +21,9 @@
     <Filter Include="Engine Files\imgui">
       <UniqueIdentifier>{e7cff674-a573-4970-ac9c-25f7357a0b06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Files\Services">
+      <UniqueIdentifier>{3568e52b-7d44-463a-9d10-5fd02e6867fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -110,11 +113,17 @@
     <ClInclude Include="CollisionComponent.h">
       <Filter>Engine Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="SoundSystem.h">
-      <Filter>Engine Files</Filter>
-    </ClInclude>
     <ClInclude Include="Servicealocator.h">
-      <Filter>Engine Files</Filter>
+      <Filter>Engine Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Null_Sound_System.h">
+      <Filter>Engine Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>Engine Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Logging_Sound_System.h">
+      <Filter>Engine Files\Services</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,7 +203,10 @@
       <Filter>Engine Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Servicealocator.cpp">
-      <Filter>Engine Files</Filter>
+      <Filter>Engine Files\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Logging_Sound_System.cpp">
+      <Filter>Engine Files\Services</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
