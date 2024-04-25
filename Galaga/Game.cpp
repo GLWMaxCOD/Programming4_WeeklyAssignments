@@ -57,6 +57,10 @@ void Game::Initialize()
 	scene.Add(go_Enemy4);
 
 	//go_Player->SetIsActive(false);
+
+	auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+
+	soundSystem.PlaySound(10, 70);
 }
 
 // Draw two backgrounds one on top of each other to give a scrolling parallax effect

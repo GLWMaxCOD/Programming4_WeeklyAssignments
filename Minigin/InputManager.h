@@ -9,7 +9,6 @@
 #include "Controller.h"
 #include "SDL.h"
 #include <iostream>
-#include <SDL_mixer.h>
 
 namespace engine
 {

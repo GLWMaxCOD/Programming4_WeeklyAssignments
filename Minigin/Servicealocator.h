@@ -7,14 +7,14 @@
 namespace engine
 {
 	class Servicealocator final
-	{
+	{		
 	public:
 
 		// SOUND SYSTEM SERVICE
-		static void InitializeSoundSystem()
+		/*static void InitializeSoundSystem()
 		{
 			_ss_instance = &_default_ss;
-		}
+		}*/
 		static engine::SoundSystem& Get_Sound_System() { return *_ss_instance; }
 		static void Register_sound_system(engine::SoundSystem* ss) 
 		{ 
@@ -33,7 +33,7 @@ namespace engine
 			{
 				delete _ss_instance;
 			}
-
+			
 			_ss_instance = &_default_ss;
 		}
 
@@ -42,6 +42,8 @@ namespace engine
 		static engine::SoundSystem* _ss_instance;
 		static engine::Null_Sound_System _default_ss;
 	};
+
+	
 }
 
 
