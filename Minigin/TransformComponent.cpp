@@ -67,9 +67,6 @@ void engine::TransformComponent::UpdateWorldPosition()
 			{
 				m_pCollisionCP->SetBoundingBox(m_WorldPosition);
 			}
-
-			// Update children position to move along with the parent
-			//pOwner->UpdateChildrenPosition();
 		}
 	}
 	m_IsPositionDirty = false;

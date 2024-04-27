@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "ParallaxScrollingCP.h"
+#include "TextComponent.h"
 #include "HealthComponent.h"
 #include "CollisionComponent.h"
 #include "EnemyCP.h"

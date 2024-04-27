@@ -13,6 +13,7 @@ engine::CollisionComponent::CollisionComponent(engine::GameObject* pOwner, const
 	{
 		auto gameObjectPos = pTransformCP->GetWorldPosition();
 		SetBoundingBox(gameObjectPos);
+		// This way the transformCP will update boundingBox position when the GO move
 		pTransformCP->AddCollisionCP(this);
 	}
 
