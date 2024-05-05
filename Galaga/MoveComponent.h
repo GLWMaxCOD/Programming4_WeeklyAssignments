@@ -53,6 +53,7 @@ private:
 	glm::vec3 m_Direction;			// Only for auto movement
 	bool m_IsInsideBoundaries;
 	bool m_AutoMovement;			// Controlled movement or just automatic
+
 };
 
 #endif

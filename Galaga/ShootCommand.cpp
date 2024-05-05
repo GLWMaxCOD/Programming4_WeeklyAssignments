@@ -3,8 +3,8 @@
 #include "MissileManagerCP.h"
 
 ShootCommand::ShootCommand(engine::GameObject* actor, glm::vec3 direction)
-	: Command()
-	, m_Actor(actor)
+	: Command(),
+	m_Actor(actor)
 {
 	m_Direction = glm::normalize(direction);   // Normalized vector with the same direction but with lenght = 1
 }

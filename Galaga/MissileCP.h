@@ -1,5 +1,6 @@
 #ifndef GALAGA_MISSILE_BEHAVIOUR
 #define GALAGA_MISSILE_BEHAVIOUR
+
 #include "Component.h"
 #include "Observer.h"
 

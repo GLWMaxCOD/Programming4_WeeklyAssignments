@@ -33,8 +33,8 @@ void MissileCP::OnNotify([[maybe_unused]] engine::GameObject* gameObject, const 
 	{
 		// Missile collision with an enemy
 		//GetOwner()->SetIsActive(false);
-	}
 
+	}
 }
 
 void MissileCP::ReceiveMessage([[maybe_unused]] const std::string& message, [[maybe_unused]] const std::string& value)

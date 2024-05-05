@@ -41,8 +41,8 @@ void MoveComponent::Move(float deltaTime, const glm::vec3& direction)
 			<= m_Boundaries.RightLimit())
 		{
 			// Inside x limit
-			if (pos.x > m_Boundaries.LeftLimit() && pos.x + m_GObjectSize.x
-				<= m_Boundaries.RightLimit())
+			if (pos.y > m_Boundaries.TopLimit() && pos.y + m_GObjectSize.y
+				<= m_Boundaries.BotLimit())
 			{
 				// Inside boundaries
 				m_IsInsideBoundaries = true;
