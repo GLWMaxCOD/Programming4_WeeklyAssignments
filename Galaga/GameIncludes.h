@@ -1,6 +1,7 @@
 #ifndef GALAGA_GAME_INCLUDES
 #define GALAGA_GAME_INCLUDES
 
+// General
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include "Scene.h"
@@ -9,8 +10,16 @@
 #include "TextComponent.h"
 #include "HealthComponent.h"
 #include "CollisionComponent.h"
-#include "EnemyCP.h"
+
+// Player
 #include "PlayerCP.h"
+
+// Enemies
+#include "FormationCP.h"
+#include "EnemyCP.h"
+#include "AI_BeeCP.h"
+
+// SOUND
 #include "Servicealocator.h"
 #include "SoundIDs.h"
 

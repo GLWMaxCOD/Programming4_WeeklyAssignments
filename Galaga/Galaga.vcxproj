@@ -181,7 +181,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI_BeeCP.cpp" />
     <ClCompile Include="EnemyCP.cpp" />
+    <ClCompile Include="FormationCP.cpp" />
+    <ClCompile Include="FormationJSONReader.cpp" />
     <ClCompile Include="Galaga.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
@@ -197,10 +200,12 @@
     <ClCompile Include="RotatorComponent.cpp" />
     <ClCompile Include="ShootCommand.cpp" />
     <ClCompile Include="TextComponent.cpp" />
-    <ClCompile Include="TrashTheCache.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI_BeeCP.h" />
     <ClInclude Include="EnemyCP.h" />
+    <ClInclude Include="FormationCP.h" />
+    <ClInclude Include="FormationJSONReader.h" />
     <ClInclude Include="MissileManagerCP.h" />
     <ClInclude Include="PlayerCP.h" />
     <ClInclude Include="ShootCommand.h" />
@@ -217,7 +222,6 @@
     <ClInclude Include="RotatorComponent.h" />
     <ClInclude Include="SoundIDs.h" />
     <ClInclude Include="TextComponent.h" />
-    <ClInclude Include="TrashTheCache.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

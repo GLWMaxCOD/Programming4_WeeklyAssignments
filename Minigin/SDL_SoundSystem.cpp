@@ -150,3 +150,8 @@ void engine::SDL_SoundSystem::ProcessRequests()
 {
 	pImpl->ProcessRequests();
 }
+
+/* //TO DO: Lost points on not using a thread on sound system -> IS A REQUIREMENT FOR EXAM
+- Unlock mutex when we finish using the queue, since the queue is the one we need to protect. So after pop we unlock the mutex
+- Only one thread per sound (dont use jthread for every sound)
+*/

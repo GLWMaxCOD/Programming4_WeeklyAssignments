@@ -13,8 +13,8 @@ PlayerCP::PlayerCP(engine::GameObject* pOwner, unsigned int health, const glm::v
 {
 	if (pOwner != nullptr)
 	{
-		std::string sprFileName{ "Player.png" };
-		pOwner->AddComponent<engine::RenderComponent>(pOwner, sprFileName);
+		std::string spriteFileName{ "Sprites/Player.png" };
+		pOwner->AddComponent<engine::RenderComponent>(pOwner, spriteFileName);
 		pOwner->AddComponent<HealthComponent>(pOwner, health);
 
 		// INPUT FOR PLAYER
@@ -36,7 +36,7 @@ PlayerCP::PlayerCP(engine::GameObject* pOwner, unsigned int health, const glm::v
 		pOwner->GetComponent<engine::CollisionComponent>()->AddObserver(this);
 
 		// UI
-		pOwner->AddComponent<LivesUIComponent>(pOwner, sprFileName, glm::vec2{ 10.f, windowLimits.y - 50.f }, health - 1);
+		pOwner->AddComponent<LivesUIComponent>(pOwner, spriteFileName, glm::vec2{ 10.f, windowLimits.y - 50.f }, health - 1);
 		pOwner->GetComponent<HealthComponent>()->AddObserver(pOwner->GetComponent<LivesUIComponent>());
 	}
 }
