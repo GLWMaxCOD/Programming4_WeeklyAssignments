@@ -247,6 +247,17 @@ const glm::vec3 GameObject::GetWorldPosition() const
 	}
 }
 
+std::vector<engine::GameObject*> GameObject::GetChildren()
+{
+	std::vector<engine::GameObject*> children;
+	for (size_t idx{ 0 }; idx < m_vChildren.size(); ++idx)
+	{
+		children.emplace_back(m_vChildren.at(idx).get());
+	}
+
+	return children;
+}
+
 const GameObject* GameObject::getParent() const
 {
 	return m_pParent;

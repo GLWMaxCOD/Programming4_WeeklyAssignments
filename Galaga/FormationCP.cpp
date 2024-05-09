@@ -1,4 +1,4 @@
-#include "FormationCP.h"
+﻿#include "FormationCP.h"
 #include "GameObject.h"
 #include "EnemyCP.h"
 #include "AI_BeeCP.h"
@@ -9,43 +9,54 @@
 #include <iostream>
 
 FormationCP::FormationCP(engine::GameObject* pOwner, const std::string& positionsJSONPath)
-	:Component("FormationCP", pOwner)
+	:Component("FormationCP", pOwner),
+	m_LeftLimitFormation{},
+	m_RighttLimitFormation{}
 {
 	pOwner->AddComponent<FormationReaderCP>(pOwner);
 	ReadFormationFromJSON(positionsJSONPath);
+
+	auto window = engine::SceneManager::GetInstance().GetSceneWindow();
+	m_LeftLimitFormation = 0 + 100.f;
+	m_RighttLimitFormation = window.width - 100.f;
 }
 
 void FormationCP::ReadFormationFromJSON(const std::string& JSONPath)
 {
 	auto& scene = engine::SceneManager::GetInstance().GetActiveScene();
-
 	auto jsonReaderCP = GetOwner()->GetComponent<FormationReaderCP>();
 
 	m_vBees.clear();
 	m_vButterflies.clear();
 	m_vGalagas.clear();
 
-	// Read all info about the enemies (startPos, formationPos etc)
-	std::multimap<std::string, glm::vec3> bees = jsonReaderCP->ReadFormation(JSONPath, "bees");
-	std::multimap<std::string, glm::vec3> butterflies = jsonReaderCP->ReadFormation(JSONPath, "butterflies");
-	std::multimap<std::string, glm::vec3> galagas = jsonReaderCP->ReadFormation(JSONPath, "galagas");
+	// Read all info about the enemies (startPos, formationPos etc) from JSON
+	std::vector<std::pair<std::string, glm::vec3>> bees = jsonReaderCP->ReadFormation(JSONPath, "bees");
+	std::vector<std::pair<std::string, glm::vec3>> butterflies = jsonReaderCP->ReadFormation(JSONPath, "butterflies");
+	std::vector<std::pair<std::string, glm::vec3>> galagas = jsonReaderCP->ReadFormation(JSONPath, "galagas");
 
 	glm::vec3 startPos{};
 
+	auto ParentFormationPos = GetOwner()->GetComponent<engine::TransformComponent>()->GetWorldPosition();
+
+	// Enemies will be owned by the Formation Game Object
 	// Create Bee enemies
 	for (const auto& pair : bees)
 	{
 		SetStartingPos(pair.first, startPos);
 
+		glm::vec3 formationPos{ ParentFormationPos.x + pair.second.x, ParentFormationPos.y + pair.second.y ,
+			ParentFormationPos.z + pair.second.z };
+
 		auto go_BeeEnemy = std::make_shared<engine::GameObject>(nullptr, "Enemy", startPos, glm::vec2{ 2.f, 2.f });
-		go_BeeEnemy->AddComponent<EnemyCP>(go_BeeEnemy.get(), pair.second, 1);
+		go_BeeEnemy->AddComponent<EnemyCP>(go_BeeEnemy.get(), "Sprites/Bee.png", formationPos, 1);
 		go_BeeEnemy->AddComponent<AI_BeeCP>(go_BeeEnemy.get());
 		go_BeeEnemy->GetComponent<HealthComponent>()->AddObserver(this);
 		// Inactive at start
 		go_BeeEnemy->SetIsActive(false);
 
-		m_vBees.push_back(go_BeeEnemy);
 		scene.Add(go_BeeEnemy);
+		m_vBees.emplace_back(go_BeeEnemy);
 	}
 
 	// Butterfly enemies
@@ -53,14 +64,18 @@ void FormationCP::ReadFormationFromJSON(const std::string& JSONPath)
 	{
 		SetStartingPos(pair.first, startPos);
 
+		glm::vec3 formationPos{ ParentFormationPos.x + pair.second.x, ParentFormationPos.y + pair.second.y ,
+			ParentFormationPos.z + pair.second.z };
+
 		auto go_Butterfly = std::make_shared<engine::GameObject>(nullptr, "Enemy", startPos, glm::vec2{ 2.f, 2.f });
-		go_Butterfly->AddComponent<EnemyCP>(go_Butterfly.get(), pair.second, 1);
+		go_Butterfly->AddComponent<EnemyCP>(go_Butterfly.get(), "Sprites/Butterfly.png", formationPos, 1);
+		go_Butterfly->AddComponent<AI_BeeCP>(go_Butterfly.get());
 		go_Butterfly->GetComponent<HealthComponent>()->AddObserver(this);
 		// Inactive at start
 		go_Butterfly->SetIsActive(false);
 
-		m_vButterflies.push_back(go_Butterfly);
 		scene.Add(go_Butterfly);
+		m_vButterflies.emplace_back(go_Butterfly);
 	}
 
 	// Galaga enemies
@@ -68,14 +83,18 @@ void FormationCP::ReadFormationFromJSON(const std::string& JSONPath)
 	{
 		SetStartingPos(pair.first, startPos);
 
+		glm::vec3 formationPos{ ParentFormationPos.x + pair.second.x, ParentFormationPos.y + pair.second.y ,
+			ParentFormationPos.z + pair.second.z };
+
 		auto go_Galagas = std::make_shared<engine::GameObject>(nullptr, "Enemy", startPos, glm::vec2{ 2.f, 2.f });
-		go_Galagas->AddComponent<EnemyCP>(go_Galagas.get(), pair.second, 1);
+		go_Galagas->AddComponent<EnemyCP>(go_Galagas.get(), "Sprites/Galaga.png", formationPos, 2);
+		go_Galagas->AddComponent<AI_BeeCP>(go_Galagas.get());
 		go_Galagas->GetComponent<HealthComponent>()->AddObserver(this);
 		// Inactive at start
 		go_Galagas->SetIsActive(false);
 
-		m_vGalagas.push_back(go_Galagas);
 		scene.Add(go_Galagas);
+		m_vGalagas.emplace_back(go_Galagas);
 	}
 
 	// Done reading everything needed
@@ -98,7 +117,7 @@ void FormationCP::SetStartingPos(const std::string& commingFrom, glm::vec3& star
 		}
 		else if (commingFrom == "right")
 		{
-			startPos = glm::vec3{ -10, window.height / 2.f, 0 };
+			startPos = glm::vec3{ window.width + 10.f , window.height / 2.f, 0 };
 		}
 		else
 		{
@@ -112,19 +131,9 @@ FormationCP::~FormationCP()
 
 }
 
-void FormationCP::Update(const float deltaTime)
+void FormationCP::Update(const float)
 {
-	timeBees += deltaTime;
 
-	if (timeBees > 1.f)
-	{
-		if (beesPos < int(m_vBees.size()))
-		{
-			m_vBees[beesPos]->SetIsActive(true);
-			beesPos++;
-			timeBees = 0.f;
-		}
-	}
 }
 
 void FormationCP::ReceiveMessage(const std::string&, const std::string&)
@@ -153,7 +162,9 @@ void FormationCP::SearchForDeadEnemy()
 			// Kill the enemy first here and then, completely destroy the gameObject shared_ptr from the scene
 			// after the Update is finished. So the enemy will be actually destroyed after the update is done, and not during
 			m_vBees.erase(std::remove(m_vBees.begin(), m_vBees.end(), m_vBees[beeGOIdx]), m_vBees.end());
-			foundEnemy = true;
+
+			std::cout << "(Shinda / dead)" << std::endl;
+			break;
 		}
 		else
 		{
@@ -167,7 +178,9 @@ void FormationCP::SearchForDeadEnemy()
 		{
 			// Found it
 			m_vButterflies.erase(std::remove(m_vButterflies.begin(), m_vButterflies.end(), m_vButterflies[butterflyGOIdx]), m_vButterflies.end());
-			foundEnemy = true;
+
+			std::cout << "(Shinda / dead)" << std::endl;
+			break;
 		}
 		else
 		{
@@ -181,12 +194,35 @@ void FormationCP::SearchForDeadEnemy()
 		{
 			// Found it
 			m_vBees.erase(std::remove(m_vBees.begin(), m_vBees.end(), m_vBees[galagaGOIdx]), m_vBees.end());
-			foundEnemy = true;
+
+			std::cout << "(Shinda / dead)" << std::endl;
+			break;
 		}
 		else
 		{
 			galagaGOIdx++;
 		}
 	}
+
+}
+
+std::vector< std::shared_ptr<engine::GameObject>> FormationCP::GetEnemies(const std::string& type)
+{
+	if (type == "bees")
+	{
+		return m_vBees;
+	}
+
+	if (type == "butterflies")
+	{
+		return m_vButterflies;
+	}
+
+	if (type == "galagas")
+	{
+		return m_vGalagas;
+	}
+
+	return m_vBees;
 
 }
