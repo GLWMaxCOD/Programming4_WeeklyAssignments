@@ -41,19 +41,26 @@ void EnemyCP::ReceiveMessage(const std::string&, const std::string&)
 void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& event)
 {
 	// Enemy crash into the player
-	if (event.IsSameEvent("CollisionWith Player"))
+	if (event.IsSameEvent("CollisionWith Player") || event.IsSameEvent("CollisionWith PlayerMissile"))
 	{
-		auto playerHealthCP = gameObject->GetComponent<HealthComponent>();
-		if (playerHealthCP != nullptr)
-		{
-			playerHealthCP->DecrementHealth(1);
-		}
-
-		// Enemy also loses a life
+		// Enemy loose a life
 		auto enemyHealthCP = GetOwner()->GetComponent<HealthComponent>();
 		if (enemyHealthCP != nullptr)
 		{
 			enemyHealthCP->DecrementHealth(1);
+		}
+
+		if (event.IsSameEvent("CollisionWith PlayerMissile"))
+		{
+			gameObject->SetIsActive(false);
+		}
+		else
+		{
+			auto playerHealthCP = gameObject->GetComponent<HealthComponent>();
+			if (playerHealthCP != nullptr)
+			{
+				playerHealthCP->DecrementHealth(1);
+			}
 		}
 	}
 	if (event.IsSameEvent("GameObjectDied"))
