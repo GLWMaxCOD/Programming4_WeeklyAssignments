@@ -24,6 +24,9 @@
     <Filter Include="Engine Files\Services">
       <UniqueIdentifier>{3568e52b-7d44-463a-9d10-5fd02e6867fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine Files\Services\Sound">
+      <UniqueIdentifier>{d6eb5069-4fe6-4707-aac0-3c2146011c3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -116,17 +119,17 @@
     <ClInclude Include="Servicealocator.h">
       <Filter>Engine Files\Services</Filter>
     </ClInclude>
-    <ClInclude Include="Null_Sound_System.h">
-      <Filter>Engine Files\Services</Filter>
-    </ClInclude>
     <ClInclude Include="SoundSystem.h">
-      <Filter>Engine Files\Services</Filter>
-    </ClInclude>
-    <ClInclude Include="Logging_Sound_System.h">
-      <Filter>Engine Files\Services</Filter>
+      <Filter>Engine Files\Services\Sound</Filter>
     </ClInclude>
     <ClInclude Include="SDL_SoundSystem.h">
-      <Filter>Engine Files\Services</Filter>
+      <Filter>Engine Files\Services\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Logging_Sound_System.h">
+      <Filter>Engine Files\Services\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Null_Sound_System.h">
+      <Filter>Engine Files\Services\Sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +212,7 @@
       <Filter>Engine Files\Services</Filter>
     </ClCompile>
     <ClCompile Include="SDL_SoundSystem.cpp">
-      <Filter>Engine Files\Services</Filter>
+      <Filter>Engine Files\Services\Sound</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

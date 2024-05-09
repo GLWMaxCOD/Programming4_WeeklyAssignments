@@ -16,8 +16,6 @@
 
 // Enemies
 #include "FormationCP.h"
-#include "EnemyCP.h"
-#include "AI_BeeCP.h"
 
 // SOUND
 #include "Servicealocator.h"

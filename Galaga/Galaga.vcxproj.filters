@@ -25,6 +25,9 @@
     <Filter Include="Components\General">
       <UniqueIdentifier>{f9479990-da93-4e53-89fe-009aa8bed5f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Sound">
+      <UniqueIdentifier>{02d7e06a-70fa-45a2-a713-30dadc121358}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Galaga.cpp">
@@ -40,12 +43,6 @@
       <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="HealthComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="RotatorComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="ParallaxScrollingCP.cpp">
@@ -78,21 +75,24 @@
     <ClCompile Include="FormationCP.cpp">
       <Filter>Components\Enemies</Filter>
     </ClCompile>
-    <ClCompile Include="FormationJSONReader.cpp">
-      <Filter>Components\General</Filter>
-    </ClCompile>
     <ClCompile Include="AI_BeeCP.cpp">
       <Filter>Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="FormationReaderCP.cpp">
+      <Filter>Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="AI_FormationCP.cpp">
+      <Filter>Components\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveComponent.cpp">
+      <Filter>Components\General</Filter>
+    </ClCompile>
+    <ClCompile Include="RotatorComponent.cpp">
+      <Filter>Components\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HealthComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="RotatorComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="MoveCommand.h">
@@ -119,9 +119,6 @@
     <ClInclude Include="MissileManagerCP.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="SoundIDs.h">
-      <Filter>General Files</Filter>
-    </ClInclude>
     <ClInclude Include="EnemyCP.h">
       <Filter>Components\Enemies</Filter>
     </ClInclude>
@@ -143,8 +140,20 @@
     <ClInclude Include="AI_BeeCP.h">
       <Filter>Components\Enemies</Filter>
     </ClInclude>
-    <ClInclude Include="FormationJSONReader.h">
-      <Filter>General Files</Filter>
+    <ClInclude Include="FormationReaderCP.h">
+      <Filter>Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="AI_FormationCP.h">
+      <Filter>Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundIDs.h">
+      <Filter>Components\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveComponent.h">
+      <Filter>Components\General</Filter>
+    </ClInclude>
+    <ClInclude Include="RotatorComponent.h">
+      <Filter>Components\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
