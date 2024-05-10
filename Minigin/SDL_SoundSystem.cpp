@@ -2,15 +2,15 @@
 #include <SDL_mixer.h>
 #include <iostream>
 #include <unordered_map>
-#include <queue>
+#include <mutex>
 
 // Encapsulates the details of loading and playing audio files with sdl_mixer
 class AudioClip final
 {
 public:
 	AudioClip(const std::string& soundPath, int volume, int loop = 0)
-		: m_SoundPath(soundPath), m_IsLoaded{ false }, m_Sound{ nullptr }, m_Volume{ volume },
-		  m_AudioChannel{ -1 }, m_Loop{ loop }
+		: m_SoundPath(soundPath), m_IsLoaded{ false }, m_Sound{ nullptr }, m_Volume{ volume }
+		, m_AudioChannel{ -1 }, m_Loop{ loop }
 	{};
 	~AudioClip()
 	{
@@ -70,7 +70,12 @@ public:
 		{
 			std::cerr << "Mix_OpenAudio failed: " << Mix_GetError() << "\n";
 		}
+
+		Init();
 	}
+
+	// Init the ring buffer for the PlaySound requests
+	static void Init() { m_Head = 0; m_Tail = 0; }
 
 	~SDL_SoundSystem_Impl()
 	{
@@ -80,27 +85,41 @@ public:
 	// Append new requests at the end of the (queue)
 	void PlaySound(const short id)
 	{
-		m_Requests.push(id);
+		// Make sure the queue doesnt overflow.
+		// Add request as long as there fever than our maximum
+		if ((m_Tail + 1) % MAX_PENDING != m_Head)
+		{
+			// Add at the end 
+			m_Pending[m_Tail] = id;
+			// Wrap the tail back around to the beggining if it reaches the end
+			m_Tail = (m_Tail + 1) % MAX_PENDING;
+
+		}
 	}
 
 	void ProcessRequests()
 	{
-		while (!m_Requests.empty())
+		// If there are no pending requests, do nothing
+		if (m_Head == m_Tail)
 		{
-			// Search for the sound
-			auto soundPos = m_Sounds.find(m_Requests.front());
-			m_Requests.pop();
-			if (soundPos != m_Sounds.end())
-			{
-				auto& sound = soundPos->second;
-				if (!sound->IsLoaded())
-				{
-					// Sound not loaded yet
-					sound->Load();
-				}
-				sound->Play();
-			}
+			return;
 		}
+
+		// Search for the sound
+		auto soundPos = m_Sounds.find(m_Pending[m_Head]);
+		if (soundPos != m_Sounds.end())
+		{
+			auto& sound = soundPos->second;
+			if (!sound->IsLoaded())
+			{
+				// Sound not loaded yet
+				sound->Load();
+			}
+			sound->Play();
+		}
+
+		// Wrap the head around when it reaches the end of the array
+		m_Head = (m_Head + 1) % MAX_PENDING;
 	}
 
 	void RegisterSoundID(const short id, const std::string& soundPath, const int volume)
@@ -115,16 +134,25 @@ public:
 	}
 
 private:
-	std::unordered_map<short, std::unique_ptr<AudioClip>> m_Sounds;			// All sounds IDs with their path
-	std::queue<short> m_Requests;
+	std::unordered_map<short, std::unique_ptr<AudioClip>> m_Sounds;
 
-	/*
+	// Queue for the PlaySound requests (Ring buffer)
+	static const int MAX_PENDING{ 10 };		// How many pending requests we can have
+	static short m_Pending[MAX_PENDING];
+	static int m_Head;	// Head of the queue : Where requests are read from (Oldest pending request)
+	static int m_Tail;  // Tail of the queue : Slot in the array where the next enqueued request will be written
+
 	// Audio thread
 	std::mutex m_Mutex;
 	std::condition_variable m_HasRequests;
 	std::jthread m_AudioThread;
-	*/
+
 };
+
+// Define static variables used in the implementation
+short engine::SDL_SoundSystem::SDL_SoundSystem_Impl::m_Pending[MAX_PENDING];
+int engine::SDL_SoundSystem::SDL_SoundSystem_Impl::m_Head;
+int engine::SDL_SoundSystem::SDL_SoundSystem_Impl::m_Tail;
 
 engine::SDL_SoundSystem::SDL_SoundSystem()
 {
@@ -151,7 +179,8 @@ void engine::SDL_SoundSystem::ProcessRequests()
 	pImpl->ProcessRequests();
 }
 
-/* //TO DO: Lost points on not using a thread on sound system -> IS A REQUIREMENT FOR EXAM
+/*
+- Sound is now threaded, can use this as discussion point for "Usage of threading" in exam presentation
 - Unlock mutex when we finish using the queue, since the queue is the one we need to protect. So after pop we unlock the mutex
 - Only one thread per sound (dont use jthread for every sound)
 */
