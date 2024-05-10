@@ -42,9 +42,7 @@ AI_FormationCP::AI_FormationCP(engine::GameObject* pOwner, const std::string& JS
 
 	jsonReaderCP->ClearJSONFile();
 
-	GetEnemyData("bees", m_vBees);
-	GetEnemyData("butterflies", m_vButterflies);
-	GetEnemyData("galagas", m_vGalagas);
+	m_pFormationCP = pOwner->GetComponent<FormationCP>();
 }
 
 void AI_FormationCP::GetEnemyData(const std::string& type, std::vector<engine::GameObject*>& container)
@@ -71,9 +69,6 @@ void AI_FormationCP::Update(const float deltaTime)
 		MoveIntoFormation(deltaTime);
 		break;
 	case AI_FormationCP::FormationState::attacking:
-		m_vBees.clear();
-		m_vGalagas.clear();
-		m_vButterflies.clear();
 		break;
 
 	}
@@ -95,8 +90,8 @@ void AI_FormationCP::MoveIntoFormation(const float deltaTime)
 		{
 			// Activate a bee and a buttefly enemy
 
-			ActivateEnemy(m_vBees, m_BeesActive);
-			ActivateEnemy(m_vButterflies, m_ButterfliesActive);
+			ActivateEnemy("bees", m_BeesActive);
+			ActivateEnemy("butterflies", m_ButterfliesActive);
 
 			if (m_BeesActive == m_TopFormationAmount && m_ButterfliesActive == m_TopFormationAmount)
 			{
@@ -111,13 +106,13 @@ void AI_FormationCP::MoveIntoFormation(const float deltaTime)
 			// Left always will alternate between the type of enemies to be spawned
 			if (m_SpawnFirstType == true)
 			{
-				ActivateEnemy(m_vGalagas, m_GalagasActive);
+				ActivateEnemy("galagas", m_GalagasActive);
 				m_SpawnFirstType = false;
 
 			}
 			else
 			{
-				ActivateEnemy(m_vButterflies, m_ButterfliesActive);
+				ActivateEnemy("butterflies", m_ButterfliesActive);
 				m_SpawnFirstType = true;
 
 			}
@@ -132,7 +127,7 @@ void AI_FormationCP::MoveIntoFormation(const float deltaTime)
 		}
 		case AI_FormationCP::MovingFormationState::right:
 		{
-			ActivateEnemy(m_vButterflies, m_ButterfliesActive);
+			ActivateEnemy("butterflies", m_ButterfliesActive);
 			if (m_ButterfliesActive == m_TopFormationAmount + m_LeftFormationAmount + m_RightFormationAmount)
 			{
 				m_MovingFTState = MovingFormationState::backToTop;
@@ -141,7 +136,7 @@ void AI_FormationCP::MoveIntoFormation(const float deltaTime)
 		}
 		case AI_FormationCP::MovingFormationState::backToTop:
 		{
-			ActivateEnemy(m_vBees, m_BeesActive);
+			ActivateEnemy("bees", m_BeesActive);
 			if (m_BeesActive == m_TopFormationAmount + m_LeftFormationAmount + m_RightFormationAmount
 				+ (m_Top1FormationAmount * 2))
 			{
@@ -155,16 +150,26 @@ void AI_FormationCP::MoveIntoFormation(const float deltaTime)
 }
 
 // Activate the corresponding enemy from the formation
-void AI_FormationCP::ActivateEnemy(std::vector<engine::GameObject*> enemies, unsigned short& currentActive)
+void AI_FormationCP::ActivateEnemy(const std::string& type, unsigned short& currentActive)
 {
-	if (currentActive < int(enemies.size()))
+	if (m_pFormationCP != nullptr)
 	{
-		enemies[currentActive]->SetIsActive(true);
-		currentActive++;
+		std::vector<engine::GameObject*>& enemies = m_pFormationCP->GetEnemies(type);
+		if (currentActive < int(enemies.size()))
+		{
+			enemies[currentActive]->SetIsActive(true);
+			currentActive++;
+		}
 	}
 }
 
-void AI_FormationCP::ReceiveMessage(const std::string&, const std::string&)
+void AI_FormationCP::ReceiveMessage(const std::string& message, const std::string& value)
 {
-
+	if (message == "RemoveCP")
+	{
+		if (value == "FormationCP")
+		{
+			m_pFormationCP = nullptr;
+		}
+	}
 }
