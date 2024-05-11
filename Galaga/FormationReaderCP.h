@@ -5,8 +5,8 @@
 #include <string>
 #include <glm/vec3.hpp>
 #include "rapidjson/document.h"
-#include <memory>
 #include <vector>
+#include <memory>
 
 // Class that contains two json documents with information about the Formation of enemies from the current stage
 class FormationReaderCP final : public engine::Component
@@ -40,7 +40,7 @@ public:
 	void ClearJSONFile();
 
 	std::vector<std::pair<std::string, glm::vec3>> ReadFormation(const std::string& jsonFilePath, const std::string& enemyType);
-	std::vector<FormationReaderCP::EnemySpawnInfo*> ReadSpawnOrder(const std::string& jsonFilePath);
+	std::vector<std::unique_ptr<FormationReaderCP::EnemySpawnInfo>> ReadSpawnOrder(const std::string& jsonFilePath);
 
 private:
 	rapidjson::Document m_FormationJsonDoc;

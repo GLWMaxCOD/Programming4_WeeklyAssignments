@@ -3,6 +3,7 @@
 #include "rapidjson/rapidjson.h"		// To read json files
 #include "rapidjson/istreamwrapper.h"
 #include <fstream>						// for both input and output files
+#include <memory>
 
 
 FormationReaderCP::FormationReaderCP(engine::GameObject* pOwner)
@@ -76,60 +77,51 @@ std::vector<std::pair<std::string, glm::vec3>> FormationReaderCP::ReadFormation(
 
 // This reads correctly if the user respected the order of spawning.
 // Spawning order is always top - left - right - top - top
-std::vector<FormationReaderCP::EnemySpawnInfo*> FormationReaderCP::ReadSpawnOrder(const std::string& jsonFilePath)
+std::vector<std::unique_ptr<FormationReaderCP::EnemySpawnInfo>> FormationReaderCP::ReadSpawnOrder(const std::string& jsonFilePath)
 {
 	if (!m_IsLoaded)
 	{
-		// Try to open the jsonFile in order to read it
-		OpenJSONFile(jsonFilePath);
+		OpenJSONFile(jsonFilePath); // Try to open the jsonFile in order to read it
 	}
 
-	std::vector<FormationReaderCP::EnemySpawnInfo*> vSpawnsInfo;
+	std::vector<std::unique_ptr<FormationReaderCP::EnemySpawnInfo>> vSpawnsInfo;
 
-	// Keep track how many enemies from each type are gonna spawn
-	// This way next batch will take into account this amount to spawn the correct enemies
-	short beesSpawnCount{};
-	short butterfliesSpawnCount{};
-	short galagasSpawnCount{};
-	short currentCount{};
+	short beesSpawnCount = 0;
+	short butterfliesSpawnCount = 0;
+	short galagasSpawnCount = 0;
+	short currentCount = 0;
 
 	const rapidjson::Value& element = m_FormationJsonDoc;
 	if (m_FormationJsonDoc.HasMember("spawnInfo"))
 	{
 		const rapidjson::Value& spawns = element["spawnInfo"].GetArray();
-		for (rapidjson::SizeType spawnsIdx{ 0 }; spawnsIdx < spawns.Size(); ++spawnsIdx)
+		for (rapidjson::SizeType spawnsIdx = 0; spawnsIdx < spawns.Size(); ++spawnsIdx)
 		{
 			const rapidjson::Value& spawn = spawns[spawnsIdx];
 
-			std::string startPosition{ spawn["startPosition"].GetString() }; // From top, left, right ....
+			std::string startPosition = spawn["startPosition"].GetString();
 			const rapidjson::Value& enemyTypes = spawn["enemyTypes"].GetArray();
-			for (rapidjson::SizeType enemyIdx{ 0 }; enemyIdx < enemyTypes.Size(); ++enemyIdx)
+			for (rapidjson::SizeType enemyIdx = 0; enemyIdx < enemyTypes.Size(); ++enemyIdx)
 			{
 				const rapidjson::Value& enemy = enemyTypes[enemyIdx];
+				std::string type = enemy["type"].GetString();
+				short amount = static_cast<short>(enemy["amount"].GetInt());
 
-				// Get all enemy types that will spawn at this position and the amount of them			
-				std::string type{ enemy["type"].GetString() };
-				short amount{ static_cast<short>(enemy["amount"].GetInt()) };
-
-				if (type == "bees")
-				{
+				if (type == "bees") {
 					beesSpawnCount += amount;
 					currentCount = beesSpawnCount;
 				}
-				else if (type == "butterflies")
-				{
+				else if (type == "butterflies") {
 					butterfliesSpawnCount += amount;
 					currentCount = butterfliesSpawnCount;
 				}
-				else if (type == "galagas")
-				{
+				else if (type == "galagas") {
 					galagasSpawnCount += amount;
 					currentCount = galagasSpawnCount;
 				}
 
-				EnemySpawnInfo* enemyInfo{ new EnemySpawnInfo(startPosition, type, currentCount) };
-				vSpawnsInfo.emplace_back(enemyInfo);
-
+				auto enemyInfo = std::make_unique<EnemySpawnInfo>(startPosition, type, currentCount);
+				vSpawnsInfo.push_back(std::move(enemyInfo));
 			}
 		}
 	}

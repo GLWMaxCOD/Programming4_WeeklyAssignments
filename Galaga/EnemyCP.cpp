@@ -7,9 +7,9 @@
 #include "MoveComponent.h"
 #include <iostream>
 
-EnemyCP::EnemyCP(engine::GameObject* pOwner, const std::string& spriteFilePath, const glm::vec3 formationPos, unsigned int health)
+EnemyCP::EnemyCP(engine::GameObject* pOwner, const std::string& enemyType, const std::string& spriteFilePath, const glm::vec3 formationPos, unsigned int health)
 	: Component("EnemyCP", pOwner),
-	m_FormationPos{ formationPos }
+	m_FormationPos{ formationPos }, m_CurrentState{ ENEMY_STATE::moveToFormation }, m_EnemyType{ enemyType }
 {
 	if (pOwner != nullptr)
 	{
@@ -72,7 +72,22 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 	}
 }
 
+void EnemyCP::ChangeCurrentState(EnemyCP::ENEMY_STATE newState)
+{
+	m_CurrentState = newState;
+}
+
+EnemyCP::ENEMY_STATE EnemyCP::GetCurrentState() const
+{
+	return m_CurrentState;
+}
+
 glm::vec3 EnemyCP::GetFormationPos() const
 {
 	return m_FormationPos;
+}
+
+const std::string& EnemyCP::GetType() const
+{
+	return m_EnemyType;
 }

@@ -28,6 +28,9 @@
     <Filter Include="Components\Sound">
       <UniqueIdentifier>{02d7e06a-70fa-45a2-a713-30dadc121358}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FormationState">
+      <UniqueIdentifier>{dee15c5b-1560-420e-a7ba-a1a66f7b797c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Galaga.cpp">
@@ -89,6 +92,15 @@
     </ClCompile>
     <ClCompile Include="RotatorComponent.cpp">
       <Filter>Components\General</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawningState.cpp">
+      <Filter>FormationState</Filter>
+    </ClCompile>
+    <ClCompile Include="SendingEnemiesState.cpp">
+      <Filter>FormationState</Filter>
+    </ClCompile>
+    <ClCompile Include="FormationState.cpp">
+      <Filter>FormationState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +166,15 @@
     </ClInclude>
     <ClInclude Include="RotatorComponent.h">
       <Filter>Components\General</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawningState.h">
+      <Filter>FormationState</Filter>
+    </ClInclude>
+    <ClInclude Include="SendingEnemiesState.h">
+      <Filter>FormationState</Filter>
+    </ClInclude>
+    <ClInclude Include="FormationState.h">
+      <Filter>FormationState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

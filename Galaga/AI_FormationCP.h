@@ -2,6 +2,7 @@
 #define GALAGA_AI_FORMATIONCP
 
 #include <Component.h>
+#include <memory>
 #include <vector>
 #include "FormationReaderCP.h"
 
@@ -22,8 +23,9 @@ private:
 
 	enum class FormationState
 	{
-		spawning,
-		attacking
+		waiting,
+		spawning_enemies,
+		sending_enemies
 	};
 
 	enum class SpawnOrderState
@@ -35,17 +37,22 @@ private:
 		top_third
 	};
 
+	FormationCP* m_pFormationCP;
+	//std::unique_ptr<FormationCP> m_pFormationCP;
+	FormationState m_FormationState;
+	SpawnOrderState m_MovingFTState;
+	const std::string BEES_TYPE;
+	const std::string BUTTERFLIES_TYPE;
+	const std::string GALAGAS_TYPE;
+
+	// SPAWNING STATE
 	void GetEnemyData(const std::string& type, std::vector<engine::GameObject*>& container);
 	void SpawnEnemies(const float deltaTime);
+	void UpdateSpawningBatch(const std::string& batch);
 	void ActivateEnemy(const std::string& type);
 	short GetEnemyTypeCount(const std::string& type) const;
 	void SetEnemyTypeCount(const std::string& type);
 
-	FormationCP* m_pFormationCP;
-	FormationState m_FormationState;
-	SpawnOrderState m_MovingFTState;
-
-	// SPAWNING ENEMIES 
 	std::vector<std::unique_ptr<FormationReaderCP::EnemySpawnInfo>> m_vSpawningInfo; // All spawn info for all enemies 
 	std::vector < std::pair<std::string, short>> m_vCurrentSpawnInfo;				 // Info from the current batch spawning
 	bool m_IsSpawnInfoReaded;
@@ -53,10 +60,20 @@ private:
 	short m_BeesActiveCount;
 	short m_ButterfliesActiveCount;
 	short m_GalagasActiveCount;
-	bool m_SpwanFirstType;
+	bool m_SpawnFirstType;
 
 	const float m_TimeEnemySpawn;
 	float m_CurrentTimeSpawn;
+
+	// SENDING ENEMIES STATE
+	void SendEnemies();
+	const std::string& GetNextEnemyToSend();
+
+	std::string m_EnemyToSend;
+	const int NEXT_GALAGA;					// Every 4 enemies, one Galaga is send
+	int m_SendGalagaCount;					// Keep the count to know if next enemy to be sent is a Galaga type
+
+	const float m_TimeEnemySend;
 };
 
 #endif
