@@ -218,7 +218,6 @@ void AI_FormationCP::SendEnemies()
 {
 	std::string nextEnemy = GetNextEnemyToSend();
 
-	std::cout << nextEnemy << std::endl;
 	std::vector<engine::GameObject*> enemies = m_pFormationCP->GetEnemies(nextEnemy);
 	for (auto& enemy : enemies)
 	{
