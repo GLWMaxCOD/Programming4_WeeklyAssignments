@@ -5,16 +5,14 @@
 
 class SpawningState;
 class SendingEnemiesState;
-class FormationState
-{
+
+class FormationState {
 public:
+    static std::unique_ptr<SpawningState> spawning;
+    static std::unique_ptr<SendingEnemiesState> sendingEnemies;
 
-	static SpawningState* spawning;
-	static SendingEnemiesState* sendingEnemies;
-	virtual void UpdateState(const float deltaTime) = 0;
-	virtual FormationState* GetNewState() = 0;
-
+    virtual void UpdateState(const float deltaTime) = 0;
+    virtual FormationState* GetNewState() = 0;
 };
-
 
 #endif

@@ -1,5 +1,6 @@
 #include "SendingEnemiesState.h"
 #include "SpawningState.h"
+#include "FormationState.h"
 
 SendingEnemiesState::SendingEnemiesState()
 {
@@ -11,7 +12,7 @@ void SendingEnemiesState::UpdateState(const float)
 
 }
 
-FormationState* SendingEnemiesState::GetNewState()
+FormationState* SendingEnemiesState::GetNewState() 
 {
-	return FormationState::spawning;
+    return FormationState::spawning.get();
 }
