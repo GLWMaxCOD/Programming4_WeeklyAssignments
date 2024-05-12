@@ -1,7 +1,7 @@
 #include "MoveComponent.h"
 #include "GameObject.h"
 
-MoveComponent::MoveComponent(engine::GameObject* pOwner, float speed, const Boundaries& boundaries)
+MoveComponent::MoveComponent(engine::GameObject* pOwner, const glm::vec2& speed, const Boundaries& boundaries)
 	: Component("MoveCP", pOwner),
 	m_Speed{ speed },
 	m_Boundaries{ boundaries },
@@ -18,7 +18,7 @@ MoveComponent::MoveComponent(engine::GameObject* pOwner, float speed, const Boun
 	}
 }
 
-MoveComponent::MoveComponent(engine::GameObject* pOwner, float speed, const Boundaries& boundaries, const glm::vec3& direction)
+MoveComponent::MoveComponent(engine::GameObject* pOwner, const glm::vec2& speed, const Boundaries& boundaries, const glm::vec3& direction)
 	:MoveComponent(pOwner, speed, boundaries)
 {
 	m_AutoMovement = true;
@@ -34,7 +34,8 @@ void MoveComponent::Move(float deltaTime, const glm::vec3& direction)
 	{
 		glm::vec3 pos = transformCP->GetLocalPosition();
 
-		pos += direction * m_Speed * deltaTime;
+		pos.x += direction.x * m_Speed.x * deltaTime;
+		pos.y += direction.y * m_Speed.y * deltaTime;
 
 		// Check if GameObject inside boundaries
 		if (pos.x > m_Boundaries.LeftLimit() && pos.x + m_GObjectSize.x
@@ -84,7 +85,7 @@ void MoveComponent::ChangeDirection(const glm::vec3& newDirection)
 	}
 }
 
-void MoveComponent::ChangeSpeed(const float newSpeed)
+void MoveComponent::ChangeSpeed(const glm::vec2& newSpeed)
 {
 	m_Speed = newSpeed;
 }

@@ -3,6 +3,7 @@
 
 #include <Component.h>
 #include "Observer.h"
+#include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 
 class EnemyCP final : public engine::Component, public engine::Observer
