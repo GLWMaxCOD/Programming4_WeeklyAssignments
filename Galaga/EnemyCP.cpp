@@ -5,6 +5,7 @@
 #include "Servicealocator.h"
 #include "SoundIDs.h"
 #include "MoveComponent.h"
+#include "RotatorComponent.h"
 #include <iostream>
 
 EnemyCP::EnemyCP(engine::GameObject* pOwner, const std::string& enemyType, const std::string& spriteFilePath, const glm::vec3 formationPos, unsigned int health)
@@ -18,6 +19,7 @@ EnemyCP::EnemyCP(engine::GameObject* pOwner, const std::string& enemyType, const
 		MoveComponent::Boundaries enemyBoundaries{};  // No boundaries restriction
 		pOwner->AddComponent<MoveComponent>(pOwner, 200.f, enemyBoundaries);
 		auto collisionCP = pOwner->AddComponent<engine::CollisionComponent>(pOwner, renderCP->GetTextureSize());
+		pOwner->AddComponent<RotatorComponent>(pOwner);
 		collisionCP->AddObserver(this);
 		healthCP->AddObserver(this);
 	}

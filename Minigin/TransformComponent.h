@@ -38,7 +38,7 @@ namespace engine
 		//float m_Rotation;				// In radians
 
 		bool m_IsPositionDirty;
-
+		bool m_MoveWithParent{ true };
 		engine::CollisionComponent* m_pCollisionCP;
 	};
 }

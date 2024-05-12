@@ -146,6 +146,11 @@ const bool GameObject::IsMarkedAsDead() const
 	return m_IsDead;
 }
 
+void GameObject::SetParentActivity(bool activate)
+{
+	m_IsParentDeactivated = activate;
+}
+
 void GameObject::Render() const
 {
 	if (m_IsActive)
@@ -263,6 +268,9 @@ std::vector<engine::GameObject*> GameObject::GetChildren()
 
 const GameObject* GameObject::getParent() const
 {
+	if (m_IsParentDeactivated)
+		return nullptr;
+
 	return m_pParent;
 }
 
@@ -305,14 +313,6 @@ void GameObject::SetPositionDirty()
 	if (m_pTransformCP != nullptr && !m_KeepWorldPosition)
 	{
 		m_pTransformCP->SetPositionDirty();
-	}
-}
-
-void GameObject::SetChildrenPosDirty()
-{
-	for (const auto& child : m_vChildren)
-	{
-		child->SetPositionDirty();
 	}
 }
 
