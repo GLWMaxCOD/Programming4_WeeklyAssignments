@@ -36,42 +36,11 @@ void AI_BeeCP::Update(const float deltaTime)
 {
 	if (m_pMoveCP != nullptr && m_pEnemyCP != nullptr && m_pTransformCP != nullptr)
 	{
-		switch (m_pEnemyCP->GetCurrentState())
+		if (m_pEnemyCP->GetCurrentState() == EnemyCP::ENEMY_STATE::attack)
 		{
-		case EnemyCP::ENEMY_STATE::waiting:
-			// While waiting it needs to keep moving with the formation
-			m_pTransformCP->SetPositionDirty();
-			break;
-		case EnemyCP::ENEMY_STATE::moveToFormation:
-			UpdateMoveToFormation(deltaTime);
-			break;
-		case EnemyCP::ENEMY_STATE::attack:
 			UpdateAttack(deltaTime);
-			break;
 		}
 
-	}
-}
-
-// Enemy moves back to its position in the formation
-void AI_BeeCP::UpdateMoveToFormation(const float deltaTime)
-{
-	auto currentPos = m_pTransformCP->GetWorldPosition();
-
-	glm::vec3 targetPos{ GetOwner()->getParent()->GetComponent<engine::TransformComponent>()->GetWorldPosition() + m_pEnemyCP->GetFormationPos() };
-	// Normalized Vector from the enemy position to the target to get the direction
-	glm::vec3 direction{ glm::normalize(targetPos - currentPos) };
-
-	float distance{ glm::distance(targetPos, currentPos) };
-	if (distance > 2.f)
-	{
-		m_pMoveCP->Move(deltaTime, direction);
-	}
-	else
-	{
-		// Wait until recieve orders to attack
-		m_pEnemyCP->ChangeCurrentState(EnemyCP::ENEMY_STATE::waiting);
-		m_pMoveCP->ChangeSpeed(glm::vec2{ 120.f, 120.f });		// Reduce its speed
 	}
 }
 
@@ -81,29 +50,34 @@ void AI_BeeCP::UpdateAttack(const float deltaTime)
 	auto window = engine::SceneManager::GetInstance().GetSceneWindow();
 	switch (m_AttackState)
 	{
-	case AI_BeeCP::AttackState::breakFormation:
-		InitAttackData(currentPos, window);
-		break;
-	case AI_BeeCP::AttackState::diagonalDive:
-		UpdateDiagonalDive(deltaTime, currentPos, window);
-		break;
-	case AI_BeeCP::AttackState::verticalDive:
-		UpdateVerticalDive(deltaTime, currentPos, window);
-		break;
-	case AI_BeeCP::AttackState::roundSwoop:
-	{
-		// Use the rotator component to make a round backwards
-		if (m_pRotatorCP != nullptr)
+		case AI_BeeCP::AttackState::breakFormation:
+			InitAttackData(currentPos, window);
+			break;
+		case AI_BeeCP::AttackState::diagonalDive:
+			UpdateDiagonalDive(deltaTime, currentPos, window);
+			break;
+		case AI_BeeCP::AttackState::verticalDive:
+			UpdateVerticalDive(deltaTime, currentPos, window);
+			break;
+		case AI_BeeCP::AttackState::roundSwoop:
 		{
-			m_pRotatorCP->Rotate(deltaTime);
-			if (m_pRotatorCP->IsRotationFinished())
+			// Use the rotator component to make a round backwards
+			if (m_pRotatorCP != nullptr)
 			{
-				m_pEnemyCP->ChangeCurrentState(EnemyCP::ENEMY_STATE::moveToFormation);
-				m_AttackState = AttackState::breakFormation;
+				m_pRotatorCP->Rotate(deltaTime);
+				if (m_pRotatorCP->IsRotationFinished())
+				{
+					m_pEnemyCP->ChangeCurrentState(EnemyCP::ENEMY_STATE::moveToFormation);
+					m_AttackState = AttackState::breakFormation;
+				}
 			}
+			break;
 		}
-		break;
 	}
+	// Shoot missiles if there are any to shoot
+	if (!m_HasShot)
+	{
+		FireMissile(deltaTime);
 	}
 }
 
@@ -121,7 +95,8 @@ void AI_BeeCP::InitAttackData(const glm::vec3& currentPos, const engine::Window&
 		m_Direction.x = 1;
 		m_AtRightSide = true;
 	}
-	m_DiagonalDiveMaxTime = float((std::rand() % 2) + 1);
+	// Random between float numbers
+	m_DiagonalDiveMaxTime = float(((std::rand()) / float(RAND_MAX / 1)) + 1.f);
 	m_AttackState = AttackState::diagonalDive;
 
 	// Charge 1 or 2 missiles to shoot (or zero)
@@ -164,12 +139,6 @@ void AI_BeeCP::CalculateMissileDirection()
 // Dives diagonally downards. While this there is a chance to also shoot up to two missiles
 void AI_BeeCP::UpdateDiagonalDive(const float deltaTime, const glm::vec3& currentPos, const engine::Window& window)
 {
-	// Shoot missiles if there are any to shoot
-	if (!m_HasShot)
-	{
-		FireMissile(deltaTime);
-	}
-
 	// Downward Diagonal movement until max Time or before it leaves window boundaries
 	if (m_ElapsedDiagonalDive < m_DiagonalDiveMaxTime && (currentPos.x > 0 && currentPos.x < window.width))
 	{
