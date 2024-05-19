@@ -3,6 +3,7 @@
 
 #include "Component.h"
 
+class MenuSelectionCP;
 // SETUP ALL INPUT NEEDED IN ORDER TO CONTROL THE PLAYER CHARACTER
 class PlayerInputCP final : public engine::Component
 {
@@ -13,7 +14,12 @@ public:
 	virtual void Update(const float deltaTime) override;
 	virtual void ReceiveMessage(const std::string& message, const std::string& value) override;
 
-	void AddControllerMovement();
+	void AddMenuInput(MenuSelectionCP* pMenuSelectionCP);
+	void AddGameplayInput();
+	void AddControllerInput(MenuSelectionCP* pMenuSelectionCP = nullptr);
+
+	//void AddControllerMovement();
+
 	void SetPlayerDied();
 
 private:
