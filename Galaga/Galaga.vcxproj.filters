@@ -105,6 +105,9 @@
     <ClCompile Include="AI_ButterflyCP.cpp">
       <Filter>Components\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="AI_GalagaCP.cpp">
+      <Filter>Components\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HealthComponent.h">
@@ -180,6 +183,9 @@
       <Filter>FormationState</Filter>
     </ClInclude>
     <ClInclude Include="AI_ButterflyCP.h">
+      <Filter>Components\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="AI_GalagaCP.h">
       <Filter>Components\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
