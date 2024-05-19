@@ -14,12 +14,6 @@ bool engine::InputManager::ProcessInput(float deltaTime)
 		return keepGameRunning;
 	}
 
-	if (int(m_Controllers.size()) < MAX_CONTROLLERS)
-	{
-		// There is still room to add more controllers to the game
-		CheckControllerConnected();
-	}
-
 	if (!m_Controllers.empty())
 	{
 		// THere is at least one controller conected -> Process Controller Input
@@ -89,24 +83,6 @@ bool engine::InputManager::ProcessKeyboardInput(float deltaTime)
 	}
 
 	return true;
-}
-
-// -----------------------------------------------------------------------------
-//			*Checks if a new Controller has been added to the Game*
-// This will only be checked the first time the Controller has been added to the 
-// game. Once a controller is added, we use the isConnected parameter from the 
-// controller object itselt to check if it disconnects or reconnect
-// -----------------------------------------------------------------------------
-void engine::InputManager::CheckControllerConnected()
-{
-	// We can still add more controllers to the Game
-	unsigned int controllerIdx{ unsigned(m_Controllers.size()) };
-	if (Controller::IsNewControllerAdded(controllerIdx))
-	{
-		// New controller
-		m_Controllers.emplace_back(std::make_unique<Controller>(controllerIdx));
-	}
-
 }
 
 // Process Input from all conected controllers
@@ -243,15 +219,24 @@ void engine::InputManager::UnbindAllCommands(unsigned int controllerIdx)
 	}
 }
 
-int engine::InputManager::GetFreeController() const
+int engine::InputManager::GetFreeController()
 {
-	if (int(m_Controllers.size()) == MAX_CONTROLLERS)
+	if (int(m_Controllers.size()) == 0)
 	{
-		// No more available controllers to use
-		return -1;
+		// First controller being added
+		m_Controllers.emplace_back(std::make_unique<Controller>(0));
+		return 0;
+	}
+	else if (int(m_Controllers.size()) < MAX_CONTROLLERS)
+	{
+		// Add a new controller to the game
+		auto controllerIdx{ int(m_Controllers.size()) };
+		m_Controllers.emplace_back(std::make_unique<Controller>(controllerIdx));
+		return controllerIdx;
 	}
 
-	return int(m_Controllers.size());
+	// No more available controllers to use
+	return -1;
 }
 
 bool engine::InputManager::IsPlayer1Connected() const

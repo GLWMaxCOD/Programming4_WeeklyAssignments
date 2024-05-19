@@ -1,6 +1,7 @@
 #include "ShootCommand.h"
 #include "GameObject.h"
 #include "MissileManagerCP.h"
+#include <iostream>
 
 ShootCommand::ShootCommand(engine::GameObject* actor, glm::vec3 direction)
 	: Command(),
@@ -11,7 +12,7 @@ ShootCommand::ShootCommand(engine::GameObject* actor, glm::vec3 direction)
 
 ShootCommand::~ShootCommand()
 {
-
+	std::cout << "Shoot Command destructor" << std::endl;
 }
 
 void ShootCommand::Execute(float)

@@ -8,8 +8,9 @@
 #include "LivesUIComponent.h"
 #include <iostream>
 
-PlayerCP::PlayerCP(engine::GameObject* pOwner, unsigned int health, const glm::vec2& windowLimits)
-	: Component("PlayerCP", pOwner)
+PlayerCP::PlayerCP(engine::GameObject* pOwner, unsigned int health, const unsigned int playerIdx, const glm::vec2& windowLimits)
+	: Component("PlayerCP", pOwner),
+	m_PlayerIdx{ playerIdx }
 {
 	if (pOwner != nullptr)
 	{
@@ -33,9 +34,20 @@ PlayerCP::PlayerCP(engine::GameObject* pOwner, unsigned int health, const glm::v
 		//collisionCP->AddObserver(this);
 
 		// UI
+		glm::vec2 UIPos = { 10.f, windowLimits.y - 50.f };
+		if (m_PlayerIdx == 2)
+		{
+			// Lives will be displayed on the right side of the screen for Player 2
+			UIPos.x = windowLimits.x - 200.f;
+		}
 		auto livesUICP = pOwner->AddComponent<LivesUIComponent>(pOwner, spriteFileName, glm::vec2{ 10.f, windowLimits.y - 50.f }, health - 1);
 		healthCP->AddObserver(livesUICP);
 	}
+}
+
+unsigned int PlayerCP::GetPlayerIndex()
+{
+	return m_PlayerIdx;
 }
 
 PlayerCP::~PlayerCP()

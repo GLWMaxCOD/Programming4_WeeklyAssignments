@@ -80,26 +80,6 @@ public:
 
 	}
 
-	// -----------------------------------------------------------------------------
-	//			*Check if the controller is still connected or not*
-	// This function is only called when a Controller has been conected to the game
-	// Once it is connected, it is called every frame to check if the controller gets
-	// connected or disconected. 
-	// -----------------------------------------------------------------------------
-	static bool IsNewControllerAdded(const unsigned controllerIdx)
-	{
-		// Get the state of this controller to check if it is connected
-		XINPUT_STATE state;
-		DWORD result = XInputGetState(controllerIdx, &state);
-		if (result == ERROR_SUCCESS)
-		{
-			std::cout << "Controller " << controllerIdx << " connected.\n";
-			return true;
-		}
-
-		return false;
-	}
-
 	const unsigned GetControllerIndex() const { return m_ControllerIndex; };
 
 private:
@@ -153,11 +133,6 @@ bool Controller::IsPressed(XboxControllerButton button) const
 bool Controller::IsConnected() const
 {
 	return pImpl->IsConnected();
-}
-
-bool Controller::IsNewControllerAdded(const unsigned controllerIdx)
-{
-	return ControllerImpl::IsNewControllerAdded(controllerIdx);
 }
 
 const unsigned Controller::GetControllerIdx() const
