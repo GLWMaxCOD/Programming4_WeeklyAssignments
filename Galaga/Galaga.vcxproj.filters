@@ -31,6 +31,9 @@
     <Filter Include="GameState">
       <UniqueIdentifier>{dee15c5b-1560-420e-a7ba-a1a66f7b797c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\UI">
+      <UniqueIdentifier>{655822d0-edfe-43dd-92c2-309683fcc71f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Galaga.cpp">
@@ -72,9 +75,6 @@
     <ClCompile Include="LivesUIComponent.cpp">
       <Filter>Components\Player</Filter>
     </ClCompile>
-    <ClCompile Include="TextComponent.cpp">
-      <Filter>Components\General</Filter>
-    </ClCompile>
     <ClCompile Include="FormationCP.cpp">
       <Filter>Components\Enemies</Filter>
     </ClCompile>
@@ -113,6 +113,15 @@
     </ClCompile>
     <ClCompile Include="GameCP.cpp">
       <Filter>General Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuSelectionCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="TextComponent.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuSelectionCP.cpp">
+      <Filter>Components\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,9 +164,6 @@
     <ClInclude Include="LivesUIComponent.h">
       <Filter>Components\Player</Filter>
     </ClInclude>
-    <ClInclude Include="TextComponent.h">
-      <Filter>Components\General</Filter>
-    </ClInclude>
     <ClInclude Include="FormationCP.h">
       <Filter>Components\Enemies</Filter>
     </ClInclude>
@@ -199,6 +205,15 @@
     </ClInclude>
     <ClInclude Include="GameCP.h">
       <Filter>General Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuSelectionCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="TextComponent.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuSelectionCP.h">
+      <Filter>Components\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
