@@ -7,9 +7,10 @@
 
 
 FormationReaderCP::FormationReaderCP(engine::GameObject* pOwner)
-	: Component("FormationReaderCP", pOwner)
-	, m_FormationJsonDoc{}
+	: Component("FormationReaderCP", pOwner),
+	m_FormationJsonDoc{}
 {
+
 }
 
 void FormationReaderCP::OpenJSONFile(const std::string& jsonFilePath)
