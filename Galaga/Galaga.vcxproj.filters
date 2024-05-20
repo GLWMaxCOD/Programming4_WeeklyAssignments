@@ -215,6 +215,12 @@
     <ClInclude Include="MenuSelectionCP.h">
       <Filter>Components\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Resources.h">
+      <Filter>General Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GalagaStrings.h">
+      <Filter>General Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

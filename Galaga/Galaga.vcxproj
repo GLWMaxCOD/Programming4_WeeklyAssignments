@@ -219,6 +219,7 @@
     <ClInclude Include="EnemyCP.h" />
     <ClInclude Include="FormationCP.h" />
     <ClInclude Include="FormationReaderCP.h" />
+    <ClInclude Include="GalagaStrings.h" />
     <ClInclude Include="GameCP.h" />
     <ClInclude Include="GameplayState.h" />
     <ClInclude Include="GameState.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="MissileManagerCP.h" />
     <ClInclude Include="PlayerCP.h" />
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="ShootCommand.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameIncludes.h" />
