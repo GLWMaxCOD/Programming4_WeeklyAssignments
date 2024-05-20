@@ -12,6 +12,7 @@ namespace engine
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
 		void Add(std::shared_ptr<GameObject> object);
+		void AddAll(std::vector < std::shared_ptr<GameObject>>& m_objects);
 		void Remove(std::shared_ptr<GameObject> object);
 		void RemoveDeadObjects();
 		void RemoveAll();
@@ -22,6 +23,8 @@ namespace engine
 		void CheckCollisions(size_t objectIdx1, engine::CollisionComponent* pCollisionCP);
 
 		engine::GameObject* FindGameObjectByTag(const std::string& tag);
+
+		std::vector < std::shared_ptr<engine::GameObject>>& GetAll();
 
 		const std::string& Name() const;
 

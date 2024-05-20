@@ -8,6 +8,9 @@
 #include "RotatorComponent.h"
 #include "MissileManagerCP.h"
 #include "PlayerCP.h"
+#include "AI_BeeCP.h"
+#include "AI_ButterflyCP.h"
+#include "AI_GalagaCP.h"
 #include "Scene.h"
 #include <iostream>
 
@@ -205,6 +208,51 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 		GetOwner()->SetIsActive(false);
 		auto& soundSystem = engine::Servicealocator::Get_Sound_System();
 		soundSystem.PlaySound(short(Sounds::enemyDie));
+	}
+}
+
+void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
+{
+	if (m_pTransformCP != nullptr)
+	{
+		// Reset its position to the start position for the formation
+		m_pTransformCP->SetLocalPosition(startPos);
+		m_FormationPos = formationPos;							// New position in the formation
+		m_pMoveCP->ChangeSpeed(glm::vec2{ 220.f, 220.f });
+		m_CurrentState = ENEMY_STATE::moveToFormation;
+		m_HasShoot = true;
+		m_ElapsedShootTime = 0.f;
+
+		if (m_EnemyType == "bee")
+		{
+			GetOwner()->GetComponent<HealthComponent>()->ResetHealth(1);
+			auto beeAI = GetOwner()->GetComponent<AI_BeeCP>();
+			if (beeAI != nullptr)
+			{
+				beeAI->Reset();
+			}
+
+		}
+		else if (m_EnemyType == "butterfly")
+		{
+			GetOwner()->GetComponent<HealthComponent>()->ResetHealth(1);
+			auto butterflyAI = GetOwner()->GetComponent<AI_ButterflyCP>();
+			if (butterflyAI != nullptr)
+			{
+				butterflyAI->Reset();
+			}
+		}
+		else if (m_EnemyType == "galaga")
+		{
+			GetOwner()->GetComponent<HealthComponent>()->ResetHealth(2);
+			auto galagaAI = GetOwner()->GetComponent<AI_GalagaCP>();
+			if (galagaAI != nullptr)
+			{
+				galagaAI->Reset();
+			}
+		}
+
+		//GetOwner()->SetIsActive(true);
 	}
 }
 

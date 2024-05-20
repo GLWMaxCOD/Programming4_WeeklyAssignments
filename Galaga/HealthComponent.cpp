@@ -16,6 +16,16 @@ HealthComponent::~HealthComponent()
 	std::cout << "Health Component destructor" << std::endl;
 }
 
+void HealthComponent::ResetHealth(unsigned int newHealth)
+{
+	m_Lives = newHealth;
+	if (m_Lives > 0)
+	{
+		//engine::Event HealthResetEvent{ "HealthReset" };
+		//m_HealthSubject->NotifyObservers(GetOwner(), HealthResetEvent);
+	}
+}
+
 // Add an observer to "Observe" the HealthComponent
 void HealthComponent::AddObserver(engine::Observer* pObserver)
 {
@@ -63,7 +73,6 @@ void HealthComponent::ReceiveMessage([[maybe_unused]] const std::string& message
 {
 
 }
-
 
 const unsigned int HealthComponent::GetLives() const
 {

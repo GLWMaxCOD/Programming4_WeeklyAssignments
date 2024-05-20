@@ -28,11 +28,11 @@
     <Filter Include="Components\Sound">
       <UniqueIdentifier>{02d7e06a-70fa-45a2-a713-30dadc121358}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameState">
-      <UniqueIdentifier>{dee15c5b-1560-420e-a7ba-a1a66f7b797c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components\UI">
       <UniqueIdentifier>{655822d0-edfe-43dd-92c2-309683fcc71f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameStates">
+      <UniqueIdentifier>{dee15c5b-1560-420e-a7ba-a1a66f7b797c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -100,13 +100,13 @@
       <Filter>Components\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="GameState.cpp">
-      <Filter>GameState</Filter>
+      <Filter>GameStates</Filter>
     </ClCompile>
     <ClCompile Include="MenuState.cpp">
-      <Filter>GameState</Filter>
+      <Filter>GameStates</Filter>
     </ClCompile>
     <ClCompile Include="GameplayState.cpp">
-      <Filter>GameState</Filter>
+      <Filter>GameStates</Filter>
     </ClCompile>
     <ClCompile Include="StartCommand.cpp">
       <Filter>Commands</Filter>
@@ -192,13 +192,13 @@
       <Filter>Components\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="GameState.h">
-      <Filter>GameState</Filter>
+      <Filter>GameStates</Filter>
     </ClInclude>
     <ClInclude Include="MenuState.h">
-      <Filter>GameState</Filter>
+      <Filter>GameStates</Filter>
     </ClInclude>
     <ClInclude Include="GameplayState.h">
-      <Filter>GameState</Filter>
+      <Filter>GameStates</Filter>
     </ClInclude>
     <ClInclude Include="StartCommand.h">
       <Filter>Commands</Filter>
