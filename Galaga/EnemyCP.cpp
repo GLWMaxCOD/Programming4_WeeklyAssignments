@@ -12,6 +12,7 @@
 #include "AI_BeeCP.h"
 #include "AI_ButterflyCP.h"
 #include "AI_GalagaCP.h"
+#include "MissileCP.h"
 #include "Scene.h"
 #include <iostream>
 
@@ -20,7 +21,7 @@ EnemyCP::EnemyCP(engine::GameObject* pOwner, const std::string& enemyType, const
 	m_FormationPos{ formationPos }, m_CurrentState{ ENEMY_STATE::moveToFormation }, m_EnemyType{ enemyType },
 	m_pTransformCP{ nullptr }, m_pMoveCP{ nullptr }, m_MissileDir{ 0.f, 1.f, 0.f }, m_HasShoot{ true },
 	m_AmountMissiles{ 0 }, m_MissilesShoot{ 0 }, m_ElapsedShootTime{ 0.f }, m_WaitBetweenShoot{ 0.3f },
-	m_pMissileManagerCP{ nullptr }
+	m_pMissileManagerCP{ nullptr }, m_FormationPoints{ 0 }, m_DivingPoints{ 0 }
 {
 	if (pOwner != nullptr)
 	{
@@ -38,6 +39,8 @@ EnemyCP::EnemyCP(engine::GameObject* pOwner, const std::string& enemyType, const
 		m_pMissileManagerCP = pOwner->AddComponent<MissileManagerCP>(pOwner, maxMissiles, missileSpeed, "enemy", "Sprites/enemyMissile.png");
 
 		m_pTransformCP = pOwner->GetComponent<engine::TransformComponent>();
+
+		SetEnemyTypePoints();
 	}
 }
 
@@ -190,16 +193,33 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 			enemyHealthCP->DecrementHealth(1);
 		}
 
+		// The gameObject we collided with will also loose a life
+		auto otherGOHealthCP = gameObject->GetComponent<HealthComponent>();
+		if (otherGOHealthCP != nullptr)
+		{
+			otherGOHealthCP->DecrementHealth(1);
+		}
+
 		if (event.IsSameEvent("CollisionWith playerMissile"))
 		{
-			gameObject->SetIsActive(false);
-		}
-		else
-		{
-			auto playerHealthCP = gameObject->GetComponent<HealthComponent>();
-			if (playerHealthCP != nullptr)
+			if (enemyHealthCP != nullptr && enemyHealthCP->GetLives() <= 0)
 			{
-				playerHealthCP->DecrementHealth(1);
+				// Set the points for killing the enemy
+				int points{};
+				if (m_CurrentState == ENEMY_STATE::waiting)
+				{
+					points = m_FormationPoints;
+				}
+				else
+				{
+					points = m_DivingPoints;
+				}
+				auto missileCP = gameObject->GetComponent<MissileCP>();
+				if (missileCP != nullptr)
+				{
+					missileCP->SetEnemyPoints(points);
+				}
+
 			}
 		}
 	}
@@ -254,6 +274,30 @@ void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
 		}
 
 		//GetOwner()->SetIsActive(true);
+	}
+}
+
+// Set the Points this Enemy gives depending if it is in formation
+// or diving
+void EnemyCP::SetEnemyTypePoints()
+{
+
+	if (m_EnemyType == STR_BEE)
+	{
+		m_FormationPoints = 50;
+		m_DivingPoints = 100;
+	}
+
+	if (m_EnemyType == STR_BUTTERFLY)
+	{
+		m_FormationPoints = 80;
+		m_DivingPoints = 160;
+	}
+
+	if (m_EnemyType == STR_GALAGA)
+	{
+		m_FormationPoints = 150;
+		m_DivingPoints = 400;
 	}
 }
 

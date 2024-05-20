@@ -6,6 +6,7 @@
 #include "glm/vec2.hpp"
 #include "Servicealocator.h"
 #include "SoundIDs.h"
+#include "GalagaStrings.h"
 #include <memory>
 #include <iostream>
 
@@ -19,8 +20,8 @@ void Game::Initialize()
 	// Create all scenes and set the First_Stage as the first scene
 	auto& sceneManager = engine::SceneManager::GetInstance();
 	sceneManager.CreateScene(FIRST_STAGE);
-	sceneManager.CreateScene(SECOND_STAGE);
-	sceneManager.CreateScene(THIRD_STAGE);
+	//sceneManager.CreateScene(SECOND_STAGE);
+	//sceneManager.CreateScene(THIRD_STAGE);
 	sceneManager.SetActiveScene(FIRST_STAGE);
 
 	auto& scene = sceneManager.GetActiveScene();

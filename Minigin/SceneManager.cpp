@@ -92,6 +92,22 @@ void engine::SceneManager::AddToScene(const std::string& sceneName, std::shared_
 
 }
 
+bool engine::SceneManager::LoadNextScene()
+{
+	int nextActiveScene = m_ActiveScene;
+	if (size_t(++nextActiveScene) < m_scenes.size())
+	{
+		// There are still scenes left. Load next one
+		// Move gameObjects from old scene to new one
+		MoveGameObjectsToScene(m_scenes.at(nextActiveScene)->Name());
+		return true;
+	}
+
+	// No more scenes to load
+	return false;
+
+}
+
 void engine::SceneManager::MoveGameObjectsToScene(const std::string& sceneName)
 {
 	for (size_t sceneIdx{ 0 }; sceneIdx < m_scenes.size(); ++sceneIdx)
@@ -151,4 +167,18 @@ engine::Scene& engine::SceneManager::GetActiveScene()
 	// If no scene yet --> Create a default one
 	return CreateScene("defaultScene");
 
+}
+
+const std::string engine::SceneManager::GetActiveSceneName() const
+{
+	if (m_ActiveScene != -1)
+		return m_scenes.at(m_ActiveScene)->Name();
+
+	return "No Active Scene";
+}
+
+
+size_t engine::SceneManager::GetTotalScenes() const
+{
+	return m_scenes.size();
 }
