@@ -21,6 +21,8 @@ class TextComponent final : public engine::Component
 		void CreateTextureFromText();
 		void SetText(const std::string& text);
 
+		std::string GetText() const;
+
 	private:
 
 		std::string m_text;

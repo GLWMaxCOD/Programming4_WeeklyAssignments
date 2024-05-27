@@ -71,3 +71,8 @@ void TextComponent::SetText(const std::string& text)
 	m_text = text;
 	m_needsUpdate = true;
 }
+
+std::string TextComponent::GetText() const
+{
+	return m_text;
+}
