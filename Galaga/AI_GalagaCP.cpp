@@ -10,6 +10,7 @@
 
 AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 	:Component("AI_GalagaCP", pOwner)
+	, m_IsAIActive{ true }, m_FormationOnly{ false }, m_IsVersusMode{ false }
 	, m_AttackState{ AttackState::breakFormation }, m_BombingRunState{ BombinRunState::divingLoop }
 	, m_TractorBeamState{ TractorBeamState::moveIntoPosition }, m_DoTractorBeam{ true }, m_pGalagaTransfCP{ nullptr }
 	, m_pMoveCP{ nullptr }, m_pRotatorCP{ nullptr }, ROTATION_TIME{ 1.5f }, m_RotationRadius{ 30.f }, m_DoRotateLeft{ false }
@@ -75,6 +76,45 @@ void AI_GalagaCP::InitData(const engine::Window window)
 	m_AttackState = AttackState::startLoop;
 }
 
+void AI_GalagaCP::SetAIActive(bool active)
+{
+	m_IsAIActive = active;
+}
+
+void AI_GalagaCP::SetFormationOnly(bool formationOnly)
+{
+	m_FormationOnly = formationOnly;
+	if (formationOnly)
+	{
+		m_AttackState = AttackState::formationOnly;
+	}
+}
+
+bool AI_GalagaCP::GetIsAttacking()
+{
+	return m_IsAttacking;
+}
+
+AI_GalagaCP::AttackState AI_GalagaCP::GetAttackState() const
+{
+	return m_AttackState;
+}
+
+void AI_GalagaCP::SetAttackState(AttackState newState)
+{
+	m_AttackState = newState;
+}
+
+void AI_GalagaCP::SetVersusMode(bool isVersusMode)
+{
+	m_IsVersusMode = isVersusMode;
+}
+
+bool AI_GalagaCP::IsVersusMode() const
+{
+	return m_IsVersusMode;
+}
+
 void AI_GalagaCP::Update(const float deltaTime)
 {
 	if (m_pMoveCP != nullptr && m_pGalagaTransfCP != nullptr)
@@ -83,9 +123,24 @@ void AI_GalagaCP::Update(const float deltaTime)
 		{
 			auto currentPos = m_pGalagaTransfCP->GetWorldPosition();
 			auto window = engine::SceneManager::GetInstance().GetSceneWindow();
+			if (m_FormationOnly)
+			{
+				// Move left and right within the formation without breaking it
+				float speed = 0.f;
+				float xPos = m_pGalagaTransfCP->GetLocalPosition().x + (m_DoRotateLeft ? -speed : speed) * deltaTime;
+				m_pGalagaTransfCP->SetLocalPosition(glm::vec3(xPos, m_pGalagaTransfCP->GetLocalPosition().y, 0.f));
+
+				// Change direction if it reaches the window boundaries
+				if (xPos < 0.f || xPos > window.width)
+				{
+					m_DoRotateLeft = !m_DoRotateLeft;
+				}
+				return; // Early return to avoid further processing
+			}
 			switch (m_AttackState)
 			{
 			case AI_GalagaCP::AttackState::breakFormation:
+				m_IsAttacking = true;
 				InitData(window);
 				break;
 			case AI_GalagaCP::AttackState::startLoop:
@@ -214,6 +269,7 @@ void AI_GalagaCP::LeaveLevel(const float deltaTime, float galagaYPos, const engi
 		m_AttackState = AttackState::breakFormation;
 		m_BombingRunState = BombinRunState::moveToLoopPoint;
 		m_TractorBeamState = TractorBeamState::moveIntoPosition;
+		m_IsAttacking = false;
 	}
 }
 

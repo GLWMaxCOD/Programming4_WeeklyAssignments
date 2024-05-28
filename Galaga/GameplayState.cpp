@@ -1,10 +1,12 @@
 #include "GameplayState.h"
 #include "GameObject.h"
 #include "PlayerCP.h"
+#include "Player2VersusCP.h"
 #include "PlayerInputCP.h"
 #include "Scene.h"
 #include "FormationCP.h"
 #include "AI_FormationCP.h"
+#include "AI_GalagaCP.h"
 #include "GalagaStrings.h"
 #include "GameOverState.h"
 #include <iostream>
@@ -30,16 +32,19 @@ GameplayState::~GameplayState()
 
 void GameplayState::OnEnter() //Add VERSUS MODE HERE LATER
 {
-	if (m_GameMode == "1 PLAYER" || m_GameMode == "2 PLAYERS")
+	if (m_GameMode == "1 PLAYER" || m_GameMode == "2 PLAYERS" || m_GameMode == "VERSUS")
 	{
 		InitPlayer1();
+		InitEnemies();
 		if (m_GameMode == "2 PLAYERS")
 		{
 			// Add Player 2 too ( Player 2 will use the available controller)
 			InitPlayer2();
 		}
-
-		InitEnemies();
+		if (m_GameMode == "VERSUS")
+		{
+			InitPlayer2Versus(); // Change into a new function where it disables the AI of one Galaga enemy and gives it extra bindings
+		}
 	}
 
 }
@@ -70,7 +75,7 @@ void GameplayState::InitPlayer1()
 		m_vPlayers.emplace_back(pPlayer1GO);
 		pPlayer1GO->AddComponent<PlayerCP>(pPlayer1GO, 4, 1, glm::vec2{ window.width, window.height });
 		auto pPlayerInputCP = pPlayer1GO->GetComponent<PlayerInputCP>();
-		if (pPlayerInputCP != nullptr && m_GameMode == "1 PLAYER")
+		if (pPlayerInputCP != nullptr && (m_GameMode == "1 PLAYER" || m_GameMode == "VERSUS"))
 		{
 			// Player 1 can play with Keyboard and Controller
 			pPlayerInputCP->GameplayControllerInput(unsigned int(0));
@@ -106,6 +111,35 @@ void GameplayState::InitPlayer2()
 
 	scene.Add(go_Player2);
 	m_vPlayers.emplace_back(go_Player2.get());
+}
+
+void GameplayState::InitPlayer2Versus()
+{
+	// Retrieve Galaga enemies
+	auto& galagas = m_pFormationCP->GetEnemies("galagas");
+
+	if (galagas.empty())
+	{
+		std::cerr << "No Galaga enemies found in the formation." << std::endl;
+		return;
+	}
+
+	engine::GameObject* pGalaga = galagas.front();
+
+	// Set the first Galaga to formation only and allow it to move within the formation
+	auto pAIComponent = pGalaga->GetComponent<AI_GalagaCP>();
+	if (pAIComponent)
+	{
+		pAIComponent->SetFormationOnly(true);
+		pAIComponent->SetVersusMode(true);  // Set versus mode
+	}
+
+	// Assign Player2VersusCP component
+	auto pPlayer2VersusCP = pGalaga->AddComponent<Player2VersusCP>(pGalaga, 2); // Assuming player index 2
+	pPlayer2VersusCP->SetupControls(); // Setup controls specific to Versus mode
+
+	// Add the Galaga enemy to the players vector to track its status
+	m_vPlayers.emplace_back(pGalaga);
 }
 
 bool GameplayState::NextStage()

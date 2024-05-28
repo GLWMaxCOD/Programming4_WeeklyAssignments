@@ -21,6 +21,8 @@ public:
 
 	void Reset(const std::string& JSONPath);
 
+	void SetVersusMode(bool isVersusMode);
+
 private:
 
 	enum class FormationState
@@ -76,6 +78,8 @@ private:
 	int m_SendGalagaCount;					// Keep the count to know if next enemy to be sent is a Galaga type
 
 	const float m_TimeEnemySend;
+
+	bool m_IsVersusMode;
 };
 
 #endif

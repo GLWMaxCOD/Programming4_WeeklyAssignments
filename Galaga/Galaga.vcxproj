@@ -205,6 +205,7 @@
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="ParallaxScrollingCP.cpp" />
+    <ClCompile Include="Player2VersusCP.cpp" />
     <ClCompile Include="PlayerCP.cpp" />
     <ClCompile Include="PlayerInputCP.cpp" />
     <ClCompile Include="PlayerScoreCP.cpp" />
@@ -212,6 +213,7 @@
     <ClCompile Include="ShootCommand.cpp" />
     <ClCompile Include="StartCommand.cpp" />
     <ClCompile Include="TextComponent.cpp" />
+    <ClCompile Include="TractorbeamCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AI_BeeCP.h" />
@@ -230,6 +232,7 @@
     <ClInclude Include="MenuSelectionCP.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="MissileManagerCP.h" />
+    <ClInclude Include="Player2VersusCP.h" />
     <ClInclude Include="PlayerCP.h" />
     <ClInclude Include="PlayerScoreCP.h" />
     <ClInclude Include="Resources.h" />
@@ -248,6 +251,7 @@
     <ClInclude Include="SoundIDs.h" />
     <ClInclude Include="StartCommand.h" />
     <ClInclude Include="TextComponent.h" />
+    <ClInclude Include="TractorbeamCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

@@ -171,7 +171,7 @@ GameState* MenuState::GetChangeState()
 	{
 		std::string selectedOption{ m_pMenuSelectionCP->GetSelection() };
 
-		if (selectedOption == ONE_PLAYER_OPT || selectedOption == TWO_PLAYERS_OPT) //Add VERSUS Mode here later
+		if (selectedOption == ONE_PLAYER_OPT || selectedOption == TWO_PLAYERS_OPT || selectedOption == VERSUS_OPT)
 		{
 			OnExit();
 			return new GameplayState(selectedOption);

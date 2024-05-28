@@ -40,6 +40,7 @@ private:
 	void InitEnemies();
 	void InitPlayer1();
 	void InitPlayer2();
+	void InitPlayer2Versus();
 
 	bool ArePlayersAlive();
 	bool NextStage();

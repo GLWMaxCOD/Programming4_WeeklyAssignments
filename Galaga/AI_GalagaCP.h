@@ -25,15 +25,25 @@ public:
 
 	void Reset();
 
-private:
+	void SetAIActive(bool isActive);
+	void SetFormationOnly(bool formationOnly);
 
 	enum class AttackState
 	{
 		breakFormation,
 		startLoop,
 		doAttack,
-		finishAttack
+		finishAttack,
+		formationOnly //For VERSUS Galaga
 	};
+
+	AttackState GetAttackState() const;
+	bool GetIsAttacking();
+	void SetAttackState(AttackState newState);
+	void SetVersusMode(bool isVersusMode);
+	bool IsVersusMode() const;
+
+private:
 	enum class BombinRunState
 	{
 		moveToLoopPoint,
@@ -76,5 +86,10 @@ private:
 
 	const float MAX_TRACTORBEAM_TIME;
 	float m_ElapsedTime;
+
+	bool m_IsAIActive;
+	bool m_FormationOnly;
+	bool m_IsVersusMode;
+	bool m_IsAttacking;
 };
 #endif // DEBUG

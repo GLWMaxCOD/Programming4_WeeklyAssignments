@@ -1,4 +1,5 @@
 #include "AI_FormationCP.h"
+#include "AI_GalagaCP.h"
 #include "GameObject.h"
 #include "FormationCP.h"
 #include "FormationReaderCP.h"
@@ -9,9 +10,10 @@ AI_FormationCP::AI_FormationCP(engine::GameObject* pOwner, const std::string& JS
 	: Component("AI_FormationCP", pOwner),
 	m_FormationState{ FormationState::spawning_enemies }, m_MovingFTState{ SpawnOrderState::top_first }, //m_pFormationCP(pOwner->GetComponent<FormationCP>()),
 	BEES_TYPE{ "bees" }, BUTTERFLIES_TYPE{ "butterflies" }, GALAGAS_TYPE{ "galagas" },
-	m_SpawnFirstType{ true }, m_CurrentTimeSpawn{ 0.f }, m_TimeEnemySpawn{ 0.5f }, m_IsSpawnInfoReaded{ false },
+	m_SpawnFirstType{ true }, m_CurrentTimeSpawn{ 0.f }, m_TimeEnemySpawn{ 0.05f }, m_IsSpawnInfoReaded{ false },
 	m_LastEnemyType{ }, m_TimeEnemySend{ 2.5f }, NEXT_GALAGA{ 4 }, m_EnemyToSend{ BEES_TYPE }, m_SendGalagaCount{ 0 },
-	m_BeesActiveCount{ 0 }, m_ButterfliesActiveCount{ 0 }, m_GalagasActiveCount{ 0 }
+	m_BeesActiveCount{ 0 }, m_ButterfliesActiveCount{ 0 }, m_GalagasActiveCount{ 0 },
+	m_IsVersusMode{ false }, m_pFormationCP{ pOwner->GetComponent<FormationCP>() }
 {
 	auto jsonReaderCP = GetOwner()->GetComponent<FormationReaderCP>();
 	if (jsonReaderCP != nullptr)
@@ -30,7 +32,7 @@ AI_FormationCP::AI_FormationCP(engine::GameObject* pOwner, const std::string& JS
 
 	jsonReaderCP->ClearJSONFile();
 
-	m_pFormationCP = pOwner->GetComponent<FormationCP>();
+	//m_pFormationCP = pOwner->GetComponent<FormationCP>();
 }
 
 void AI_FormationCP::GetEnemyData(const std::string& type, std::vector<engine::GameObject*>& container)
@@ -47,6 +49,11 @@ void AI_FormationCP::GetEnemyData(const std::string& type, std::vector<engine::G
 AI_FormationCP::~AI_FormationCP()
 {
 
+}
+
+void AI_FormationCP::SetVersusMode(bool isVersusMode)
+{
+	m_IsVersusMode = isVersusMode;
 }
 
 void AI_FormationCP::Update(const float deltaTime)
@@ -217,11 +224,29 @@ void AI_FormationCP::UpdateSpawningBatch(const std::string& batch)
 
 void AI_FormationCP::SendEnemies()
 {
+	std::vector<engine::GameObject*> galagas = m_pFormationCP->GetEnemies(GALAGAS_TYPE);
+
+	// Always check if versus Galaga can be sent
+	for (auto& enemy : galagas)
+	{
+		auto aiComponent = enemy->GetComponent<AI_GalagaCP>();
+		if (aiComponent && aiComponent->IsVersusMode())
+		{
+			if (enemy->IsActive() && aiComponent->GetAttackState() == AI_GalagaCP::AttackState::formationOnly)
+			{
+				aiComponent->SetAttackState(AI_GalagaCP::AttackState::breakFormation);
+				return;
+			}
+		}
+	}
+
+	// Existing logic for sending other enemies
 	std::string nextEnemy = GetNextEnemyToSend();
 
 	std::vector<engine::GameObject*> enemies = m_pFormationCP->GetEnemies(nextEnemy);
-	for (auto& enemy : enemies)
+	for (size_t i = 0; i < enemies.size(); ++i)
 	{
+		auto& enemy = enemies[i];
 		if (enemy->IsActive())
 		{
 			EnemyCP* pEnemyCP = enemy->GetComponent<EnemyCP>();
