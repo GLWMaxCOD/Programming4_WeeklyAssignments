@@ -51,6 +51,7 @@ private:
 	std::vector<std::pair<std::string, FormationJsonData>> m_vEnemiesData;
 
 	std::vector<engine::GameObject*> m_vPlayers;		// Keep track of the player(s) to see if they die
+	engine::GameObject* m_pPlayer1;						//VERSUS mode, needs to keep track if only player 1 died
 
 	bool m_IsGameOver;
 };

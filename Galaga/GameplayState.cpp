@@ -13,7 +13,7 @@
 
 GameplayState::GameplayState(const std::string& gameMode)
 	:m_GameMode{ gameMode }, m_pFormationCP{ nullptr }, m_vEnemiesData{ },
-	m_IsGameOver{ false }
+	m_IsGameOver{ false }, m_pPlayer1{ nullptr }
 {
 	// Load all data paths 
 	FormationJsonData formationData1("../Data/Formations/FormationStage1.json", "../Data/Formations/FormationStage1-Order.json");
@@ -72,6 +72,7 @@ void GameplayState::InitPlayer1()
 	auto pPlayer1GO = scene.FindGameObjectByTag(STR_PLAYER_TAG);
 	if (pPlayer1GO != nullptr)
 	{
+		m_pPlayer1 = pPlayer1GO;
 		m_vPlayers.emplace_back(pPlayer1GO);
 		pPlayer1GO->AddComponent<PlayerCP>(pPlayer1GO, 4, 1, glm::vec2{ window.width, window.height });
 		auto pPlayerInputCP = pPlayer1GO->GetComponent<PlayerInputCP>();
@@ -205,6 +206,15 @@ void GameplayState::UpdateState(const float)
 
 bool GameplayState::ArePlayersAlive()
 {
+	if (m_GameMode == "VERSUS")
+	{
+		if (m_pPlayer1 == nullptr || !m_pPlayer1->IsActive())
+		{
+			// End game if Player 1 is not active
+			return false;
+		}
+	}
+
 	for (const auto& player : m_vPlayers)
 	{
 		if (player->IsActive())
