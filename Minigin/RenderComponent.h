@@ -10,6 +10,7 @@
 namespace engine
 {
 	class Texture2D;
+	class SpriteAnimatorCP;
 	class RenderComponent final : public Component
 	{
 	public:
@@ -24,7 +25,11 @@ namespace engine
 
 		void SetTexture(const std::string& filename);
 		void SetTexture(std::shared_ptr<engine::Texture2D> texture);
+		void SetSpriteAnimatorCP(engine::SpriteAnimatorCP* spriteAnimatorCP);
+
 		const glm::vec2 GetTextureSize();
+		const glm::vec2 GetSpriteSize() const;
+		const glm::vec2& GetScale();
 
 	private:
 
@@ -32,6 +37,8 @@ namespace engine
 		glm::vec2 m_Scale;
 		glm::vec2 m_TextureSize;
 		bool m_IsTextureDirty;							// To indicate if the texture changed or not
+
+		engine::SpriteAnimatorCP* m_pSpriteAnimatorCP;	// For animated sprites only	
 
 		void SetScale();
 		void CalculateTextureSize();
