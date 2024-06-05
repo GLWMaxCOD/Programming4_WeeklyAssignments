@@ -45,6 +45,8 @@ private:
 	void UpdateMoveToFormation(const float deltaTime);
 	void SetEnemyTypePoints();
 
+	void SetDeathAnimation(const std::string& spriteFilePath, int totalCols, int totalFrames, float frameRate, int frameInc, int limitFrame, const glm::vec2& offset);
+
 	// Firing Missiles - ALL enemy types can fire them
 	void FireMissile(const float deltaTime);
 
@@ -63,9 +65,14 @@ private:
 	float m_ElapsedShootTime;
 	float m_WaitBetweenShoot;					// How much time to wait between one missile and another
 
-	//SCORING POINTS FOR PLAYERS
+	// SCORING POINTS FOR PLAYERS
 	int m_FormationPoints;						// Points this enemy give to the player when player shoot him
 	int m_DivingPoints;
+
+	// Enemy death
+	void SetCollisionEnabled(bool enabled);
+	bool m_IsPlayingDeathAnimation{ false };
+	glm::vec2 m_DeathAnimationOffset{ 0.0f, 0.0f };
 };
 
 #endif

@@ -2,6 +2,7 @@
 #include "SpriteAnimatorCP.h"
 #include "RenderComponent.h"
 #include "Renderer.h"
+#include "iostream"
 
 engine::SpriteAnimatorCP::SpriteAnimatorCP(engine::GameObject* pOwner, const int numberCols, const int totalFrames, const float frameRate)
 	:Component("SpriteAnimatorCP", pOwner),
@@ -95,6 +96,10 @@ void engine::SpriteAnimatorCP::NormalUpdate()
 		{
 			// Reset to start if we reached the limit
 			m_CurrentFrame = 0;
+			if (m_AnimationCompleteCallback)
+			{
+				m_AnimationCompleteCallback();
+			}
 		}
 	}
 }
@@ -112,6 +117,10 @@ void engine::SpriteAnimatorCP::ReverseUpdate()
 		{
 			// Reset to start if we reached the limit
 			m_CurrentFrame = m_StartFrame;
+			if (m_AnimationCompleteCallback)
+			{
+				m_AnimationCompleteCallback();
+			}
 		}
 	}
 }
@@ -138,6 +147,11 @@ void engine::SpriteAnimatorCP::UpdateSourceRect()
 const SDL_Rect& engine::SpriteAnimatorCP::GetSpriteRect() const
 {
 	return m_pSourceRect;
+}
+
+void engine::SpriteAnimatorCP::SetAnimationCompleteCallback(std::function<void()> callback)
+{
+	m_AnimationCompleteCallback = std::move(callback);
 }
 
 void engine::SpriteAnimatorCP::ReceiveMessage(const std::string& message, const std::string& value)

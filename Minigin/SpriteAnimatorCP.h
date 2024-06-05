@@ -2,6 +2,7 @@
 #define GAME_ENGINE_SPRITEANIMATORCP
 #include "Component.h"
 #include <SDL.h>
+#include <functional>
 
 namespace engine
 {
@@ -25,6 +26,8 @@ namespace engine
 		virtual void ReceiveMessage(const std::string& message, const std::string& value) override;
 
 		const SDL_Rect& GetSpriteRect() const;
+
+		void SetAnimationCompleteCallback(std::function<void()> callback);
 
 	private:
 
@@ -50,6 +53,8 @@ namespace engine
 		SDL_Rect m_pSourceRect;
 		AnimationMode m_AnimationMode;
 		bool m_NormalState;				// For normalAndReverse state
+
+		std::function<void()> m_AnimationCompleteCallback;
 	};
 }
 

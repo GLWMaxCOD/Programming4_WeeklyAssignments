@@ -37,6 +37,8 @@ void engine::CollisionComponent::AddObserver(engine::Observer* pObserver)
 
 void engine::CollisionComponent::CollisionWith(engine::GameObject* other, engine::CollisionComponent* otherCollisionCP)
 {
+	if (!m_Enabled) return; //If collision isn't enabled, don't check for collisions
+
 	// Only check if there is an observer interested on it and if there are not the same type
 	if (m_CollisionSubject != nullptr && other->Tag() != GetOwner()->Tag())
 	{

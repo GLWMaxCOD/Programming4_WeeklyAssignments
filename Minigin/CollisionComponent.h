@@ -26,10 +26,14 @@ namespace engine
 		engine::Rectf GetBoundingBox() const;
 		void SetBoundingBox(const glm::vec3& gameObjectPos);
 
+		void SetEnabled(bool enabled) { m_Enabled = enabled; }
+
 	private:
 		std::unique_ptr<engine::Subject> m_CollisionSubject;
 		Rectf m_BoundingBox;								// Used to check collisions
 		glm::vec2 m_Size;									// Size of the GameObject
+
+		bool m_Enabled{ true };
 	};
 
 }

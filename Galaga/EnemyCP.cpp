@@ -58,6 +58,12 @@ EnemyCP::~EnemyCP()
 
 void EnemyCP::Update(const float deltaTime)
 {
+	if (m_IsPlayingDeathAnimation)
+	{
+		// If enemy is dying, don't do anything
+		return;
+	}
+
 	if (m_pMoveCP != nullptr && m_pTransformCP != nullptr)
 	{
 		switch (m_CurrentState)
@@ -227,13 +233,15 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 					missileCP->SetEnemyPoints(points);
 				}
 
+				// Trigger the death animation
+				SetDeathAnimation("Sprites/deathAnimation.png", 5, 5, 1.f / 5.f, 1, 5, glm::vec2(-5.0f, 15.0f));
 			}
 		}
 	}
 	if (event.IsSameEvent("GameObjectDied"))
 	{
 		// Enemies will become inactive when they die (do not destroy the gameObject)
-		GetOwner()->SetIsActive(false);
+		//GetOwner()->SetIsActive(false);
 		auto& soundSystem = engine::Servicealocator::Get_Sound_System();
 		soundSystem.PlaySound(short(Sounds::enemyDie));
 	}
@@ -287,6 +295,39 @@ void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
 		}
 
 		//GetOwner()->SetIsActive(true);
+	}
+}
+
+void EnemyCP::SetDeathAnimation(const std::string& spriteFilePath, int totalCols, int totalFrames, float frameRate, int frameInc, int limitFrame, const glm::vec2& offset)
+{
+	auto pOwner = GetOwner();
+	if (pOwner)
+	{
+		m_IsPlayingDeathAnimation = true;
+		m_DeathAnimationOffset = offset;
+
+		// Disable collision
+		SetCollisionEnabled(false);
+
+		pOwner->RemoveComponent<engine::RenderComponent>();
+		pOwner->AddComponent<engine::RenderComponent>(pOwner, spriteFilePath);
+		pOwner->RemoveComponent<engine::SpriteAnimatorCP>();
+		auto spriteAnimatorCP = pOwner->AddComponent<engine::SpriteAnimatorCP>(pOwner, totalCols, totalFrames, frameRate, frameInc, limitFrame);
+
+		spriteAnimatorCP->SetAnimationCompleteCallback([this]()
+		{
+			m_IsPlayingDeathAnimation = false;
+			GetOwner()->SetIsActive(false);
+		});
+	}
+}
+
+void EnemyCP::SetCollisionEnabled(bool enabled) 
+{
+	auto collisionCP = GetOwner()->GetComponent<engine::CollisionComponent>();
+	if (collisionCP) 
+	{
+		collisionCP->SetEnabled(enabled);
 	}
 }
 
