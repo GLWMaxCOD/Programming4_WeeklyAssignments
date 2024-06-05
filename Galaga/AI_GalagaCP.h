@@ -24,6 +24,7 @@ public:
 	virtual void ReceiveMessage(const std::string& message, const std::string& value) override;
 
 	void Reset();
+	void ChangeSprite();
 
 	void SetAIActive(bool isActive);
 	void SetFormationOnly(bool formationOnly);
@@ -63,6 +64,8 @@ private:
 	// Tractor beam behaviour
 	void moveIntoPosition(const float deltaTime, const glm::vec3& currentPos);
 	void UpdateTractorBeam(const float deltaTime);
+
+	engine::GameObject* m_pTractorBeam;
 
 	// Bombing run behaviour
 

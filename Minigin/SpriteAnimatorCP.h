@@ -9,8 +9,16 @@ namespace engine
 	class SpriteAnimatorCP final : public engine::Component
 	{
 	public:
+
+		enum class AnimationMode 
+		{
+			normal,
+			reverse,
+			normalAndReverse				// First normal animation and when endFrame is reached it will go back in reverse to the beginFrame
+		};
+
 		SpriteAnimatorCP(engine::GameObject* pOwner, const int numberCols, const int totalFrames, const float frameRate);
-		SpriteAnimatorCP(engine::GameObject* pOwner, const int numberCols, const int totalFrames, const float frameRate, int frameInc, int limitFrame, int startFrame = 0);
+		SpriteAnimatorCP(engine::GameObject* pOwner, const int numberCols, const int totalFrames, const float frameRate, int frameInc, int limitFrame, int startFrame = 0, const AnimationMode& mode = AnimationMode::normal);
 		~SpriteAnimatorCP() override;
 
 		virtual void Update(const float deltaTime) override;
@@ -20,6 +28,9 @@ namespace engine
 
 	private:
 
+		void NormalUpdate();
+		void ReverseUpdate();
+		void SwapStartAndLimit();
 		void UpdateSourceRect();
 
 		int m_CurrentFrame;				// Current frame being render
@@ -30,12 +41,15 @@ namespace engine
 		int m_TotalCols;
 		int m_CurrentCol;
 		int m_CurrentRow;
+		int m_StartFrame;
 
 		float m_ElapsedFrameTime;
 		float m_FrameRate;
 
 		engine::RenderComponent* m_pRenderComponent;
 		SDL_Rect m_pSourceRect;
+		AnimationMode m_AnimationMode;
+		bool m_NormalState;				// For normalAndReverse state
 	};
 }
 

@@ -237,6 +237,12 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 		auto& soundSystem = engine::Servicealocator::Get_Sound_System();
 		soundSystem.PlaySound(short(Sounds::enemyDie));
 	}
+	if (event.IsSameEvent("HealthDecremented"))
+	{
+		auto galaga = GetOwner()->GetComponent<AI_GalagaCP>();
+		if (galaga != nullptr) // Change sprite for galaga enemies when it has been hit once
+			galaga->ChangeSprite();
+	}
 }
 
 void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
