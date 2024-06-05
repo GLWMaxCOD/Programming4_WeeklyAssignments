@@ -42,9 +42,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>General Files</Filter>
     </ClCompile>
-    <ClCompile Include="KillCommand.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
     <ClCompile Include="MoveCommand.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
@@ -138,9 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MoveCommand.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="KillCommand.h">
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">

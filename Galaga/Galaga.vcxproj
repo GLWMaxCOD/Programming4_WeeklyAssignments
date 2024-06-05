@@ -195,7 +195,6 @@
     <ClCompile Include="GameplayState.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
-    <ClCompile Include="KillCommand.cpp" />
     <ClCompile Include="LivesUIComponent.cpp" />
     <ClCompile Include="MenuSelectionCommand.cpp" />
     <ClCompile Include="MenuSelectionCP.cpp" />
@@ -240,7 +239,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameIncludes.h" />
     <ClInclude Include="HealthComponent.h" />
-    <ClInclude Include="KillCommand.h" />
     <ClInclude Include="LivesUIComponent.h" />
     <ClInclude Include="MissileCP.h" />
     <ClInclude Include="MoveCommand.h" />

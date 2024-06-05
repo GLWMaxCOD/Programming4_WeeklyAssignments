@@ -24,7 +24,7 @@ public:
 	virtual void ReceiveMessage(const std::string& message, const std::string& value) override;
 
 	void Reset();
-	void ChangeSprite();
+	void ChangeSprite(const std::string& spritePath);
 
 	void SetAIActive(bool isActive);
 	void SetFormationOnly(bool formationOnly);

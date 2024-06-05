@@ -9,6 +9,8 @@
 #include "AI_GalagaCP.h"
 #include "GalagaStrings.h"
 #include "GameOverState.h"
+#include "Servicealocator.h"
+#include "SoundIDs.h"
 #include <iostream>
 
 GameplayState::GameplayState(const std::string& gameMode)
@@ -16,13 +18,24 @@ GameplayState::GameplayState(const std::string& gameMode)
 	m_IsGameOver{ false }, m_pPlayer1{ nullptr }
 {
 	// Load all data paths 
-	FormationJsonData formationData1("../Data/Formations/FormationStage1.json", "../Data/Formations/FormationStage1-Order.json");
-	std::pair stageData1{ std::make_pair(FIRST_STAGE, formationData1) };
-	m_vEnemiesData.emplace_back(stageData1);
+	LoadDataPaths();
+}
 
-	/*FormationJsonData formationData2("../Data/Formations/FormationStage2.json", "../Data/Formations/FormationStage2-Order.json");
-	std::pair stageData2{ std::make_pair(SECOND_STAGE, formationData2) };
-	m_vEnemiesData.emplace_back(stageData2);*/
+void GameplayState::LoadDataPaths()
+{
+	FormationJsonData formationData("../Data/Formations/FormationStage1.json", "../Data/Formations/FormationStage1-Order.json");
+	std::pair stageData{ std::make_pair(FIRST_STAGE, formationData) };
+	m_vEnemiesData.emplace_back(stageData);
+
+	formationData.changeData("../Data/Formations/FormationStage2.json", "../Data/Formations/FormationStage2-Order.json");
+	stageData.first = SECOND_STAGE;
+	stageData.second = formationData;
+	m_vEnemiesData.emplace_back(stageData);
+
+	formationData.changeData("../Data/Formations/FormationStage3.json", "../Data/Formations/FormationStage3-Order.json");
+	stageData.first = THIRD_STAGE;
+	stageData.second = formationData;
+	m_vEnemiesData.emplace_back(stageData);
 }
 
 GameplayState::~GameplayState()
@@ -32,6 +45,9 @@ GameplayState::~GameplayState()
 
 void GameplayState::OnEnter() //Add VERSUS MODE HERE LATER
 {
+	auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+	soundSystem.PlaySound(short(Sounds::startSound));
+
 	if (m_GameMode == "1 PLAYER" || m_GameMode == "2 PLAYERS" || m_GameMode == "VERSUS")
 	{
 		InitPlayer1();

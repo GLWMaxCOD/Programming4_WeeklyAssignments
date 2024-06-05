@@ -249,7 +249,7 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 	{
 		auto galaga = GetOwner()->GetComponent<AI_GalagaCP>();
 		if (galaga != nullptr) // Change sprite for galaga enemies when it has been hit once
-			galaga->ChangeSprite();
+			galaga->ChangeSprite(GALAGA_SPRITE_HIT);
 	}
 }
 
@@ -264,6 +264,8 @@ void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
 		m_CurrentState = ENEMY_STATE::moveToFormation;
 		m_HasShoot = true;
 		m_ElapsedShootTime = 0.f;
+		m_IsPlayingDeathAnimation = false;
+		SetCollisionEnabled(true);
 
 		if (m_EnemyType == STR_BEE)
 		{
@@ -272,6 +274,7 @@ void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
 			if (beeAI != nullptr)
 			{
 				beeAI->Reset();
+				ResetAnimation("Sprites/beeSpritesheet.png", 16, 32, 1.f / 5.f, 16, 16, glm::vec2(5.0f, -15.0f));
 			}
 
 		}
@@ -282,6 +285,7 @@ void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
 			if (butterflyAI != nullptr)
 			{
 				butterflyAI->Reset();
+				ResetAnimation("Sprites/butterflySpritesheet.png", 16, 32, 1.f / 5.f, 16, 16, glm::vec2(5.0f, -15.0f));
 			}
 		}
 		else if (m_EnemyType == STR_GALAGA)
@@ -291,6 +295,7 @@ void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
 			if (galagaAI != nullptr)
 			{
 				galagaAI->Reset();
+				ResetAnimation("Sprites/galagaSpritesheet.png", 16, 32, 1.f / 5.f, 16, 16, glm::vec2(5.0f, -15.0f));
 			}
 		}
 
@@ -318,6 +323,29 @@ void EnemyCP::SetDeathAnimation(const std::string& spriteFilePath, int totalCols
 		{
 			m_IsPlayingDeathAnimation = false;
 			GetOwner()->SetIsActive(false);
+		});
+	}
+}
+
+void EnemyCP::ResetAnimation(const std::string& spriteFilePath, int totalCols, int totalFrames, float frameRate, int frameInc, int limitFrame, const glm::vec2& offset)
+{
+	auto pOwner = GetOwner();
+	if (pOwner)
+	{
+		m_IsPlayingDeathAnimation = false;
+		m_DeathAnimationOffset = offset;
+
+		// Disable collision
+		SetCollisionEnabled(true);
+
+		pOwner->RemoveComponent<engine::RenderComponent>();
+		pOwner->AddComponent<engine::RenderComponent>(pOwner, spriteFilePath);
+		pOwner->RemoveComponent<engine::SpriteAnimatorCP>();
+		auto spriteAnimatorCP = pOwner->AddComponent<engine::SpriteAnimatorCP>(pOwner, totalCols, totalFrames, frameRate, frameInc, limitFrame);
+
+		spriteAnimatorCP->SetAnimationCompleteCallback([this]()
+		{
+			GetOwner()->SetIsActive(true);
 		});
 	}
 }

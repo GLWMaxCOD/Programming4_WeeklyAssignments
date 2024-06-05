@@ -46,6 +46,7 @@ private:
 	void SetEnemyTypePoints();
 
 	void SetDeathAnimation(const std::string& spriteFilePath, int totalCols, int totalFrames, float frameRate, int frameInc, int limitFrame, const glm::vec2& offset);
+	void ResetAnimation(const std::string& spriteFilePath, int totalCols, int totalFrames, float frameRate, int frameInc, int limitFrame, const glm::vec2& offset);
 
 	// Firing Missiles - ALL enemy types can fire them
 	void FireMissile(const float deltaTime);

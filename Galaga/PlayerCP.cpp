@@ -7,6 +7,8 @@
 #include "MissileManagerCP.h"
 #include "LivesUIComponent.h"
 #include "PlayerScoreCP.h"
+#include "Servicealocator.h"
+#include "SoundIDs.h"
 #include <iostream>
 
 PlayerCP::PlayerCP(engine::GameObject* pOwner, unsigned int health, const unsigned int playerIdx, const glm::vec2& windowLimits)
@@ -79,5 +81,9 @@ void PlayerCP::OnNotify(engine::GameObject*, const engine::Event& event)
 	if (event.IsSameEvent("GameObjectDied"))
 	{
 		GetOwner()->SetIsActive(false);
+
+		// Death sound
+		auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+		soundSystem.PlaySound(short(Sounds::playerDeath));
 	}
 }
