@@ -7,7 +7,7 @@
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
-#include "Servicealocator.h"
+#include "Servicelocator.h"
 #include "SDL_SoundSystem.h"
 #include "Logging_Sound_System.h"
 #include <thread>
@@ -78,16 +78,16 @@ engine::Engine::Engine(const std::string& dataPath, const engine::Window& window
 	// INIT SOUND SYSTEM
 	#if _DEBUG
 		// If debug mode use the log version
-		Servicealocator::Register_sound_system(new Logging_Sound_System(new SDL_SoundSystem()));
+		Servicelocator::Register_sound_system(new Logging_Sound_System(new SDL_SoundSystem()));
 	#else
-		Servicealocator::Register_sound_system(new SDL_SoundSystem());
+		Servicelocator::Register_sound_system(new SDL_SoundSystem());
 	#endif
 }
 
 engine::Engine::~Engine()
 {
 	Renderer::GetInstance().Destroy();
-	Servicealocator::ShutDownSoundSystem();
+	Servicelocator::ShutDownSoundSystem();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();

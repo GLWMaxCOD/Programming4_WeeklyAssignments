@@ -4,7 +4,7 @@
 #include "Scene.h"
 #include "glm/vec3.hpp"
 #include "glm/vec2.hpp"
-#include "Servicealocator.h"
+#include "Servicelocator.h"
 #include "SoundIDs.h"
 #include "GalagaStrings.h"
 #include <memory>
@@ -37,7 +37,7 @@ void Game::Initialize()
 // Add all the sounds that our game will need
 void Game::AddAllSounds()
 {
-	auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+	auto& soundSystem = engine::Servicelocator::Get_Sound_System();
 
 	// Register sounds ID with its path (dont load them yet)
 	soundSystem.RegisterSoundID(short(Sounds::startSound), "../Data/Sounds/Start.mp3", 80);

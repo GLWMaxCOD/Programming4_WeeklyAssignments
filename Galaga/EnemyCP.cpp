@@ -3,7 +3,7 @@
 #include "GameObject.h"
 #include "CollisionComponent.h"
 #include "HealthComponent.h"
-#include "Servicealocator.h"
+#include "Servicelocator.h"
 #include "SoundIDs.h"
 #include "MoveComponent.h"
 #include "RotatorComponent.h"
@@ -242,7 +242,7 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 
 		// Trigger the death animation
 		SetDeathAnimation("Sprites/deathAnimation.png", 5, 5, 1.f / 5.f, 1, 5, glm::vec2(-5.0f, 15.0f));
-		auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+		auto& soundSystem = engine::Servicelocator::Get_Sound_System();
 		soundSystem.PlaySound(short(Sounds::enemyDie));
 	}
 	if (event.IsSameEvent("HealthDecremented"))

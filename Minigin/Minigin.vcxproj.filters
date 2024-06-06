@@ -116,7 +116,7 @@
     <ClInclude Include="CollisionComponent.h">
       <Filter>Engine Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Servicealocator.h">
+    <ClInclude Include="Servicelocator.h">
       <Filter>Engine Files\Services</Filter>
     </ClInclude>
     <ClInclude Include="SoundSystem.h">
@@ -211,7 +211,7 @@
     <ClCompile Include="CollisionComponent.cpp">
       <Filter>Engine Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Servicealocator.cpp">
+    <ClCompile Include="Servicelocator.cpp">
       <Filter>Engine Files\Services</Filter>
     </ClCompile>
     <ClCompile Include="SDL_SoundSystem.cpp">

@@ -1,12 +1,12 @@
-#ifndef GAME_ENGINE_SERVICEALOCATOR
-#define GAME_ENGINE_SERVICEALOCATOR
+#ifndef GAME_ENGINE_SERVICELOCATOR
+#define GAME_ENGINE_SERVICELOCATOR
 
 #include "SoundSystem.h"
 #include "Null_Sound_System.h"
 
 namespace engine
 {
-	class Servicealocator final
+	class Servicelocator final
 	{		
 	public:
 
@@ -41,6 +41,4 @@ namespace engine
 
 	
 }
-
-
 #endif

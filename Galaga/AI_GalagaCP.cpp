@@ -7,7 +7,7 @@
 #include "SpriteAnimatorCP.h"
 #include "EnemyCP.h"
 #include "Scene.h"
-#include "Servicealocator.h"
+#include "Servicelocator.h"
 #include "SoundIDs.h"
 #include "CollisionComponent.h"
 #include "HealthComponent.h"
@@ -102,7 +102,7 @@ void AI_GalagaCP::InitData(const engine::Window window)
 	}
 
 	// Start galaga dive sound
-	auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+	auto& soundSystem = engine::Servicelocator::Get_Sound_System();
 	soundSystem.PlaySound(short(Sounds::galagaDive));
 
 	m_AttackState = AttackState::startLoop;
@@ -256,7 +256,7 @@ void AI_GalagaCP::moveIntoPosition(const float deltaTime, const glm::vec3& curre
 		m_TractorBeamState = TractorBeamState::tractorBeam;
 
 		// Start tractor beam sound bluw bluw!
-		auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+		auto& soundSystem = engine::Servicelocator::Get_Sound_System();
 		soundSystem.PlaySound(short(Sounds::tractorBeam));
 	}
 

@@ -6,7 +6,7 @@
 #include "SceneManager.h"
 #include "MoveComponent.h"
 #include "CollisionComponent.h"
-#include "Servicealocator.h"
+#include "Servicelocator.h"
 #include "SoundIDs.h"
 #include <iostream>
 
@@ -77,7 +77,7 @@ void MissileManagerCP::Fire(const glm::vec3& direction)
 			missile->SetIsActive(true);
 			if (m_MissileOwner == "player") //To prevent the shooting sound from being played for every missile shot, and only play for the player
 			{
-				auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+				auto& soundSystem = engine::Servicelocator::Get_Sound_System();
 				soundSystem.PlaySound(short(Sounds::playerFire));
 			}
 			break;

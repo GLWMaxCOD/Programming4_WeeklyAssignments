@@ -9,7 +9,7 @@
 #include "AI_GalagaCP.h"
 #include "GalagaStrings.h"
 #include "GameOverState.h"
-#include "Servicealocator.h"
+#include "Servicelocator.h"
 #include "SoundIDs.h"
 #include <iostream>
 
@@ -45,7 +45,7 @@ GameplayState::~GameplayState()
 
 void GameplayState::OnEnter() //Add VERSUS MODE HERE LATER
 {
-	auto& soundSystem = engine::Servicealocator::Get_Sound_System();
+	auto& soundSystem = engine::Servicelocator::Get_Sound_System();
 	soundSystem.PlaySound(short(Sounds::startSound));
 
 	if (m_GameMode == "1 PLAYER" || m_GameMode == "2 PLAYERS" || m_GameMode == "VERSUS")

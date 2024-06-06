@@ -19,7 +19,7 @@
 #include "AI_FormationCP.h"
 
 // SOUND
-#include "Servicealocator.h"
+#include "Servicelocator.h"
 #include "SoundIDs.h"
 
 #endif
