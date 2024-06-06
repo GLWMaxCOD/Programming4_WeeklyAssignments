@@ -46,6 +46,7 @@ void Game::AddAllSounds()
 	soundSystem.RegisterSoundID(short(Sounds::tractorBeam), "../Data/Sounds/TractorBeam.mp3", 50);
 	soundSystem.RegisterSoundID(short(Sounds::galagaDive), "../Data/Sounds/galagaDive.mp3", 30);
 	soundSystem.RegisterSoundID(short(Sounds::playerDeath), "../Data/Sounds/PlayerDies.mp3", 50);
+	soundSystem.RegisterSoundID(short(Sounds::confirm), "../Data/Sounds/Confirm.mp3", 100);
 }
 
 Game::~Game()

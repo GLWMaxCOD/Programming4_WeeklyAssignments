@@ -4,11 +4,7 @@
 #include <Component.h>
 #include <string>
 #include <vector>
-
-namespace engine
-{
-    class GameObject;
-}
+#include "glm/vec3.hpp"
 
 class NameSelectionCP final : public engine::Component
 {
@@ -21,20 +17,21 @@ public:
 
     std::string GetEnteredName() const;
     bool IsNameConfirmed() const;
-
     void CycleLetter(int direction);
     void MoveSelection(int direction);
     void ConfirmName();
     void AddLetterObject(engine::GameObject* letterObject);
-
-    std::vector<char> GetLetters() const;
-    size_t GetCurrentSelection() const;
+    void SetArrowObject(engine::GameObject* arrowObject);
+    const std::vector<char>& GetLetters() const;
 
 private:
     std::vector<char> m_Letters;
+    size_t m_CurrentLetterIndex;
     size_t m_CurrentSelection;
     bool m_NameConfirmed;
+
     std::vector<engine::GameObject*> m_LetterObjects;
+    engine::GameObject* m_ArrowObject;
 };
 
 #endif // GALAGA_NAMESELECTIONCP

@@ -28,6 +28,7 @@ private:
 	void UpdateUIObjects(const float deltaTime);
 	std::vector<std::pair<std::string, int>> LoadHighScores();
 	void SaveScoreToJson(PlayerScoreCP* pPlayerScore, const std::string& playerName);
+	void UpdateHighScoresUI(const std::vector<std::pair<std::string, int>>& highScores);
 
 	float m_elapsedSec{ 0.f };
 	float m_MaxTime{ 1.5f };
@@ -37,6 +38,8 @@ private:
 
 	NameSelectionCP* m_pNameSelectionCP{ nullptr };
 	bool m_NameEntered{ false };
+
+	std::vector<engine::GameObject*> m_HighScoresObjects{};
 };
 
 #endif

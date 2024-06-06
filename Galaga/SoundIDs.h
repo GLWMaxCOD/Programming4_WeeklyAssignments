@@ -8,7 +8,8 @@ enum class Sounds
 	startSound = 2,
 	tractorBeam = 3,
 	galagaDive = 4,
-	playerDeath = 5
+	playerDeath = 5,
+	confirm = 6
 };
 
 #endif

@@ -51,12 +51,11 @@ void GameOverState::OnEnter()
 
 	SDL_Color redColor{ 255, 0, 0 };
 	SDL_Color yellowColor{ 255, 255, 0 };
-	//glm::vec3 resultsPos{ (window.width / 2.f) - 50.f, (window.height / 2.f) - 50.f, 0.f };
+
 	auto resultsGO{ std::make_shared<engine::GameObject>(nullptr, "UI", gameOverPos) };
 	resultsGO->AddComponent<engine::RenderComponent>(resultsGO.get());
 	resultsGO->AddComponent<TextComponent>(resultsGO.get(), "-RESULTS-", galaga_Font, redColor);
 	resultsGO->SetIsActive(false);
-
 
 	std::string shotsFired{ "SHOTS FIRED     " };
 	if (pPlayerScore != nullptr)
@@ -104,31 +103,40 @@ void GameOverState::OnEnter()
 	highScoresPos.y += 50.f;
 
 	auto galaga_FontSmall = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 12);
+	auto galaga_FontExtraSmall = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 10);
 	for (const auto& scorePair : highScores)
 	{
 		std::string scoreText = scorePair.first + "        " + std::to_string(scorePair.second);
 		engine::GameObject* pHighScore{ new engine::GameObject(highScoresGO.get(), std::string{"UI"}, ScoresPos) };
 		pHighScore->AddComponent<engine::RenderComponent>(pHighScore);
 		pHighScore->AddComponent<TextComponent>(pHighScore, scoreText, galaga_FontSmall, yellowColor);
+		m_HighScoresObjects.push_back(pHighScore);
 		ScoresPos.y += 40.f;
 	}
 
 	// Create and position NameSelectionCP above high scores title
-	auto nameSelectionGO = std::make_shared<engine::GameObject>(nullptr, "UI", glm::vec3{ highScoresPos.x, highScoresPos.y - 50.f, 0.f });
-	m_pNameSelectionCP = nameSelectionGO->AddComponent<NameSelectionCP>(nameSelectionGO.get());
-	nameSelectionGO->SetIsActive(false);
-
-	auto galaga_FontName = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 17);
-	glm::vec3 letterPos = highScoresPos;
+	m_pNameSelectionCP = highScoresGO->AddComponent<NameSelectionCP>(highScoresGO.get());
+	glm::vec3 letterPos = glm::vec3{ 70.f, highScoresPos.y + 175.f, 0.f };
+	glm::vec3 enterNamePos = glm::vec3{ letterPos.x - 60.f, letterPos.y - 20.f, 0.f };
+	engine::GameObject* enterNameTextGO = new engine::GameObject(highScoresGO.get(), "UI", enterNamePos);
+	enterNameTextGO->AddComponent<engine::RenderComponent>(enterNameTextGO);
+	enterNameTextGO->AddComponent<TextComponent>(enterNameTextGO, "-ENTER NAME HERE-", galaga_FontExtraSmall, redColor);
 
 	for (size_t i = 0; i < 3; ++i)
 	{
-		auto letterGO = new engine::GameObject(nameSelectionGO.get(), "UI", letterPos);
+		auto letterGO = new engine::GameObject(highScoresGO.get(), "UI", letterPos);
 		letterGO->AddComponent<engine::RenderComponent>(letterGO);
-		letterGO->AddComponent<TextComponent>(letterGO, std::string(1, m_pNameSelectionCP->GetLetters()[i]), galaga_FontName, yellowColor);
+		letterGO->AddComponent<TextComponent>(letterGO, std::string(1, m_pNameSelectionCP->GetLetters()[i]), galaga_Font, yellowColor);
 		m_pNameSelectionCP->AddLetterObject(letterGO);
-		letterPos.x += 50.f;
+		letterPos.x += 20.f;
 	}
+
+	// Add the selection arrow
+	glm::vec3 arrowPos = glm::vec3{ 70.f, letterPos.y + 10.f, 0.f }; // Position it above the first letter
+	engine::GameObject* arrowGO = new engine::GameObject(highScoresGO.get(), "UI", letterPos);
+	arrowGO->AddComponent<engine::RenderComponent>(arrowGO);
+	arrowGO->AddComponent<TextComponent>(arrowGO, "^", galaga_Font, yellowColor);
+	m_pNameSelectionCP->SetArrowObject(arrowGO);
 
 	// Bind name selection input
 	auto playerInputCP = player->GetComponent<PlayerInputCP>();
@@ -140,12 +148,10 @@ void GameOverState::OnEnter()
 	scene.Add(gameOverText);
 	scene.Add(resultsGO);
 	scene.Add(highScoresGO);
-	scene.Add(nameSelectionGO);
 
 	m_GameOverObjects.emplace_back(gameOverText.get());
 	m_GameOverObjects.emplace_back(resultsGO.get());
 	m_GameOverObjects.emplace_back(highScoresGO.get());
-	m_GameOverObjects.emplace_back(nameSelectionGO.get());
 }
 
 void GameOverState::OnExit()
@@ -172,6 +178,8 @@ void GameOverState::UpdateState(const float deltaTime)
 		if (pPlayerScore != nullptr)
 		{
 			SaveScoreToJson(pPlayerScore, m_pNameSelectionCP->GetEnteredName());
+			std::vector<std::pair<std::string, int>> highScores = LoadHighScores();
+			UpdateHighScoresUI(highScores);
 		}
 
 		m_NameEntered = true;
@@ -180,6 +188,41 @@ void GameOverState::UpdateState(const float deltaTime)
 	if (m_CurrentShowing < int(m_GameOverObjects.size()))
 	{
 		UpdateUIObjects(deltaTime);
+	}
+}
+
+void GameOverState::UpdateHighScoresUI(const std::vector<std::pair<std::string, int>>& highScores)
+{
+	glm::vec3 ScoresPos{ 100.f, 240.f, 0.f }; // Adjust position as needed
+	auto galaga_FontSmall = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 12);
+	SDL_Color yellowColor = { 255, 255, 0 };
+
+	// Update existing high score UI elements with new scores
+	for (size_t i = 0; i < m_HighScoresObjects.size(); ++i)
+	{
+		if (i < highScores.size())
+		{
+			auto textComp = m_HighScoresObjects[i]->GetComponent<TextComponent>();
+			if (textComp)
+			{
+				textComp->SetText(highScores[i].first + "        " + std::to_string(highScores[i].second));
+			}
+		}
+		else
+		{
+			m_HighScoresObjects[i]->MarkAsDead();
+		}
+	}
+
+	// Add new high score UI elements if there are more scores than existing elements
+	for (size_t i = m_HighScoresObjects.size(); i < highScores.size(); ++i)
+	{
+		std::string scoreText = highScores[i].first + "        " + std::to_string(highScores[i].second);
+		engine::GameObject* pHighScore{ new engine::GameObject(m_GameOverObjects.back(), std::string{"UI"}, ScoresPos) };
+		pHighScore->AddComponent<engine::RenderComponent>(pHighScore);
+		pHighScore->AddComponent<TextComponent>(pHighScore, scoreText, galaga_FontSmall, yellowColor);
+		m_HighScoresObjects.push_back(pHighScore);
+		ScoresPos.y += 40.f;
 	}
 }
 
