@@ -232,9 +232,6 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 				{
 					missileCP->SetEnemyPoints(points);
 				}
-
-				// Trigger the death animation
-				SetDeathAnimation("Sprites/deathAnimation.png", 5, 5, 1.f / 5.f, 1, 5, glm::vec2(-5.0f, 15.0f));
 			}
 		}
 	}
@@ -242,6 +239,9 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 	{
 		// Enemies will become inactive when they die (do not destroy the gameObject)
 		//GetOwner()->SetIsActive(false);
+
+		// Trigger the death animation
+		SetDeathAnimation("Sprites/deathAnimation.png", 5, 5, 1.f / 5.f, 1, 5, glm::vec2(-5.0f, 15.0f));
 		auto& soundSystem = engine::Servicealocator::Get_Sound_System();
 		soundSystem.PlaySound(short(Sounds::enemyDie));
 	}
@@ -249,7 +249,14 @@ void EnemyCP::OnNotify(engine::GameObject* gameObject, const engine::Event& even
 	{
 		auto galaga = GetOwner()->GetComponent<AI_GalagaCP>();
 		if (galaga != nullptr) // Change sprite for galaga enemies when it has been hit once
-			galaga->ChangeSprite(GALAGA_SPRITE_HIT);
+		{
+			if (m_HasBeenHitOnce == false)
+			{
+				galaga->ChangeSprite(GALAGA_SPRITE_HIT);
+				m_HasBeenHitOnce = true;
+			}
+		}
+			
 	}
 }
 
@@ -265,6 +272,7 @@ void EnemyCP::Reset(const glm::vec3& startPos, const glm::vec3& formationPos)
 		m_HasShoot = true;
 		m_ElapsedShootTime = 0.f;
 		m_IsPlayingDeathAnimation = false;
+		m_HasBeenHitOnce = false;
 		SetCollisionEnabled(true);
 
 		if (m_EnemyType == STR_BEE)

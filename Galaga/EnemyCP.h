@@ -73,6 +73,7 @@ private:
 	// Enemy death
 	void SetCollisionEnabled(bool enabled);
 	bool m_IsPlayingDeathAnimation{ false };
+	bool m_HasBeenHitOnce{ false };
 	glm::vec2 m_DeathAnimationOffset{ 0.0f, 0.0f };
 };
 

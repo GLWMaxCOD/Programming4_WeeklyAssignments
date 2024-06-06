@@ -2,6 +2,8 @@
 #define GALAGA_AI_GALAGACP
 
 #include "Component.h"
+#include "Observer.h"
+#include "Event.h"
 #include "glm/vec3.hpp"
 #include "glm/vec2.hpp"
 
@@ -13,8 +15,9 @@ namespace engine
 {
 	class TransformComponent;
 	struct Window;
+	class CollisionComponent;
 }
-class AI_GalagaCP final : public engine::Component
+class AI_GalagaCP final : public engine::Component, public engine::Observer
 {
 public:
 	AI_GalagaCP(engine::GameObject* pOwner);
@@ -22,6 +25,7 @@ public:
 
 	virtual void Update(const float deltaTime) override;
 	virtual void ReceiveMessage(const std::string& message, const std::string& value) override;
+	void OnNotify(engine::GameObject* gameObject, const engine::Event& event) override;
 
 	void Reset();
 	void ChangeSprite(const std::string& spritePath);
@@ -66,6 +70,7 @@ private:
 	void UpdateTractorBeam(const float deltaTime);
 
 	engine::GameObject* m_pTractorBeam;
+	engine::CollisionComponent* m_pTractorBeamCollisionCP;
 
 	// Bombing run behaviour
 
@@ -94,5 +99,7 @@ private:
 	bool m_FormationOnly;
 	bool m_IsVersusMode;
 	bool m_IsAttacking;
+
+	bool m_PlayerHit; // To avoid from the player being instakilled by Tractorbeam, it's too OP
 };
 #endif // DEBUG

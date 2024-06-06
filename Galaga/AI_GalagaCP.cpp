@@ -9,6 +9,8 @@
 #include "Scene.h"
 #include "Servicealocator.h"
 #include "SoundIDs.h"
+#include "CollisionComponent.h"
+#include "HealthComponent.h"
 #include <glm/gtc/constants.hpp>
 #include <iostream>
 
@@ -19,7 +21,7 @@ AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 	, m_TractorBeamState{ TractorBeamState::moveIntoPosition }, m_DoTractorBeam{ true }, m_pGalagaTransfCP{ nullptr }
 	, m_pMoveCP{ nullptr }, m_pRotatorCP{ nullptr }, ROTATION_TIME{ 1.5f }, m_RotationRadius{ 30.f }, m_DoRotateLeft{ false }
 	, m_pEnemyCP{ nullptr }, m_TractorBeamPos{ glm::vec2{0.f, 0.f} }, m_Direction{ 0.f, 0.f, 0.f }
-	, MAX_TRACTORBEAM_TIME{ 3.5f }, m_ElapsedTime{ 0.f }, m_pTractorBeam{ nullptr }
+	, MAX_TRACTORBEAM_TIME{ 3.5f }, m_ElapsedTime{ 0.f }, m_pTractorBeam{ nullptr }, m_pTractorBeamCollisionCP{ nullptr }, m_PlayerHit{ false }
 {
 
 	if (pOwner != nullptr)
@@ -45,7 +47,6 @@ AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 		m_pTractorBeam = new engine::GameObject(GetOwner(), STR_GALAGA, tractorBeamPos, glm::vec2{ 2.f, 2.f }, true);
 		m_pTractorBeam->AddComponent<engine::RenderComponent>(m_pTractorBeam, TRACTOR_BREAM_SPRITE);
 
-
 		float frameRate{ 1.f / 10.f };
 		int totalCols{ 3 };
 		int totalFrames{ 18 };
@@ -55,6 +56,10 @@ AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 		engine::SpriteAnimatorCP::AnimationMode mode = engine::SpriteAnimatorCP::AnimationMode::normalAndReverse;
 		m_pTractorBeam->AddComponent<engine::SpriteAnimatorCP>(m_pTractorBeam, totalCols, totalFrames, frameRate, frameInc, limitFrame, startFrame, mode);
 		m_pTractorBeam->SetIsActive(false);
+
+		// Add collision component to tractor beam
+		m_pTractorBeamCollisionCP = m_pTractorBeam->AddComponent<engine::CollisionComponent>(m_pTractorBeam, glm::vec2{ 64.f, 128.f });
+		m_pTractorBeamCollisionCP->AddObserver(this);
 	}
 }
 
@@ -269,6 +274,7 @@ void AI_GalagaCP::UpdateTractorBeam(const float deltaTime)
 		// Next time it will do a different behaviour
 		//m_DoTractorBeam = !m_DoTractorBeam;
 		m_pTractorBeam->SetIsActive(false);
+		m_pTractorBeamCollisionCP->SetEnabled(false);
 		return;
 	}
 
@@ -277,7 +283,40 @@ void AI_GalagaCP::UpdateTractorBeam(const float deltaTime)
 	{
 		// Tractor beam animation
 		m_pTractorBeam->SetIsActive(true);
+		m_pTractorBeamCollisionCP->SetEnabled(true);
 		m_pTractorBeam->GetComponent<engine::TransformComponent>()->SetPositionDirty();
+
+		// Increment collision component size for animation effect
+		glm::vec2 currentSize = m_pTractorBeamCollisionCP->GetSize();
+		currentSize.y = std::min(currentSize.y + 5 * deltaTime, 150.f);
+		m_pTractorBeamCollisionCP->SetSize(currentSize);
+
+		// Check for collision with player
+		if (!m_PlayerHit)
+		{
+			auto player = engine::SceneManager::GetInstance().FindGameObjectByTag("Player");
+			if (player)
+			{
+				auto playerCollisionCP = player->GetComponent<engine::CollisionComponent>();
+				if (playerCollisionCP)
+				{
+					m_pTractorBeamCollisionCP->CollisionWith(player, playerCollisionCP);
+				}
+			}
+		}
+	}
+}
+
+void AI_GalagaCP::OnNotify(engine::GameObject* gameObject, const engine::Event& event)
+{
+	if (event.IsSameEvent("CollisionWith Player"))
+	{
+		auto playerHealthCP = gameObject->GetComponent<HealthComponent>();
+		if (playerHealthCP != nullptr)
+		{
+			playerHealthCP->DecrementHealth(1);
+			m_PlayerHit = true;
+		}
 	}
 }
 
@@ -310,6 +349,7 @@ void AI_GalagaCP::LeaveLevel(const float deltaTime, float galagaYPos, const engi
 		m_BombingRunState = BombinRunState::moveToLoopPoint;
 		m_TractorBeamState = TractorBeamState::moveIntoPosition;
 		m_IsAttacking = false;
+		m_PlayerHit = false;
 	}
 }
 

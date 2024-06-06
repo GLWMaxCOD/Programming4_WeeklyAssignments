@@ -24,6 +24,8 @@ namespace engine
 		void AddObserver(engine::Observer* pObserver);
 
 		engine::Rectf GetBoundingBox() const;
+		glm::vec2 GetSize() const;
+		void SetSize(const glm::vec2& size);
 		void SetBoundingBox(const glm::vec3& gameObjectPos);
 
 		void SetEnabled(bool enabled) { m_Enabled = enabled; }

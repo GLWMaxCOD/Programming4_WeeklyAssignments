@@ -62,6 +62,17 @@ engine::Rectf engine::CollisionComponent::GetBoundingBox() const
 	return m_BoundingBox;
 }
 
+glm::vec2 engine::CollisionComponent::GetSize() const
+{
+	return m_Size;
+}
+
+void engine::CollisionComponent::SetSize(const glm::vec2& size)
+{
+	m_Size = size;
+	SetBoundingBox(GetOwner()->GetComponent<engine::TransformComponent>()->GetWorldPosition());
+}
+
 // Updates the boundingBox with the gameObject position
 void engine::CollisionComponent::SetBoundingBox(const glm::vec3& gameObjectPos)
 {
