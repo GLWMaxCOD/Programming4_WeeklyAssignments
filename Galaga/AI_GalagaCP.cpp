@@ -403,6 +403,12 @@ void AI_GalagaCP::Reset()
 	m_DoRotateLeft = false;
 	m_Direction = glm::vec3{ 0.f, 0.f, 0.f };
 	m_ElapsedTime = 0.f;
+	m_IsRetracting = false;
+	m_IsAttacking = false;
+
+	glm::vec2 currentSize = m_pTractorBeamCollisionCP->GetSize();
+	currentSize.y = 120.f;
+	m_pTractorBeamCollisionCP->SetSize(currentSize);
 
 	m_pTractorBeam->SetIsActive(false);
 	ChangeSprite(GALAGA_SPRITE);

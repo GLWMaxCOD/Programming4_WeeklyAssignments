@@ -11,7 +11,7 @@ AI_FormationCP::AI_FormationCP(engine::GameObject* pOwner, const std::string& JS
 	m_FormationState{ FormationState::spawning_enemies }, m_MovingFTState{ SpawnOrderState::top_first }, //m_pFormationCP(pOwner->GetComponent<FormationCP>()),
 	BEES_TYPE{ "bees" }, BUTTERFLIES_TYPE{ "butterflies" }, GALAGAS_TYPE{ "galagas" },
 	m_SpawnFirstType{ true }, m_CurrentTimeSpawn{ 0.f }, m_TimeEnemySpawn{ 0.05f }, m_IsSpawnInfoReaded{ false },
-	m_LastEnemyType{ }, m_TimeEnemySend{ 2.5f }, NEXT_GALAGA{ 4 }, m_EnemyToSend{ BEES_TYPE }, m_SendGalagaCount{ 0 },
+	m_LastEnemyType{ }, m_TimeEnemySend{ 1.5f }, NEXT_GALAGA{ 4 }, m_EnemyToSend{ BEES_TYPE }, m_SendGalagaCount{ 0 },
 	m_BeesActiveCount{ 0 }, m_ButterfliesActiveCount{ 0 }, m_GalagasActiveCount{ 0 },
 	m_IsVersusMode{ false }, m_pFormationCP{ pOwner->GetComponent<FormationCP>() }
 {

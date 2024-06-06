@@ -113,7 +113,7 @@ void PlayerInputCP::AddNameControllerInput(NameSelectionCP* pNameSelectionCP)
 	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::DPadDown, engine::InputType::Down, std::move(cycleDownCommand));
 	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::DPadLeft, engine::InputType::Down, std::move(moveLeftCommand));
 	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::DPadRigth, engine::InputType::Down, std::move(moveRightCommand));
-	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::ButtonA, engine::InputType::Down, std::move(confirmCommand));
+	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::ButtonX, engine::InputType::Down, std::move(confirmCommand));
 }
 
 void PlayerInputCP::AddMenuControllerInput(MenuSelectionCP* pMenuSelectionCP)
