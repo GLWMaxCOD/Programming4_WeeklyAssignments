@@ -98,19 +98,19 @@ void GameOverState::OnEnter()
 	// HighscoresGO implementation
 	SDL_Color whiteColor = { 255, 255, 255 };
 	glm::vec3 highScoresPos{ gameOverPos.x + 65.f, 200.f, 0.f };
-	glm::vec3 ScoresPos{ gameOverPos.x + 215.f, 240.f, 0.f };
+	glm::vec3 ScoresPos{ gameOverPos.x + 100.f, 240.f, 0.f };
 	auto highScoresGO{ std::make_shared<engine::GameObject>(nullptr, "UI", highScoresPos) };
 	highScoresGO->AddComponent<engine::RenderComponent>(highScoresGO.get());
 	highScoresGO->AddComponent<TextComponent>(highScoresGO.get(), "--HIGHSCORES--", galaga_Font, whiteColor);
 	highScoresGO->SetIsActive(false);
 
-	std::vector<int> highScores = LoadHighScores();
+	std::vector<std::pair<std::string, int>> highScores = LoadHighScores();
 	highScoresPos.y += 50.f;
 
 	auto galaga_FontSmall = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 12);
-	for (const int score : highScores)
+	for (const auto& scorePair : highScores)
 	{
-		std::string scoreText = std::to_string(score);
+		std::string scoreText = scorePair.first + "        " + std::to_string(scorePair.second);
 		engine::GameObject* pHighScore{ new engine::GameObject(highScoresGO.get(), std::string{"UI"}, ScoresPos) };
 		pHighScore->AddComponent<engine::RenderComponent>(pHighScore);
 		pHighScore->AddComponent<TextComponent>(pHighScore, scoreText, galaga_FontSmall, yellowColor);
@@ -168,10 +168,10 @@ void GameOverState::UpdateUIObjects(const float deltaTime)
 	}
 }
 
-std::vector<int> GameOverState::LoadHighScores()
+std::vector<std::pair<std::string, int>> GameOverState::LoadHighScores()
 {
 	using namespace rapidjson;
-	std::vector<int> scores;
+	std::vector<std::pair<std::string, int>> scores;
 
 	std::ifstream ifs("PlayerScores.json");
 	if (ifs.is_open())
@@ -184,13 +184,21 @@ std::vector<int> GameOverState::LoadHighScores()
 			const Value& scoresArray = document["Scores"];
 			for (SizeType i = 0; i < scoresArray.Size(); i++)
 			{
-				scores.push_back(scoresArray[i].GetInt());
+				const Value& scoreObject = scoresArray[i];
+				if (scoreObject.HasMember("Name") && scoreObject["Name"].IsString() &&
+					scoreObject.HasMember("Score") && scoreObject["Score"].IsInt())
+				{
+					scores.emplace_back(scoreObject["Name"].GetString(), scoreObject["Score"].GetInt());
+				}
 			}
 		}
 		ifs.close();
 	}
 
-	std::sort(scores.begin(), scores.end(), std::greater<int>());
+	std::sort(scores.begin(), scores.end(), [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+		return b.second < a.second;
+		});
+
 	return scores;
 }
 
@@ -202,7 +210,7 @@ void GameOverState::SaveScoreToJson(PlayerScoreCP* pPlayerScore)
 	document.SetObject();
 	Document::AllocatorType& allocator = document.GetAllocator();
 
-	std::vector<int> scores;
+	std::vector<std::pair<std::string, int>> scores;
 
 	// Read existing scores from the JSON file
 	{
@@ -216,7 +224,12 @@ void GameOverState::SaveScoreToJson(PlayerScoreCP* pPlayerScore)
 				const Value& scoresArray = document["Scores"];
 				for (SizeType i = 0; i < scoresArray.Size(); i++)
 				{
-					scores.push_back(scoresArray[i].GetInt());
+					const Value& scoreObject = scoresArray[i];
+					if (scoreObject.HasMember("Name") && scoreObject["Name"].IsString() &&
+						scoreObject.HasMember("Score") && scoreObject["Score"].IsInt())
+					{
+						scores.emplace_back(scoreObject["Name"].GetString(), scoreObject["Score"].GetInt());
+					}
 				}
 			}
 			ifs.close();
@@ -224,10 +237,12 @@ void GameOverState::SaveScoreToJson(PlayerScoreCP* pPlayerScore)
 	}
 
 	// Add the new score
-	scores.push_back(pPlayerScore->GetCurrentScore());
+	scores.emplace_back("TVH", pPlayerScore->GetCurrentScore());
 
 	// Sort scores in descending order and keep only the top 10
-	std::sort(scores.begin(), scores.end(), std::greater<int>());
+	std::sort(scores.begin(), scores.end(), [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+		return b.second < a.second;
+		});
 	if (scores.size() > 10)
 	{
 		scores.resize(10);
@@ -235,9 +250,12 @@ void GameOverState::SaveScoreToJson(PlayerScoreCP* pPlayerScore)
 
 	// Create the JSON array
 	Value scoresArray(kArrayType);
-	for (int score : scores)
+	for (const auto& scorePair : scores)
 	{
-		scoresArray.PushBack(score, allocator);
+		Value scoreObject(kObjectType);
+		scoreObject.AddMember("Name", StringRef(scorePair.first.c_str()), allocator);
+		scoreObject.AddMember("Score", scorePair.second, allocator);
+		scoresArray.PushBack(scoreObject, allocator);
 	}
 
 	// Add the array to the document

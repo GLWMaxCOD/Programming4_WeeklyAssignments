@@ -24,7 +24,7 @@ public:
 
 private:
 	void UpdateUIObjects(const float deltaTime);
-	std::vector<int> LoadHighScores();
+	std::vector<std::pair<std::string, int>> LoadHighScores();
 	void SaveScoreToJson(PlayerScoreCP* pPlayerScore);
 
 	float m_elapsedSec{ 0.f };
