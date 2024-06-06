@@ -19,6 +19,7 @@ public:
 	std::string GetRatio() const;
 	std::string GetHits() const;
 	std::string GetShots() const;
+	int GetCurrentScore() const;
 
 private:
 	void UpdateScore(int points);

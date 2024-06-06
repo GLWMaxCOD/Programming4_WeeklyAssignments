@@ -9,6 +9,16 @@
 #include "Scene.h"
 #include "GalagaStrings.h"
 #include <iostream>
+#include "PlayerScoreCP.h"
+#include <algorithm>
+#include <fstream> // For file operations
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/filewritestream.h"
+#include "rapidjson/istreamwrapper.h"
+#include "rapidjson/ostreamwrapper.h"
 
 GameOverState::~GameOverState()
 {
@@ -26,6 +36,12 @@ void GameOverState::OnEnter()
 	if (player != nullptr)
 	{
 		pPlayerScore = player->GetComponent<PlayerScoreCP>();
+	}
+
+	// Save the score to JSON
+	if (pPlayerScore != nullptr)
+	{
+		SaveScoreToJson(pPlayerScore);
 	}
 
 	glm::vec3 gameOverPos{ (window.width / 2.f) - 80.f, (window.height / 2.f) - 80.f, 0.f };
@@ -79,11 +95,35 @@ void GameOverState::OnEnter()
 	pRatio->AddComponent<engine::RenderComponent>(pRatio);
 	pRatio->AddComponent<TextComponent>(pRatio, ratio, galaga_Font);
 
+	// HighscoresGO implementation
+	SDL_Color whiteColor = { 255, 255, 255 };
+	glm::vec3 highScoresPos{ gameOverPos.x + 65.f, 200.f, 0.f };
+	glm::vec3 ScoresPos{ gameOverPos.x + 215.f, 240.f, 0.f };
+	auto highScoresGO{ std::make_shared<engine::GameObject>(nullptr, "UI", highScoresPos) };
+	highScoresGO->AddComponent<engine::RenderComponent>(highScoresGO.get());
+	highScoresGO->AddComponent<TextComponent>(highScoresGO.get(), "--HIGHSCORES--", galaga_Font, whiteColor);
+	highScoresGO->SetIsActive(false);
+
+	std::vector<int> highScores = LoadHighScores();
+	highScoresPos.y += 50.f;
+
+	auto galaga_FontSmall = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 12);
+	for (const int score : highScores)
+	{
+		std::string scoreText = std::to_string(score);
+		engine::GameObject* pHighScore{ new engine::GameObject(highScoresGO.get(), std::string{"UI"}, ScoresPos) };
+		pHighScore->AddComponent<engine::RenderComponent>(pHighScore);
+		pHighScore->AddComponent<TextComponent>(pHighScore, scoreText, galaga_FontSmall, yellowColor);
+		ScoresPos.y += 40.f;
+	}
+
 	scene.Add(gameOverText);
 	scene.Add(resultsGO);
+	scene.Add(highScoresGO);
 
 	m_GameOverObjects.emplace_back(gameOverText.get());
 	m_GameOverObjects.emplace_back(resultsGO.get());
+	m_GameOverObjects.emplace_back(highScoresGO.get());
 }
 
 void GameOverState::OnExit()
@@ -125,5 +165,96 @@ void GameOverState::UpdateUIObjects(const float deltaTime)
 		}
 
 		m_elapsedSec = 0.f;
+	}
+}
+
+std::vector<int> GameOverState::LoadHighScores()
+{
+	using namespace rapidjson;
+	std::vector<int> scores;
+
+	std::ifstream ifs("PlayerScores.json");
+	if (ifs.is_open())
+	{
+		IStreamWrapper isw(ifs);
+		Document document;
+		document.ParseStream(isw);
+		if (document.HasMember("Scores") && document["Scores"].IsArray())
+		{
+			const Value& scoresArray = document["Scores"];
+			for (SizeType i = 0; i < scoresArray.Size(); i++)
+			{
+				scores.push_back(scoresArray[i].GetInt());
+			}
+		}
+		ifs.close();
+	}
+
+	std::sort(scores.begin(), scores.end(), std::greater<int>());
+	return scores;
+}
+
+void GameOverState::SaveScoreToJson(PlayerScoreCP* pPlayerScore)
+{
+	using namespace rapidjson;
+
+	Document document;
+	document.SetObject();
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	std::vector<int> scores;
+
+	// Read existing scores from the JSON file
+	{
+		std::ifstream ifs("PlayerScores.json");
+		if (ifs.is_open())
+		{
+			IStreamWrapper isw(ifs);
+			document.ParseStream(isw);
+			if (document.HasMember("Scores") && document["Scores"].IsArray())
+			{
+				const Value& scoresArray = document["Scores"];
+				for (SizeType i = 0; i < scoresArray.Size(); i++)
+				{
+					scores.push_back(scoresArray[i].GetInt());
+				}
+			}
+			ifs.close();
+		}
+	}
+
+	// Add the new score
+	scores.push_back(pPlayerScore->GetCurrentScore());
+
+	// Sort scores in descending order and keep only the top 10
+	std::sort(scores.begin(), scores.end(), std::greater<int>());
+	if (scores.size() > 10)
+	{
+		scores.resize(10);
+	}
+
+	// Create the JSON array
+	Value scoresArray(kArrayType);
+	for (int score : scores)
+	{
+		scoresArray.PushBack(score, allocator);
+	}
+
+	// Add the array to the document
+	document.RemoveAllMembers();
+	document.AddMember("Scores", scoresArray, allocator);
+
+	// Write the updated document to the JSON file
+	std::ofstream ofs("PlayerScores.json");
+	if (ofs.is_open())
+	{
+		OStreamWrapper osw(ofs);
+		Writer<OStreamWrapper> writer(osw);
+		document.Accept(writer);
+		ofs.close();
+	}
+	else
+	{
+		std::cerr << "Could not open file for writing!" << std::endl;
 	}
 }

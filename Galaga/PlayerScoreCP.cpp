@@ -125,3 +125,12 @@ std::string PlayerScoreCP::GetShots() const
 {
 	return std::to_string(m_PlayerShots);
 }
+
+int PlayerScoreCP::GetCurrentScore() const
+{
+	if (m_pTextComponent != nullptr)
+	{
+		return std::stoi(m_pTextComponent->GetText());
+	}
+	return 0;
+}

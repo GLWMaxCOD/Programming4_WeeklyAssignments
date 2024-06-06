@@ -2,7 +2,9 @@
 #define GALAGA_GAMEOVERSTATE
 
 #include "GameState.h"
+#include "PlayerScoreCP.h"
 #include <vector>
+#include <memory>
 
 namespace engine
 {
@@ -21,8 +23,10 @@ public:
 	void UpdateState(const float deltaTime) override;
 
 private:
-
 	void UpdateUIObjects(const float deltaTime);
+	std::vector<int> LoadHighScores();
+	void SaveScoreToJson(PlayerScoreCP* pPlayerScore);
+
 	float m_elapsedSec{ 0.f };
 	float m_MaxTime{ 1.5f };
 
