@@ -21,7 +21,7 @@ AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 	, m_TractorBeamState{ TractorBeamState::moveIntoPosition }, m_DoTractorBeam{ true }, m_pGalagaTransfCP{ nullptr }
 	, m_pMoveCP{ nullptr }, m_pRotatorCP{ nullptr }, ROTATION_TIME{ 1.5f }, m_RotationRadius{ 30.f }, m_DoRotateLeft{ false }
 	, m_pEnemyCP{ nullptr }, m_TractorBeamPos{ glm::vec2{0.f, 0.f} }, m_Direction{ 0.f, 0.f, 0.f }
-	, MAX_TRACTORBEAM_TIME{ 3.5f }, m_ElapsedTime{ 0.f }, m_pTractorBeam{ nullptr }, m_pTractorBeamCollisionCP{ nullptr }, m_PlayerHit{ false }
+	, MAX_TRACTORBEAM_TIME{ 3.5f }, m_ElapsedTime{ 0.f }, m_pTractorBeam{ nullptr }, m_pTractorBeamCollisionCP{ nullptr }, m_PlayerHit{ false }, m_IsRetracting{ false }
 {
 
 	if (pOwner != nullptr)
@@ -275,6 +275,7 @@ void AI_GalagaCP::UpdateTractorBeam(const float deltaTime)
 		//m_DoTractorBeam = !m_DoTractorBeam;
 		m_pTractorBeam->SetIsActive(false);
 		m_pTractorBeamCollisionCP->SetEnabled(false);
+		m_IsRetracting = false;
 		return;
 	}
 
@@ -288,7 +289,28 @@ void AI_GalagaCP::UpdateTractorBeam(const float deltaTime)
 
 		// Increment collision component size for animation effect
 		glm::vec2 currentSize = m_pTractorBeamCollisionCP->GetSize();
-		currentSize.y = std::min(currentSize.y + 5 * deltaTime, 150.f);
+		glm::vec3 beamPosition = m_pTractorBeam->GetComponent<engine::TransformComponent>()->GetLocalPosition();
+
+		if (!m_IsRetracting)
+		{
+			currentSize.y = std::min(currentSize.y + 5.5f * deltaTime, 150.f);
+			if (m_ElapsedTime > MAX_TRACTORBEAM_TIME / 2)
+			{
+				m_IsRetracting = true;
+			}
+		}
+		else // If Tractorbeam is halfway its animation, start decrementing
+		{
+			currentSize.y = std::max(currentSize.y - 5.5f * deltaTime, 120.f);
+			if (currentSize.y <= 120.f)
+			{
+				m_ElapsedTime = MAX_TRACTORBEAM_TIME; // End tractor beam if fully retracted
+			}
+		}
+
+		currentSize.x = 50.f;
+		beamPosition.x = m_pGalagaTransfCP->GetLocalPosition().x - currentSize.x / 2;
+
 		m_pTractorBeamCollisionCP->SetSize(currentSize);
 
 		// Check for collision with player
