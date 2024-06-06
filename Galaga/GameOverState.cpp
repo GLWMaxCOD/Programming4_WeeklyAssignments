@@ -114,10 +114,21 @@ void GameOverState::OnEnter()
 	}
 
 	// Create and position NameSelectionCP above high scores title
-	glm::vec3 nameSelectionPos{ highScoresPos.x, highScoresPos.y - 50.f, 0.f };
-	auto nameSelectionGO = std::make_shared<engine::GameObject>(nullptr, "UI", nameSelectionPos);
-	m_pNameSelectionCP = nameSelectionGO->AddComponent<NameSelectionCP>(nameSelectionGO.get(), nameSelectionPos);
+	auto nameSelectionGO = std::make_shared<engine::GameObject>(nullptr, "UI", glm::vec3{ highScoresPos.x, highScoresPos.y - 50.f, 0.f });
+	m_pNameSelectionCP = nameSelectionGO->AddComponent<NameSelectionCP>(nameSelectionGO.get());
 	nameSelectionGO->SetIsActive(false);
+
+	auto galaga_FontName = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 17);
+	glm::vec3 letterPos = highScoresPos;
+
+	for (size_t i = 0; i < 3; ++i)
+	{
+		auto letterGO = new engine::GameObject(nameSelectionGO.get(), "UI", letterPos);
+		letterGO->AddComponent<engine::RenderComponent>(letterGO);
+		letterGO->AddComponent<TextComponent>(letterGO, std::string(1, m_pNameSelectionCP->GetLetters()[i]), galaga_FontName, yellowColor);
+		m_pNameSelectionCP->AddLetterObject(letterGO);
+		letterPos.x += 50.f;
+	}
 
 	// Bind name selection input
 	auto playerInputCP = player->GetComponent<PlayerInputCP>();
