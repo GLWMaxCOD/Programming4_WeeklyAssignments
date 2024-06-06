@@ -10,6 +10,8 @@
 #include "GalagaStrings.h"
 #include <iostream>
 #include "PlayerScoreCP.h"
+#include "NameSelectionCP.h"
+#include "PlayerInputCP.h"
 #include <algorithm>
 #include <fstream> // For file operations
 #include "rapidjson/document.h"
@@ -38,15 +40,9 @@ void GameOverState::OnEnter()
 		pPlayerScore = player->GetComponent<PlayerScoreCP>();
 	}
 
-	// Save the score to JSON
-	if (pPlayerScore != nullptr)
-	{
-		SaveScoreToJson(pPlayerScore);
-	}
-
 	glm::vec3 gameOverPos{ (window.width / 2.f) - 80.f, (window.height / 2.f) - 80.f, 0.f };
 	auto galaga_Font = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 17);
-	SDL_Color blueColor = { 0,255, 222 };
+	SDL_Color blueColor = { 0, 255, 222 };
 
 	auto gameOverText{ std::make_shared<engine::GameObject>(nullptr, "UI", gameOverPos) };
 	gameOverText->AddComponent<engine::RenderComponent>(gameOverText.get());
@@ -95,7 +91,7 @@ void GameOverState::OnEnter()
 	pRatio->AddComponent<engine::RenderComponent>(pRatio);
 	pRatio->AddComponent<TextComponent>(pRatio, ratio, galaga_Font);
 
-	// HighscoresGO implementation
+	// HighscoresGO
 	SDL_Color whiteColor = { 255, 255, 255 };
 	glm::vec3 highScoresPos{ gameOverPos.x + 65.f, 200.f, 0.f };
 	glm::vec3 ScoresPos{ gameOverPos.x + 100.f, 240.f, 0.f };
@@ -117,13 +113,28 @@ void GameOverState::OnEnter()
 		ScoresPos.y += 40.f;
 	}
 
+	// Create and position NameSelectionCP above high scores title
+	glm::vec3 nameSelectionPos{ highScoresPos.x, highScoresPos.y - 50.f, 0.f };
+	auto nameSelectionGO = std::make_shared<engine::GameObject>(nullptr, "UI", nameSelectionPos);
+	m_pNameSelectionCP = nameSelectionGO->AddComponent<NameSelectionCP>(nameSelectionGO.get(), nameSelectionPos);
+	nameSelectionGO->SetIsActive(false);
+
+	// Bind name selection input
+	auto playerInputCP = player->GetComponent<PlayerInputCP>();
+	if (playerInputCP)
+	{
+		playerInputCP->NameInput(m_pNameSelectionCP);
+	}
+
 	scene.Add(gameOverText);
 	scene.Add(resultsGO);
 	scene.Add(highScoresGO);
+	scene.Add(nameSelectionGO);
 
 	m_GameOverObjects.emplace_back(gameOverText.get());
 	m_GameOverObjects.emplace_back(resultsGO.get());
 	m_GameOverObjects.emplace_back(highScoresGO.get());
+	m_GameOverObjects.emplace_back(nameSelectionGO.get());
 }
 
 void GameOverState::OnExit()
@@ -138,6 +149,23 @@ GameState* GameOverState::GetChangeState()
 
 void GameOverState::UpdateState(const float deltaTime)
 {
+	if (!m_NameEntered && m_pNameSelectionCP && m_pNameSelectionCP->IsNameConfirmed())
+	{
+		auto player = engine::SceneManager::GetInstance().GetActiveScene().FindGameObjectByTag(STR_PLAYER_TAG, false);
+		PlayerScoreCP* pPlayerScore{};
+		if (player != nullptr)
+		{
+			pPlayerScore = player->GetComponent<PlayerScoreCP>();
+		}
+
+		if (pPlayerScore != nullptr)
+		{
+			SaveScoreToJson(pPlayerScore, m_pNameSelectionCP->GetEnteredName());
+		}
+
+		m_NameEntered = true;
+	}
+
 	if (m_CurrentShowing < int(m_GameOverObjects.size()))
 	{
 		UpdateUIObjects(deltaTime);
@@ -202,7 +230,7 @@ std::vector<std::pair<std::string, int>> GameOverState::LoadHighScores()
 	return scores;
 }
 
-void GameOverState::SaveScoreToJson(PlayerScoreCP* pPlayerScore)
+void GameOverState::SaveScoreToJson(PlayerScoreCP* pPlayerScore, const std::string& playerName)
 {
 	using namespace rapidjson;
 
@@ -237,7 +265,7 @@ void GameOverState::SaveScoreToJson(PlayerScoreCP* pPlayerScore)
 	}
 
 	// Add the new score
-	scores.emplace_back("TVH", pPlayerScore->GetCurrentScore());
+	scores.emplace_back(playerName, pPlayerScore->GetCurrentScore());
 
 	// Sort scores in descending order and keep only the top 10
 	std::sort(scores.begin(), scores.end(), [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {

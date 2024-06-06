@@ -135,6 +135,12 @@
     <ClCompile Include="MuteToggleCommand.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="NameSelectionCP.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="NameSelectionCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MoveCommand.h">
@@ -243,6 +249,12 @@
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="MuteToggleCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="NameSelectionCP.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="NameSelectionCommand.h">
       <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>

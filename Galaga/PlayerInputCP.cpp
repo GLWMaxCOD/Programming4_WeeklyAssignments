@@ -3,6 +3,7 @@
 #include "MoveCommand.h"
 #include "ShootCommand.h"
 #include "MenuSelectionCommand.h"
+#include "NameSelectionCommand.h"
 #include "MuteToggleCommand.h"
 #include "GameObject.h"
 #include "Controller.h"
@@ -67,6 +68,52 @@ void PlayerInputCP::MenuInput(MenuSelectionCP* pMenuSelectionCP)
 
 	// Menu controller input for Player 1
 	AddMenuControllerInput(pMenuSelectionCP);
+}
+
+void PlayerInputCP::NameInput(NameSelectionCP* pNameSelectionCP)
+{
+	auto& input = engine::InputManager::GetInstance();
+
+	// Bind keyboard input for name selection
+	SDL_KeyCode keyEnter{ SDLK_RETURN };
+	SDL_KeyCode keyArrowUp{ SDLK_UP };
+	SDL_KeyCode keyArrowDown{ SDLK_DOWN };
+	SDL_KeyCode keyArrowLeft{ SDLK_LEFT };
+	SDL_KeyCode keyArrowRight{ SDLK_RIGHT };
+
+	input.BindCommand(std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::CycleUp), keyArrowUp, engine::InputType::Down);
+	input.BindCommand(std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::CycleDown), keyArrowDown, engine::InputType::Down);
+	input.BindCommand(std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::MoveLeft), keyArrowLeft, engine::InputType::Down);
+	input.BindCommand(std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::MoveRight), keyArrowRight, engine::InputType::Down);
+	input.BindCommand(std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::Confirm), keyEnter, engine::InputType::Down);
+
+	// Name controller input for Player 1
+	AddNameControllerInput(pNameSelectionCP);
+}
+
+void PlayerInputCP::AddNameControllerInput(NameSelectionCP* pNameSelectionCP)
+{
+	auto& input = engine::InputManager::GetInstance();
+	if (m_ControllerIdx == -1)
+	{
+		// No controller assigned yet to this player
+		m_ControllerIdx = input.GetFreeController();
+		if (m_ControllerIdx == -1)
+			return;		// No free controller found
+	}
+
+	// Input for the name selection
+	std::unique_ptr<Command> cycleUpCommand = std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::CycleUp);
+	std::unique_ptr<Command> cycleDownCommand = std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::CycleDown);
+	std::unique_ptr<Command> moveLeftCommand = std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::MoveLeft);
+	std::unique_ptr<Command> moveRightCommand = std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::MoveRight);
+	std::unique_ptr<Command> confirmCommand = std::make_unique<NameSelectionCommand>(pNameSelectionCP, NameSelectionCommand::Action::Confirm);
+
+	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::DPadUp, engine::InputType::Down, std::move(cycleUpCommand));
+	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::DPadDown, engine::InputType::Down, std::move(cycleDownCommand));
+	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::DPadLeft, engine::InputType::Down, std::move(moveLeftCommand));
+	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::DPadRigth, engine::InputType::Down, std::move(moveRightCommand));
+	input.BindCommand(m_ControllerIdx, Controller::XboxControllerButton::ButtonA, engine::InputType::Down, std::move(confirmCommand));
 }
 
 void PlayerInputCP::AddMenuControllerInput(MenuSelectionCP* pMenuSelectionCP)

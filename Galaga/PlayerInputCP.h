@@ -4,6 +4,7 @@
 #include "Component.h"
 
 class MenuSelectionCP;
+class NameSelectionCP;
 // SETUP ALL INPUT NEEDED IN ORDER TO CONTROL THE PLAYER CHARACTER
 class PlayerInputCP final : public engine::Component
 {
@@ -16,6 +17,7 @@ public:
 
 	// INPUT SETUP
 	void MenuInput(MenuSelectionCP* pMenuSelectionCP);					// Both keyboard and controller for Player 1
+	void NameInput(NameSelectionCP* pNameSelectionCP);					
 	void TwoPlayersGameplayInput();										// Two players playing setup
 	void GameplayControllerInput(unsigned controllerIdx);				// Add this player a controller with the specified controllerIDX
 	void GameplayKeyboardInput();
@@ -24,6 +26,7 @@ public:
 
 private:
 	void AddMenuControllerInput(MenuSelectionCP* pMenuSelectionCP);			// Allow the Player 1 to control the menu
+	void AddNameControllerInput(NameSelectionCP* pNameSelectionCP);			// Allow the Player 1 to control the name selection
 
 	bool m_PlayerDied;			// This is to ensure we unbind commands associated to the gameObject when it dies and not when program closes
 	int m_ControllerIdx;		// Controller being used
