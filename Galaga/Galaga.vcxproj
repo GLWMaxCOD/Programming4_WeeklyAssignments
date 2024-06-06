@@ -203,6 +203,7 @@
     <ClCompile Include="MissileManagerCP.cpp" />
     <ClCompile Include="MoveCommand.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
+    <ClCompile Include="MuteToggleCommand.cpp" />
     <ClCompile Include="ParallaxScrollingCP.cpp" />
     <ClCompile Include="Player2VersusCP.cpp" />
     <ClCompile Include="PlayerCP.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="MenuSelectionCP.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="MissileManagerCP.h" />
+    <ClInclude Include="MuteToggleCommand.h" />
     <ClInclude Include="Player2VersusCP.h" />
     <ClInclude Include="PlayerCP.h" />
     <ClInclude Include="PlayerScoreCP.h" />

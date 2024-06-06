@@ -132,6 +132,9 @@
     <ClCompile Include="TractorbeamCommand.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="MuteToggleCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MoveCommand.h">
@@ -237,6 +240,9 @@
       <Filter>Components\Player</Filter>
     </ClInclude>
     <ClInclude Include="TractorbeamCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="MuteToggleCommand.h">
       <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
