@@ -31,12 +31,16 @@ namespace engine
 		const glm::vec2 GetSpriteSize() const;
 		const glm::vec2& GetScale();
 
+		void SetVisible(bool visible);
+		bool IsVisible() const;
+
 	private:
 
 		std::shared_ptr<engine::Texture2D> m_texture{};
 		glm::vec2 m_Scale;
 		glm::vec2 m_TextureSize;
 		bool m_IsTextureDirty;							// To indicate if the texture changed or not
+		bool m_IsVisible;								// To indicate if the component should be rendered
 
 		engine::SpriteAnimatorCP* m_pSpriteAnimatorCP;	// For animated sprites only	
 

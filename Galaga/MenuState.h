@@ -25,9 +25,13 @@ private:
 	void InitBackground();
 	void InitMenuInput();
 	void InitMenuUI();
+	void HideUIElements();
+	void ShowUIElements();
 
+	std::vector< std::shared_ptr <engine::GameObject>> m_vBackgroundGO;			// All gameObjects from the background
 	std::vector< std::shared_ptr <engine::GameObject>> m_vMenuGO;			// All gameObjects from the Menu state
 	MenuSelectionCP* m_pMenuSelectionCP{};
+	engine::GameObject* m_pControlsImage{};
 
 	const std::string ONE_PLAYER_OPT{ "1 PLAYER" };
 	const std::string TWO_PLAYERS_OPT{ "2 PLAYERS" };
@@ -35,6 +39,6 @@ private:
 	const std::string CONTROLS_OPT{ "CONTROLS" };
 
 	bool m_ChangeState = false;
-
+	bool m_ShowingControls = false;
 };
 #endif

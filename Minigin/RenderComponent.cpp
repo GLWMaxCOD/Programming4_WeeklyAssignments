@@ -11,7 +11,7 @@ engine::RenderComponent::RenderComponent(GameObject* pOwner)
 	m_texture{ nullptr },
 	m_Scale{ glm::vec2{ 1.f, 1.f } },
 	m_TextureSize{ glm::vec2{} },
-	m_IsTextureDirty{ false }, m_pSpriteAnimatorCP{ nullptr }
+	m_IsTextureDirty{ false }, m_IsVisible{ true }, m_pSpriteAnimatorCP{ nullptr }
 {
 	SetScale();
 }
@@ -20,7 +20,7 @@ engine::RenderComponent::RenderComponent(GameObject* pOwner, const std::string& 
 	: Component("RenderCP", pOwner),
 	m_Scale{ glm::vec2{ 1.f, 1.f } },
 	m_TextureSize{ glm::vec2{} },
-	m_IsTextureDirty{ true }, m_pSpriteAnimatorCP{ nullptr }
+	m_IsTextureDirty{ true }, m_IsVisible{ true }, m_pSpriteAnimatorCP{ nullptr }
 {
 	SetTexture(filename);
 	SetScale();
@@ -82,23 +82,36 @@ engine::RenderComponent::~RenderComponent()
 	std::cout << "RenderComponent destructor" << std::endl;
 }
 
+void engine::RenderComponent::SetVisible(bool visible)
+{
+	m_IsVisible = visible;
+}
+
+bool engine::RenderComponent::IsVisible() const
+{
+	return m_IsVisible;
+}
+
 void engine::RenderComponent::Render(const glm::vec3& position) const
 {
 	if (m_texture != nullptr)
 	{
-		if (m_pSpriteAnimatorCP != nullptr)
+		if (m_IsVisible == true) // Check visibility before rendering
 		{
+			if (m_pSpriteAnimatorCP != nullptr)
+			{
 
-			auto spriteRect{ m_pSpriteAnimatorCP->GetSpriteRect() };
-			float scaledSrcWidth = spriteRect.w / m_Scale.x;
-			float scaledSrcHeight = spriteRect.h / m_Scale.y;
+				auto spriteRect{ m_pSpriteAnimatorCP->GetSpriteRect() };
+				float scaledSrcWidth = spriteRect.w / m_Scale.x;
+				float scaledSrcHeight = spriteRect.h / m_Scale.y;
 
-			Renderer::GetInstance().RenderSprite(*m_texture, position.x, position.y, float(spriteRect.w), float(spriteRect.h), float(spriteRect.x), float(spriteRect.y), scaledSrcWidth, scaledSrcHeight);
-		}
-		else
-		{
-			// Normal sprites without any animation
-			Renderer::GetInstance().RenderTexture(*m_texture, position.x, position.y, m_TextureSize.x, m_TextureSize.y);
+				Renderer::GetInstance().RenderSprite(*m_texture, position.x, position.y, float(spriteRect.w), float(spriteRect.h), float(spriteRect.x), float(spriteRect.y), scaledSrcWidth, scaledSrcHeight);
+			}
+			else
+			{
+				// Normal sprites without any animation
+				Renderer::GetInstance().RenderTexture(*m_texture, position.x, position.y, m_TextureSize.x, m_TextureSize.y);
+			}
 		}
 	}
 }

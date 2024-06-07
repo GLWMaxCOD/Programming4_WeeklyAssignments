@@ -48,8 +48,8 @@ void MenuState::InitBackground()
 
 	scene.Add(go_Background2);
 
-	m_vMenuGO.push_back(go_Background1);
-	m_vMenuGO.push_back(go_Background2);
+	m_vBackgroundGO.push_back(go_Background1);
+	m_vBackgroundGO.push_back(go_Background2);
 
 }
 
@@ -163,6 +163,46 @@ void MenuState::OnExit()
 		}
 	}
 
+	for (auto& gameObject : m_vBackgroundGO)
+	{
+		auto scrollingCP = gameObject->GetComponent<ParallaxScrollingCP>();
+
+		if (scrollingCP != nullptr)
+		{
+			// Activate the parallax scrolling for the background
+			scrollingCP->ActivateScrolling();
+		}
+		else //if (gameObject->GetComponent<PlayerInputCP>() == nullptr)
+		{
+			// If not background is a gameObject that needs to be destroyed (Excluding the player)
+			gameObject->MarkAsDead();
+		}
+	}
+
+}
+
+void MenuState::HideUIElements()
+{
+	for (auto& gameObject : m_vMenuGO)
+	{
+		auto renderComp = gameObject->GetComponent<engine::RenderComponent>();
+		if (renderComp)
+		{
+			renderComp->SetVisible(false); // Hide the UI element
+		}
+	}
+}
+
+void MenuState::ShowUIElements()
+{
+	for (auto& gameObject : m_vMenuGO)
+	{
+		auto renderComp = gameObject->GetComponent<engine::RenderComponent>();
+		if (renderComp)
+		{
+			renderComp->SetVisible(true); // Show the UI element
+		}
+	}
 }
 
 GameState* MenuState::GetChangeState()
@@ -175,6 +215,25 @@ GameState* MenuState::GetChangeState()
 		{
 			OnExit();
 			return new GameplayState(selectedOption);
+		}
+		else if (selectedOption == CONTROLS_OPT)
+		{
+			if (!m_ShowingControls)
+			{
+				HideUIElements();
+
+				auto controlsImage{ std::make_shared<engine::GameObject>(nullptr, "UI", glm::vec3{0.f, 0.f, 0.f}) };
+				controlsImage->AddComponent<engine::RenderComponent>(controlsImage.get(), "Sprites/Controls.png");
+				m_pControlsImage = controlsImage.get();
+				engine::SceneManager::GetInstance().GetActiveScene().Add(controlsImage);
+				m_ShowingControls = true;
+			}
+			else
+			{
+				m_pControlsImage->MarkAsDead();
+				ShowUIElements();
+				m_ShowingControls = false;
+			}
 		}
 
 		m_pMenuSelectionCP->SetOptionSelected(false);
