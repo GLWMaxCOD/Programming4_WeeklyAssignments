@@ -22,6 +22,7 @@ void Game::Initialize()
 	sceneManager.CreateScene(FIRST_STAGE);
 	sceneManager.CreateScene(SECOND_STAGE);
 	sceneManager.CreateScene(THIRD_STAGE);
+	sceneManager.CreateScene(FOURTH_STAGE);
 	sceneManager.SetActiveScene(FIRST_STAGE);
 
 	auto& scene = sceneManager.GetActiveScene();

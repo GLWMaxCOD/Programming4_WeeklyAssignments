@@ -36,6 +36,11 @@ void GameplayState::LoadDataPaths()
 	stageData.first = THIRD_STAGE;
 	stageData.second = formationData;
 	m_vEnemiesData.emplace_back(stageData);
+
+	formationData.changeData("../Data/Formations/FormationStage4.json", "../Data/Formations/FormationStage4-Order.json");
+	stageData.first = FOURTH_STAGE;
+	stageData.second = formationData;
+	m_vEnemiesData.emplace_back(stageData);
 }
 
 GameplayState::~GameplayState()
