@@ -405,12 +405,27 @@ void AI_GalagaCP::Reset()
 	m_ElapsedTime = 0.f;
 	m_IsRetracting = false;
 	m_IsAttacking = false;
+	m_PlayerHit = false;
 
-	glm::vec2 currentSize = m_pTractorBeamCollisionCP->GetSize();
-	currentSize.y = 120.f;
-	m_pTractorBeamCollisionCP->SetSize(currentSize);
+	// Reset the tractor beam size and state
+	if (m_pTractorBeamCollisionCP != nullptr) 
+	{
+		glm::vec2 currentSize = m_pTractorBeamCollisionCP->GetSize();
+		currentSize.y = 120.f;
+		m_pTractorBeamCollisionCP->SetSize(currentSize);
+		m_pTractorBeamCollisionCP->SetEnabled(false); // Disable the collision
+	}
 
-	m_pTractorBeam->SetIsActive(false);
+	if (m_pTractorBeam != nullptr) 
+	{
+		m_pTractorBeam->SetIsActive(false); // Deactivate the tractor beam object
+		// Reset the sprite animation
+		auto spriteAnimator = m_pTractorBeam->GetComponent<engine::SpriteAnimatorCP>();
+		if (spriteAnimator != nullptr) 
+		{
+			spriteAnimator->ResetAnimation();
+		}
+	}
 	ChangeSprite(GALAGA_SPRITE);
 
 	// Randomly decide on which side to rotate

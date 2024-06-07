@@ -154,6 +154,21 @@ void engine::SpriteAnimatorCP::SetAnimationCompleteCallback(std::function<void()
 	m_AnimationCompleteCallback = std::move(callback);
 }
 
+void engine::SpriteAnimatorCP::ResetAnimation()
+{
+	m_CurrentFrame = m_StartFrame;  // Reset to the initial start frame
+	m_ElapsedFrameTime = 0.f;		// Reset elapsed time
+	m_NormalState = true;			// Reset to normal state if using normalAndReverse mode
+
+	// Ensure the limit frame and start frame are set correctly based on animation mode
+	if (m_AnimationMode == AnimationMode::normalAndReverse)
+	{
+		m_LimitFrame = m_TotalFrames - 1;
+	}
+
+	UpdateSourceRect();				// Update the source rect to the initial frame
+}
+
 void engine::SpriteAnimatorCP::ReceiveMessage(const std::string& message, const std::string& value)
 {
 	if (message == "RemoveCP")

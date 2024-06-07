@@ -28,6 +28,7 @@ namespace engine
 		const SDL_Rect& GetSpriteRect() const;
 
 		void SetAnimationCompleteCallback(std::function<void()> callback);
+		void ResetAnimation();
 
 	private:
 
