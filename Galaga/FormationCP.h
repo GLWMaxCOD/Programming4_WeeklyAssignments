@@ -30,6 +30,8 @@ public:
 	std::vector< engine::GameObject*>& GetEnemies(const std::string& type);
 	bool AreEnemiesLeft(const std::string& type = "All") const;
 
+	void SpawnEnemies();
+
 private:
 	void InitFirstFormation(const std::string& JSONPath);					// First time creating the Formation
 	std::vector<std::vector<std::pair<std::string, glm::vec3>>> ReadFormationFromJSON(const std::string& JSONPath);
@@ -61,6 +63,7 @@ private:
 	const float m_FormationSpeed;
 	engine::TransformComponent* m_pTransformCP;
 	bool m_MovingRight;
+	float m_LeftOffset;
 	float m_LeftLimitFormation;
 	float m_RighttLimitFormation;
 

@@ -164,6 +164,8 @@ void engine::SpriteAnimatorCP::ResetAnimation()
 	if (m_AnimationMode == AnimationMode::normalAndReverse)
 	{
 		m_LimitFrame = m_TotalFrames - 1;
+		m_StartFrame = 0;
+		m_CurrentFrame = m_StartFrame;
 	}
 
 	UpdateSourceRect();				// Update the source rect to the initial frame

@@ -34,6 +34,7 @@ namespace engine
 		const engine::Window& GetSceneWindow() const;
 		size_t GetTotalScenes() const;
 		const std::string GetActiveSceneName() const;
+		const std::string GetNextSceneName();			// To get the name of upcoming Stage (E.g Stage 2) after clearing current one (E.g Stage 1)
 
 		void SetActiveScene(const std::string& sceneName);
 		void SetSceneWindow(const engine::Window& window);

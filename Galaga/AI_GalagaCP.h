@@ -102,5 +102,7 @@ private:
 
 	bool m_PlayerHit;								// To avoid from the player being instakilled by Tractorbeam, it's too OP
 	bool m_IsRetracting;							// To track if the tractor beam is retracting
+
+	int m_StartFrame;
 };
 #endif // DEBUG

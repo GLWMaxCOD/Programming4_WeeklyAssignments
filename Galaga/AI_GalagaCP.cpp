@@ -21,7 +21,7 @@ AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 	, m_TractorBeamState{ TractorBeamState::moveIntoPosition }, m_DoTractorBeam{ true }, m_pGalagaTransfCP{ nullptr }
 	, m_pMoveCP{ nullptr }, m_pRotatorCP{ nullptr }, ROTATION_TIME{ 1.5f }, m_RotationRadius{ 30.f }, m_DoRotateLeft{ false }
 	, m_pEnemyCP{ nullptr }, m_TractorBeamPos{ glm::vec2{0.f, 0.f} }, m_Direction{ 0.f, 0.f, 0.f }
-	, MAX_TRACTORBEAM_TIME{ 3.5f }, m_ElapsedTime{ 0.f }, m_pTractorBeam{ nullptr }, m_pTractorBeamCollisionCP{ nullptr }, m_PlayerHit{ false }, m_IsRetracting{ false }
+	, MAX_TRACTORBEAM_TIME{ 3.5f }, m_ElapsedTime{ 0.f }, m_pTractorBeam{ nullptr }, m_pTractorBeamCollisionCP{ nullptr }, m_PlayerHit{ false }, m_IsRetracting{ false }, m_StartFrame{0}
 {
 
 	if (pOwner != nullptr)
@@ -47,14 +47,14 @@ AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 		m_pTractorBeam = new engine::GameObject(GetOwner(), STR_GALAGA, tractorBeamPos, glm::vec2{ 2.f, 2.f }, true);
 		m_pTractorBeam->AddComponent<engine::RenderComponent>(m_pTractorBeam, TRACTOR_BREAM_SPRITE);
 
+		// SpriteAnimation data
 		float frameRate{ 1.f / 10.f };
 		int totalCols{ 3 };
 		int totalFrames{ 18 };
-		int startFrame{ 0 };
 		int limitFrame{ 16 };
 		int frameInc{ 1 };
 		engine::SpriteAnimatorCP::AnimationMode mode = engine::SpriteAnimatorCP::AnimationMode::normalAndReverse;
-		m_pTractorBeam->AddComponent<engine::SpriteAnimatorCP>(m_pTractorBeam, totalCols, totalFrames, frameRate, frameInc, limitFrame, startFrame, mode);
+		m_pTractorBeam->AddComponent<engine::SpriteAnimatorCP>(m_pTractorBeam, totalCols, totalFrames, frameRate, frameInc, limitFrame, m_StartFrame, mode);
 		m_pTractorBeam->SetIsActive(false);
 
 		// Add collision component to tractor beam
@@ -406,22 +406,22 @@ void AI_GalagaCP::Reset()
 	m_IsRetracting = false;
 	m_IsAttacking = false;
 	m_PlayerHit = false;
+	m_StartFrame = 0;
 
 	// Reset the tractor beam size and state
-	if (m_pTractorBeamCollisionCP != nullptr) 
+	if (m_pTractorBeamCollisionCP != nullptr)
 	{
 		glm::vec2 currentSize = m_pTractorBeamCollisionCP->GetSize();
-		currentSize.y = 120.f;
 		m_pTractorBeamCollisionCP->SetSize(currentSize);
-		m_pTractorBeamCollisionCP->SetEnabled(false); // Disable the collision
+		m_pTractorBeamCollisionCP->SetEnabled(true);
 	}
 
-	if (m_pTractorBeam != nullptr) 
+	if (m_pTractorBeam != nullptr)
 	{
 		m_pTractorBeam->SetIsActive(false); // Deactivate the tractor beam object
 		// Reset the sprite animation
 		auto spriteAnimator = m_pTractorBeam->GetComponent<engine::SpriteAnimatorCP>();
-		if (spriteAnimator != nullptr) 
+		if (spriteAnimator != nullptr)
 		{
 			spriteAnimator->ResetAnimation();
 		}

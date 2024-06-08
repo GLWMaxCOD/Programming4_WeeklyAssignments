@@ -11,11 +11,14 @@
 #include "GameOverState.h"
 #include "Servicelocator.h"
 #include "SoundIDs.h"
+#include "TextComponent.h"
+#include "ResourceManager.h"
 #include <iostream>
 
 GameplayState::GameplayState(const std::string& gameMode)
 	:m_GameMode{ gameMode }, m_pFormationCP{ nullptr }, m_vEnemiesData{ },
-	m_IsGameOver{ false }, m_pPlayer1{ nullptr }
+	m_IsGameOver{ false }, m_pPlayer1{ nullptr }, m_IsChangingState{ true }, m_ElapsedTime{ 0.f },
+	MAX_TIME_CHANGE{ 3.f }, m_CurrentStage{ FIRST_STAGE }
 {
 	// Load all data paths 
 	LoadDataPaths();
@@ -50,6 +53,20 @@ GameplayState::~GameplayState()
 
 void GameplayState::OnEnter() //Add VERSUS MODE HERE LATER
 {
+	auto& sceneManager = engine::SceneManager::GetInstance();
+	auto& scene = sceneManager.GetActiveScene();
+	auto& window = sceneManager.GetSceneWindow();
+
+	// CURRENT STAGE INFO TEXT
+	auto galaga_Font = engine::ResourceManager::GetInstance().LoadFont("Fonts/Emulogic-zrEw.ttf", 18);
+	SDL_Color blueColor = { 0,255, 222 };
+	glm::vec3 stageInfoPos{ (window.width / 2.f) - 60.f, (window.height / 2.f) - 80.f, 0.f };
+	m_StageInfoText = std::make_shared<engine::GameObject>(nullptr, "UI", stageInfoPos);
+	m_StageInfoText->AddComponent<engine::RenderComponent>(m_StageInfoText.get());
+	m_StageInfoText->AddComponent<TextComponent>(m_StageInfoText.get(), FIRST_STAGE, galaga_Font, blueColor);
+	m_StageInfoText->SetIsActive(false);
+	scene.Add(m_StageInfoText);
+
 	auto& soundSystem = engine::Servicelocator::Get_Sound_System();
 	soundSystem.PlaySound(short(Sounds::startSound));
 
@@ -188,8 +205,8 @@ bool GameplayState::NextStage()
 
 void GameplayState::OnExit()
 {
-	// Destroy all enemies from the scene
-	//m_pFormationCP->KillAllEnemies();
+	// Remove stage text
+	m_StageInfoText->MarkAsDead();
 }
 
 GameState* GameplayState::GetChangeState()
@@ -203,18 +220,35 @@ GameState* GameplayState::GetChangeState()
 	return nullptr;
 }
 
-void GameplayState::UpdateState(const float)
+void GameplayState::UpdateState(const float deltaTime)
 {
-	if (m_pFormationCP != nullptr)
+	if (m_IsChangingState)
+	{
+		UpdateChangingStage(deltaTime);
+	}
+	else if (m_pFormationCP != nullptr)
 	{
 		if (ArePlayersAlive())
 		{
 			// Player(s) still alive -> Check if there are enemies left
 			if (!m_pFormationCP->AreEnemiesLeft())
 			{
-				// If nextStage returns false then we go the GameOver state
-				if (!NextStage())
-					m_IsGameOver = true;
+				if (m_IsChangingState == false)
+				{
+					// wait a few seconds before loading enemies from next stage
+					auto& sceneManager = engine::SceneManager::GetInstance();
+					if (sceneManager.GetNextSceneName() != "No more scenes")
+					{
+						m_StageInfoText->GetComponent<TextComponent>()->SetText(sceneManager.GetNextSceneName());
+						m_IsChangingState = true;
+					}
+					else
+					{
+						// No more scenes to load
+						m_IsGameOver = true;
+					}
+					return;
+				}
 			}
 		}
 		else
@@ -245,4 +279,37 @@ bool GameplayState::ArePlayersAlive()
 		}
 	}
 	return false;
+}
+
+void GameplayState::UpdateChangingStage(const float deltaTime)
+{
+	// Show stage number info
+	m_StageInfoText->SetIsActive(true);
+	m_ElapsedTime += deltaTime;
+
+	if (m_ElapsedTime > MAX_TIME_CHANGE)
+	{
+		// When time over load enemies from the next stage
+		m_StageInfoText->SetIsActive(false);
+		m_IsChangingState = false;
+		m_ElapsedTime = 0.f;
+		if (m_CurrentStage == FIRST_STAGE)
+		{
+			// If first stage -> Enemies already loaded
+			m_pFormationCP->SpawnEnemies();
+			m_CurrentStage = SECOND_STAGE;
+			return;
+		}
+
+		if (m_pFormationCP != nullptr)
+		{
+			// If nextStage returns false then we go the GameOver state
+			if (!NextStage())
+			{
+				m_IsGameOver = true;
+			}
+			m_pFormationCP->SpawnEnemies();
+		}
+
+	}
 }

@@ -7,7 +7,7 @@
 class EnemyCP;
 class MoveComponent;
 class MissileManagerCP;
-
+class RotatorComponent;
 namespace engine
 {
 	class TransformComponent;
@@ -29,19 +29,23 @@ private:
 	enum class AttackState
 	{
 		breakFormation,
+		loop,
 		diagonalDive,
 		zigZagSteer
 
 	};
 
 	void InitAttackData(const glm::vec3& currentPos, const engine::Window& window);
+	void InitLoopData();
 	void UpdateAttack(const float deltaTime);
 	void UpdateZigZagSteer(const float deltaTime, const glm::vec3& currentPos, const engine::Window& window);
 	void UpdateDiagonalDive(const float deltaTime, const glm::vec3& currentPos, const engine::Window& window);
+	void UpdateBreakLoop(const float deltaTime);
 
 	EnemyCP* m_pEnemyCP;
 	MoveComponent* m_pMoveCP;
 	engine::TransformComponent* m_pButterflyTransfCP;
+	RotatorComponent* m_pRotatorCP;
 	AttackState m_AttackState;
 
 	// ATTACK STATE
@@ -51,6 +55,10 @@ private:
 	glm::vec3 m_Direction;						// Keeps track of the direction the enemy is facing
 
 	float m_MaxSteeringTime;					// For the steer right and left
+
+	// For Loops
+	float m_RotationTime;
+	float m_RotationRadius;
 };
 
 #endif

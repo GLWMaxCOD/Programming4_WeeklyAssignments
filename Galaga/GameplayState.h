@@ -4,6 +4,7 @@
 #include "GameState.h"
 #include "structs.h"
 #include <vector>
+#include <memory>
 
 class FormationCP;
 namespace engine
@@ -51,15 +52,22 @@ private:
 	bool ArePlayersAlive();
 	bool NextStage();
 
+	void UpdateChangingStage(const float deltaTime);
+
 	const std::string m_GameMode;
 
 	FormationCP* m_pFormationCP;
 	std::vector<std::pair<std::string, FormationJsonData>> m_vEnemiesData;
+	std::shared_ptr<engine::GameObject> m_StageInfoText;
 
 	std::vector<engine::GameObject*> m_vPlayers;		// Keep track of the player(s) to see if they die
-	engine::GameObject* m_pPlayer1;						//VERSUS mode, needs to keep track if only player 1 died
+	engine::GameObject* m_pPlayer1;						// VERSUS mode, needs to keep track if only player 1 died
 
 	bool m_IsGameOver;
+	bool m_IsChangingState;
+	float m_ElapsedTime;
+	const float MAX_TIME_CHANGE;						// Wait a few seconds until loading enemies from the stage
+	std::string m_CurrentStage;
 };
 
 #endif

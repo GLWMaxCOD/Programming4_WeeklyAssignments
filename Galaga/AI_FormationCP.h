@@ -23,6 +23,8 @@ public:
 
 	void SetVersusMode(bool isVersusMode);
 
+	void SpawnEnemies();
+
 private:
 
 	enum class FormationState
