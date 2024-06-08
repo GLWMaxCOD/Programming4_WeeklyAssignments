@@ -54,11 +54,11 @@ void Game::AddAllSounds()
     auto& soundSystem = engine::Servicelocator::Get_Sound_System();
 
     // Register sound IDs with their corresponding file paths and volume levels
-    soundSystem.RegisterSoundID(short(Sounds::startSound), "../Data/Sounds/Start.mp3", 80);
-    soundSystem.RegisterSoundID(short(Sounds::playerFire), "../Data/Sounds/PlayerShoot.wav", 15);
-    soundSystem.RegisterSoundID(short(Sounds::enemyDie), "../Data/Sounds/EnemyDies.wav", 15);
-    soundSystem.RegisterSoundID(short(Sounds::tractorBeam), "../Data/Sounds/TractorBeam.mp3", 50);
-    soundSystem.RegisterSoundID(short(Sounds::galagaDive), "../Data/Sounds/galagaDive.mp3", 30);
-    soundSystem.RegisterSoundID(short(Sounds::playerDeath), "../Data/Sounds/PlayerDies.mp3", 50);
-    soundSystem.RegisterSoundID(short(Sounds::confirm), "../Data/Sounds/Confirm.mp3", 100);
+    soundSystem.RegisterSoundID(short(Sounds::startSound), "Data/Sounds/Start.mp3", 80);
+    soundSystem.RegisterSoundID(short(Sounds::playerFire), "Data/Sounds/PlayerShoot.wav", 15);
+    soundSystem.RegisterSoundID(short(Sounds::enemyDie), "Data/Sounds/EnemyDies.wav", 15);
+    soundSystem.RegisterSoundID(short(Sounds::tractorBeam), "Data/Sounds/TractorBeam.mp3", 50);
+    soundSystem.RegisterSoundID(short(Sounds::galagaDive), "Data/Sounds/galagaDive.mp3", 30);
+    soundSystem.RegisterSoundID(short(Sounds::playerDeath), "Data/Sounds/PlayerDies.mp3", 50);
+    soundSystem.RegisterSoundID(short(Sounds::confirm), "Data/Sounds/Confirm.mp3", 100);
 }

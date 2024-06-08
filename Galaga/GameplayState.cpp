@@ -30,21 +30,21 @@ GameplayState::GameplayState(const std::string& gameMode)
 
 void GameplayState::LoadDataPaths()
 {
-	FormationJsonData formationData("../Data/Formations/FormationStage1.json", "../Data/Formations/FormationStage1-Order.json");
+	FormationJsonData formationData("Data/Formations/FormationStage1.json", "Data/Formations/FormationStage1-Order.json");
 	std::pair stageData{ std::make_pair(FIRST_STAGE, formationData) };
 	m_vEnemiesData.emplace_back(stageData);
 
-	formationData.changeData("../Data/Formations/FormationStage2.json", "../Data/Formations/FormationStage2-Order.json");
+	formationData.changeData("Data/Formations/FormationStage2.json", "Data/Formations/FormationStage2-Order.json");
 	stageData.first = SECOND_STAGE;
 	stageData.second = formationData;
 	m_vEnemiesData.emplace_back(stageData);
 
-	formationData.changeData("../Data/Formations/FormationStage3.json", "../Data/Formations/FormationStage3-Order.json");
+	formationData.changeData("Data/Formations/FormationStage3.json", "Data/Formations/FormationStage3-Order.json");
 	stageData.first = THIRD_STAGE;
 	stageData.second = formationData;
 	m_vEnemiesData.emplace_back(stageData);
 
-	formationData.changeData("../Data/Formations/FormationStage4.json", "../Data/Formations/FormationStage4-Order.json");
+	formationData.changeData("Data/Formations/FormationStage4.json", "Data/Formations/FormationStage4-Order.json");
 	stageData.first = FOURTH_STAGE;
 	stageData.second = formationData;
 	m_vEnemiesData.emplace_back(stageData);

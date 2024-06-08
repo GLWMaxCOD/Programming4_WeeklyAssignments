@@ -22,7 +22,7 @@ int main(int, char* [])
     engine::Window window{ "Galaga", 560.f , 640.f };
 
     // Initialize the engine with the data path and window properties
-    engine::Engine engine("../Data/", window);
+    engine::Engine engine("Data/", window);
 
     // Create the game instance
     std::unique_ptr<Game> game = std::make_unique<Game>();
