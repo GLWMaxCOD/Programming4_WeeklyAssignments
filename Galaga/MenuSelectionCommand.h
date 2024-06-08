@@ -4,17 +4,19 @@
 #include <Command.h>
 
 class MenuSelectionCP;
+
+// Command to handle menu selection actions
 class MenuSelectionCommand final : public Command
 {
 public:
-	explicit MenuSelectionCommand(MenuSelectionCP* pMenuSelectionCP, int menuAction);
-	virtual ~MenuSelectionCommand() override;
-	void Execute(float deltaTime) override;
+    explicit MenuSelectionCommand(MenuSelectionCP* pMenuSelectionCP, int menuAction);
+    virtual ~MenuSelectionCommand() override;
+
+    void Execute(float deltaTime) override;
 
 private:
-	MenuSelectionCP* m_pMenuSelection;
-	int m_MenuAction;				// Indicates wheter it should go to the next Option (+), the previous one (-)
-									// or select the current option (0)
+    MenuSelectionCP* m_pMenuSelection; // Pointer to the menu selection component
+    int m_MenuAction;                  // Action: next (+), previous (-), or select (0)
 };
 
 #endif

@@ -3,21 +3,23 @@
 
 #include <Component.h>
 
-// Component that contains all the Game States and updates them
 class GameState;
+
+// Component that manages the game states and updates them
 class GameCP final : public engine::Component
 {
 public:
+    GameCP(engine::GameObject* pOwner);
+    ~GameCP() override;
 
-	GameCP(engine::GameObject* pOwner);
-	virtual ~GameCP() override;
+    // Update the current game state
+    void Update(float deltaTime) override;
 
-	virtual void Update(const float deltaTime) override;
-	virtual void ReceiveMessage(const std::string& message, const std::string& value) override;
+    // Handle received messages (not used in this implementation)
+    void ReceiveMessage(const std::string& message, const std::string& value) override;
 
 private:
-	GameState* m_pGameState;
-
+    GameState* m_pGameState; // Pointer to the current game state
 };
 
 #endif

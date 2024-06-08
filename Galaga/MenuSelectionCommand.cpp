@@ -1,18 +1,17 @@
 #include "MenuSelectionCommand.h"
 #include "MenuSelectionCP.h"
-#include <iostream>
 
 MenuSelectionCommand::MenuSelectionCommand(MenuSelectionCP* pMenuSelectionCP, int menuAction)
 	:Command(),
 	m_pMenuSelection{ pMenuSelectionCP },
 	m_MenuAction{ menuAction }
 {
-
+	// Constructor: Initialize with a menu selection component and an action
 }
 
 MenuSelectionCommand::~MenuSelectionCommand()
 {
-	//std::cout << "MenuSelectionCommand destructor" << std::endl;
+	// Destructor
 }
 
 void MenuSelectionCommand::Execute(float)
@@ -21,7 +20,7 @@ void MenuSelectionCommand::Execute(float)
 	{
 		if (m_MenuAction != 0)
 		{
-			// Either go to the next or previous selection
+			// Change to the next or previous selection
 			m_pMenuSelection->ChangeSelection(m_MenuAction);
 			return;
 		}

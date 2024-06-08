@@ -1,19 +1,22 @@
 #include "NameSelectionCommand.h"
 #include "NameSelectionCP.h"
-#include <iostream>
 
+// Constructor to initialize the command with the name selection component and action
 NameSelectionCommand::NameSelectionCommand(NameSelectionCP* pNameSelectionCP, Action action)
     : Command(),
     m_pNameSelection{ pNameSelectionCP },
     m_Action{ action }
 {
+
 }
 
+// Destructor
 NameSelectionCommand::~NameSelectionCommand()
 {
-    std::cout << "NameSelectionCommand destructor" << std::endl;
+
 }
 
+// Execute the appropriate action based on the command
 void NameSelectionCommand::Execute(float)
 {
     if (m_pNameSelection != nullptr)

@@ -6,9 +6,10 @@
 #include "EnemyCP.h"
 #include "Scene.h"
 #include "RotatorComponent.h"
-#include <glm/gtc/constants.hpp>		// For pi definitions
+#include <glm/gtc/constants.hpp>  // For pi definitions
 #include <random>
 
+// Constructor: Initializes the AI_ButterflyCP with the given GameObject owner
 AI_ButterflyCP::AI_ButterflyCP(engine::GameObject* pOwner)
 	: Component("AI_ButterflyCP", pOwner),
 	m_pEnemyCP{ nullptr }, m_pMoveCP{ nullptr }, m_pButterflyTransfCP{ nullptr }, m_pRotatorCP{ nullptr },
@@ -29,22 +30,25 @@ AI_ButterflyCP::AI_ButterflyCP(engine::GameObject* pOwner)
 	ResetShootInterval();
 }
 
+// Destructor
 AI_ButterflyCP::~AI_ButterflyCP()
 {
-
 }
 
+// Check if the owner is active
 bool AI_ButterflyCP::IsOwnerActive() const
 {
 	return GetOwner()->IsActive();
 }
 
+// Reset the shooting interval with a random value between 1 and 3 seconds
 void AI_ButterflyCP::ResetShootInterval()
 {
 	m_ShootInterval = 1.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (3.0f - 1.0f)));
 	m_ShootElapsedTime = 0.0f;
 }
 
+// Fire a missile in the direction specified
 void AI_ButterflyCP::FireMissile()
 {
 	if (m_pEnemyCP != nullptr)
@@ -54,6 +58,7 @@ void AI_ButterflyCP::FireMissile()
 	}
 }
 
+// Update the Butterfly AI state each frame
 void AI_ButterflyCP::Update(const float deltaTime)
 {
 	if (m_pMoveCP != nullptr && m_pEnemyCP != nullptr && m_pButterflyTransfCP != nullptr)
@@ -86,6 +91,7 @@ void AI_ButterflyCP::Update(const float deltaTime)
 	}
 }
 
+// Execute the shooting action immediately
 void AI_ButterflyCP::Shoot()
 {
 	if (m_pEnemyCP != nullptr)
@@ -95,6 +101,7 @@ void AI_ButterflyCP::Shoot()
 	}
 }
 
+// Update the following Galaga behavior
 void AI_ButterflyCP::UpdateFollowGalaga(const float deltaTime)
 {
 	glm::vec3 targetPos = m_CurrentGalagaPos + glm::vec3(m_Offset, 0.f, 0.f);
@@ -111,6 +118,7 @@ void AI_ButterflyCP::UpdateFollowGalaga(const float deltaTime)
 	m_pMoveCP->Move(deltaTime, direction * speedMultiplier);
 }
 
+// Follow the Galaga with a specified offset
 void AI_ButterflyCP::FollowGalaga(const glm::vec3& galagaPos, AI_GalagaCP* galagaCP, float offset)
 {
 	m_CurrentGalagaPos = galagaPos;
@@ -126,6 +134,7 @@ void AI_ButterflyCP::FollowGalaga(const glm::vec3& galagaPos, AI_GalagaCP* galag
 	ResetShootInterval();
 }
 
+// Return the butterfly to its formation
 void AI_ButterflyCP::ReturnToFormation()
 {
 	m_IsFollowingGalaga = false;
@@ -133,6 +142,7 @@ void AI_ButterflyCP::ReturnToFormation()
 	m_pEnemyCP->ChangeCurrentState(EnemyCP::ENEMY_STATE::moveToFormation);
 }
 
+// Update the attack behavior
 void AI_ButterflyCP::UpdateAttack(const float deltaTime)
 {
 	auto currentPos = m_pButterflyTransfCP->GetWorldPosition();
@@ -154,7 +164,7 @@ void AI_ButterflyCP::UpdateAttack(const float deltaTime)
 	}
 }
 
-// Init everything need for the Attack state
+// Initialize data for the Attack state
 void AI_ButterflyCP::InitAttackData(const glm::vec3& currentPos, const engine::Window& window)
 {
 	if (currentPos.x > window.width / 2.f)
@@ -174,9 +184,9 @@ void AI_ButterflyCP::InitAttackData(const glm::vec3& currentPos, const engine::W
 	InitLoopData();
 
 	m_AttackState = AttackState::loop;
-
 }
 
+// Initialize data for the loop
 void AI_ButterflyCP::InitLoopData()
 {
 	if (m_pRotatorCP != nullptr)
@@ -196,7 +206,7 @@ void AI_ButterflyCP::InitLoopData()
 		{
 			rotationCenter.x += m_RotationRadius;
 			rotationAngle = glm::pi<float>();
-			targetRotation = glm::two_pi<float>();		// Half rotation
+			targetRotation = glm::two_pi<float>();  // Half rotation
 			positiveRot = true;
 		}
 
@@ -205,6 +215,7 @@ void AI_ButterflyCP::InitLoopData()
 	}
 }
 
+// Update the loop break behavior
 void AI_ButterflyCP::UpdateBreakLoop(const float deltaTime)
 {
 	if (m_pRotatorCP != nullptr)
@@ -221,14 +232,15 @@ void AI_ButterflyCP::UpdateBreakLoop(const float deltaTime)
 	}
 	else
 	{
-		// If no rotator just go directly to next behaviour
+		// If no rotator just go directly to the next behavior
 		AI_ButterflyCP::AttackState::diagonalDive;
 	}
 }
 
+// Update the diagonal dive behavior
 void AI_ButterflyCP::UpdateDiagonalDive(const float deltaTime, const glm::vec3& currentPos, const engine::Window& window)
 {
-	// Downward Diagonal movement until max Time or before it leaves window boundaries
+	// Downward diagonal movement until max time or before it leaves window boundaries
 	if (m_ElapsedSec < m_DiagonalDiveMaxTime && (currentPos.x > 0 && currentPos.x < window.width))
 	{
 		m_ElapsedSec += deltaTime;
@@ -238,15 +250,15 @@ void AI_ButterflyCP::UpdateDiagonalDive(const float deltaTime, const glm::vec3& 
 	{
 		m_ElapsedSec = 0.f;
 		m_AttackState = AttackState::zigZagSteer;
-
 	}
 }
 
+// Update the zigzag steer behavior
 void AI_ButterflyCP::UpdateZigZagSteer(const float deltaTime, const glm::vec3& currentPos, const engine::Window& window)
 {
 	if (currentPos.y > window.height)
 	{
-		// Reset enemy position at the top of the screen when he leaves from the bottom		
+		// Reset enemy position at the top of the screen when it leaves from the bottom
 		float formationXPos = m_pEnemyCP->GetFormationPos().x;
 		float halfWindow{ window.width / 2 };
 		if (formationXPos > halfWindow)
@@ -260,7 +272,7 @@ void AI_ButterflyCP::UpdateZigZagSteer(const float deltaTime, const glm::vec3& c
 			m_pButterflyTransfCP->SetLocalPosition(glm::vec3{ halfWindow - 50.f, -150.f, 0.f });
 		}
 
-		// Go back to his formation pos
+		// Go back to the formation position
 		m_pEnemyCP->ChangeCurrentState(EnemyCP::ENEMY_STATE::moveToFormation);
 		m_AttackState = AttackState::breakFormation;
 	}
@@ -268,20 +280,11 @@ void AI_ButterflyCP::UpdateZigZagSteer(const float deltaTime, const glm::vec3& c
 	{
 		if (m_ElapsedSec == 0)
 		{
-			// Everytime the steer right or left will take different amount of time
+			// Each steer left or right will take a different amount of time
 			m_MaxSteeringTime = float(((std::rand()) / float(RAND_MAX / 1)) + 0.5);
 
 			// Steer in the opposite direction than last time
-			if (m_Direction.x > 0.f)
-			{
-				// Steer left
-				m_Direction.x = -1.f;
-			}
-			else
-			{
-				// Steer right
-				m_Direction.x = 1.f;
-			}
+			m_Direction.x = (m_Direction.x > 0.f) ? -1.f : 1.f;
 		}
 
 		// Steer left and right until reaching the bottom limit
@@ -298,6 +301,7 @@ void AI_ButterflyCP::UpdateZigZagSteer(const float deltaTime, const glm::vec3& c
 	}
 }
 
+// Handle received messages
 void AI_ButterflyCP::ReceiveMessage(const std::string& message, const std::string& value)
 {
 	if (message == "RemoveCP")
@@ -313,6 +317,7 @@ void AI_ButterflyCP::ReceiveMessage(const std::string& message, const std::strin
 	}
 }
 
+// Reset the AI state
 void AI_ButterflyCP::Reset()
 {
 	m_AttackState = AttackState::breakFormation;

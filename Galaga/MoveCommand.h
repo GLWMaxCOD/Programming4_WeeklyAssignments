@@ -1,23 +1,22 @@
-#ifndef MOVE_COMMAND
-#define MOVE_COMMAND
+#ifndef GALAGA_MOVECOMMAND
+#define GALAGA_MOVECOMMAND
 
 #include "Command.h"
 #include <glm/glm.hpp>
 
-/* MOVEMENT COMMAND :
-	MOVE THE ACTOR IN THE DESIRED DIRECTION AND SPEED
-*/
+// MOVEMENT COMMAND : MOVE THE ACTOR IN THE DESIRED DIRECTION AND SPEED
+//                    Command to handle movement actions
 class MoveCommand final : public Command
 {
 public:
-	explicit MoveCommand(engine::GameObject* actor, glm::vec3 direction);
+    explicit MoveCommand(engine::GameObject* actor, glm::vec3 direction);
+    virtual ~MoveCommand() override;
 
-	virtual ~MoveCommand() override;
-	void Execute(float deltaTime) override;
+    void Execute(float deltaTime) override;
 
 private:
-	glm::vec3 m_Direction;		// Normalized vector that indicates the direction of the movement
-	engine::GameObject* m_Actor;
+    glm::vec3 m_Direction;      // Normalized direction vector
+    engine::GameObject* m_Actor; // Pointer to the actor GameObject
 };
 
 #endif

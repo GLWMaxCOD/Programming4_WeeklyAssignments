@@ -4,17 +4,18 @@
 #include <Command.h>
 #include <glm/glm.hpp>
 
+// Command to handle shooting action for a game object
 class ShootCommand final : public Command
 {
 public:
-	explicit ShootCommand(engine::GameObject* actor, glm::vec3 direction);
-	virtual ~ShootCommand() override;
-	void Execute(float deltaTime) override;
+    explicit ShootCommand(engine::GameObject* actor, glm::vec3 direction);
+    virtual ~ShootCommand() override;
+
+    void Execute(float deltaTime) override;
 
 private:
-
-	glm::vec3 m_Direction;
-	engine::GameObject* m_Actor;
+    glm::vec3 m_Direction;           // Normalized direction vector for shooting
+    engine::GameObject* m_Actor;     // The actor that performs the shooting
 };
 
-#endif
+#endif // GALAGA_SHOOTCOMMAND

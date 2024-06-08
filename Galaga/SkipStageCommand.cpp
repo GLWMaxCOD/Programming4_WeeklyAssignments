@@ -1,30 +1,30 @@
 #include "SkipStageCommand.h"
 #include "SceneManager.h"
 #include "GameplayState.h"
-#include <iostream>
 
+// Constructor to initialize the skip stage command with the gameplay state
 SkipStageCommand::SkipStageCommand(GameplayState* gameplayState)
-	: m_pGameplayState{ gameplayState }
+    : m_pGameplayState{ gameplayState }
 {
 
 }
 
+// Destructor
 SkipStageCommand::~SkipStageCommand()
 {
 
 }
 
+// Execute the skip stage command
 void SkipStageCommand::Execute(float)
 {
+    auto& sceneManager = engine::SceneManager::GetInstance();
+    if (!sceneManager.AreScenesLeft())
+        return; // No more levels to skip
 
-	auto& sceneManager = engine::SceneManager::GetInstance();
-	if (!sceneManager.AreScenesLeft())
-		return;		// No more levels to skip from
-
-	if (m_pGameplayState != nullptr && m_pGameplayState->ArePlayersAlive())
-	{
-		// Go next stage & deactivate the enemies from the current stage
-		m_pGameplayState->SkipStage();
-	}
-
+    if (m_pGameplayState != nullptr && m_pGameplayState->ArePlayersAlive())
+    {
+        // Go to the next stage and deactivate the enemies from the current stage
+        m_pGameplayState->SkipStage();
+    }
 }

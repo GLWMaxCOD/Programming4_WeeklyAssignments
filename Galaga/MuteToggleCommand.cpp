@@ -2,17 +2,19 @@
 #include "Servicelocator.h"
 
 MuteToggleCommand::MuteToggleCommand()
-	: Command()
+    : Command()
 {
-
+    // Constructor
 }
+
 MuteToggleCommand::~MuteToggleCommand()
 {
-
+    // Destructor
 }
 
 void MuteToggleCommand::Execute(float)
 {
-	auto& soundSystem = engine::Servicelocator::Get_Sound_System();
-	soundSystem.ToggleSoundSystemSound();
+    // Toggle the mute state of the sound system
+    auto& soundSystem = engine::Servicelocator::Get_Sound_System();
+    soundSystem.ToggleSoundSystemSound();
 }

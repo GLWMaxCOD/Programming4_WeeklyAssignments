@@ -1,23 +1,25 @@
 #include "StartCommand.h"
 #include "MenuState.h"
-#include <iostream>
 
+// Constructor to initialize the start command with the menu state
 StartCommand::StartCommand(MenuState* gameState)
-	: Command(),
-	m_pMenuState{ gameState }
+    : Command(),
+    m_pMenuState{ gameState }
 {
 
 }
 
+// Destructor
 StartCommand::~StartCommand()
 {
-	//std::cout << "Start Command destructor" << std::endl;
+    // Destructor implementation
 }
 
+// Execute the start command
 void StartCommand::Execute(float)
 {
-	if (m_pMenuState != nullptr)
-	{
-		m_pMenuState->StartGame();
-	}
+    if (m_pMenuState != nullptr)
+    {
+        m_pMenuState->StartGame();
+    }
 }

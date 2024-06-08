@@ -1,7 +1,5 @@
 #include "Event.h"
 
-
-
 engine::Event::Event(const std::string& eventType)
 	: m_Type{ eventType }
 { }

@@ -6,11 +6,12 @@
 #include "EnemyCP.h"
 #include <iostream>
 
+// Constructor: Initializes the AI_FormationCP with the given GameObject owner and JSON path
 AI_FormationCP::AI_FormationCP(engine::GameObject* pOwner, const std::string& JSONPath)
 	: Component("AI_FormationCP", pOwner),
-	m_FormationState{ FormationState::waiting }, m_MovingFTState{ SpawnOrderState::top_first }, //m_pFormationCP(pOwner->GetComponent<FormationCP>()),
+	m_FormationState{ FormationState::waiting }, m_MovingFTState{ SpawnOrderState::top_first },
 	BEES_TYPE{ "bees" }, BUTTERFLIES_TYPE{ "butterflies" }, GALAGAS_TYPE{ "galagas" },
-	m_SpawnFirstType{ true }, m_CurrentTimeSpawn{ 0.f }, m_TimeEnemySpawn{ 0.05f }, m_IsSpawnInfoReaded{ false },
+	m_SpawnFirstType{ true }, m_CurrentTimeSpawn{ 0.f }, m_TimeEnemySpawn{ 0.25f }, m_IsSpawnInfoReaded{ false },
 	m_LastEnemyType{ }, m_TimeEnemySend{ 1.5f }, NEXT_GALAGA{ 4 }, m_EnemyToSend{ BEES_TYPE }, m_SendGalagaCount{ 0 },
 	m_BeesActiveCount{ 0 }, m_ButterfliesActiveCount{ 0 }, m_GalagasActiveCount{ 0 },
 	m_IsVersusMode{ false }, m_pFormationCP{ pOwner->GetComponent<FormationCP>() }
@@ -24,43 +25,27 @@ AI_FormationCP::AI_FormationCP(engine::GameObject* pOwner, const std::string& JS
 			m_vSpawningInfo.emplace_back(std::make_unique<FormationReaderCP::EnemySpawnInfo>(*enemyInfo));
 		}
 	}
-
-	//auto jsonReaderCP = GetOwner()->GetComponent<FormationReaderCP>();
-	//if (jsonReaderCP) {
-	//	m_vSpawningInfo = jsonReaderCP->ReadSpawnOrder(JSONPath);  // Direct assignment of smart pointers
-	//}
-
 	jsonReaderCP->ClearJSONFile();
-
-	//m_pFormationCP = pOwner->GetComponent<FormationCP>();
 }
 
-void AI_FormationCP::GetEnemyData(const std::string& type, std::vector<engine::GameObject*>& container)
-{
-	auto formationCP = GetOwner()->GetComponent<FormationCP>();
-	auto enemiesData = formationCP->GetEnemies(type);
-	container.reserve(enemiesData.size());
-	for (const auto& enemy : enemiesData)
-	{
-		container.emplace_back(enemy);
-	}
-}
-
+// Destructor
 AI_FormationCP::~AI_FormationCP()
 {
-
 }
 
+// Set the versus mode state
 void AI_FormationCP::SetVersusMode(bool isVersusMode)
 {
 	m_IsVersusMode = isVersusMode;
 }
 
+// Update the formation AI state each frame
 void AI_FormationCP::Update(const float deltaTime)
 {
 	switch (m_FormationState)
 	{
 	case AI_FormationCP::FormationState::waiting:
+		// Do nothing in waiting state
 		break;
 	case AI_FormationCP::FormationState::spawning_enemies:
 		SpawnEnemies(deltaTime);
@@ -78,7 +63,19 @@ void AI_FormationCP::Update(const float deltaTime)
 	}
 }
 
-// Activate enemies to move into the formation progresively
+// Get enemy data of a specific type and fill the container with those enemies
+void AI_FormationCP::GetEnemyData(const std::string& type, std::vector<engine::GameObject*>& container)
+{
+	auto formationCP = GetOwner()->GetComponent<FormationCP>();
+	auto enemiesData = formationCP->GetEnemies(type);
+	container.reserve(enemiesData.size());
+	for (const auto& enemy : enemiesData)
+	{
+		container.emplace_back(enemy);
+	}
+}
+
+// Spawn enemies progressively based on the current state
 void AI_FormationCP::SpawnEnemies(const float deltaTime)
 {
 	m_CurrentTimeSpawn += deltaTime;
@@ -94,10 +91,10 @@ void AI_FormationCP::SpawnEnemies(const float deltaTime)
 			break;
 		case AI_FormationCP::SpawnOrderState::left:
 		{
-			// Left always will alternate between the type of enemies to be spawned
+			// Alternate between spawning enemies on the left
 			if (!m_IsSpawnInfoReaded)
 			{
-				// Only get info if we haven't got it already
+				// Only get info if not already read
 				for (const auto& spawnInfo : m_vSpawningInfo)
 				{
 					if (spawnInfo->GetStartPos() == "left")
@@ -107,7 +104,6 @@ void AI_FormationCP::SpawnEnemies(const float deltaTime)
 					}
 				}
 				m_IsSpawnInfoReaded = true;
-
 			}
 
 			bool allEnemiesSpawned{ false };
@@ -135,7 +131,6 @@ void AI_FormationCP::SpawnEnemies(const float deltaTime)
 						allEnemiesSpawned = true;
 					}
 				}
-
 			}
 
 			if (allEnemiesSpawned)
@@ -158,14 +153,14 @@ void AI_FormationCP::SpawnEnemies(const float deltaTime)
 			break;
 		}
 	}
-
 }
 
+// Update the current batch of spawning enemies based on the batch name
 void AI_FormationCP::UpdateSpawningBatch(const std::string& batch)
 {
 	if (!m_IsSpawnInfoReaded)
 	{
-		// Only get info if we haven't got it already
+		// Only get info if not already read
 		for (const auto& spawnInfo : m_vSpawningInfo)
 		{
 			if (spawnInfo->GetStartPos() == batch)
@@ -187,7 +182,6 @@ void AI_FormationCP::UpdateSpawningBatch(const std::string& batch)
 			{
 				allEnemiesSpawned = true;
 			}
-
 			else
 			{
 				ActivateEnemy(pair.first);
@@ -224,6 +218,7 @@ void AI_FormationCP::UpdateSpawningBatch(const std::string& batch)
 	}
 }
 
+// Send enemies to attack progressively
 void AI_FormationCP::SendEnemies()
 {
 	std::vector<engine::GameObject*> galagas = m_pFormationCP->GetEnemies(GALAGAS_TYPE);
@@ -262,10 +257,10 @@ void AI_FormationCP::SendEnemies()
 	}
 }
 
-// Get the next enemy to be send taking into account if there are still enemies alive from the same type
+// Get the next enemy type to send
 const std::string& AI_FormationCP::GetNextEnemyToSend()
 {
-	// First check if it is time to Send a Galaga (every 4 enemies, one galaga is sent)
+	// First check if it is time to send a Galaga (every 4 enemies, one Galaga is sent)
 	if (m_SendGalagaCount >= NEXT_GALAGA)
 	{
 		if (m_pFormationCP->AreEnemiesLeft(GALAGAS_TYPE))
@@ -288,7 +283,6 @@ const std::string& AI_FormationCP::GetNextEnemyToSend()
 		if (m_pFormationCP->AreEnemiesLeft(BEES_TYPE))
 		{
 			return BEES_TYPE;
-
 		}
 	}
 
@@ -328,6 +322,7 @@ void AI_FormationCP::ActivateEnemy(const std::string& type)
 	}
 }
 
+// Get the count of active enemies of a certain type
 short AI_FormationCP::GetEnemyTypeCount(const std::string& type) const
 {
 	if (type == BEES_TYPE)
@@ -347,6 +342,7 @@ short AI_FormationCP::GetEnemyTypeCount(const std::string& type) const
 	return -1;
 }
 
+// Increment the count of active enemies of a certain type
 void AI_FormationCP::SetEnemyTypeCount(const std::string& type)
 {
 	if (type == BEES_TYPE)
@@ -363,6 +359,7 @@ void AI_FormationCP::SetEnemyTypeCount(const std::string& type)
 	}
 }
 
+// Handle received messages
 void AI_FormationCP::ReceiveMessage(const std::string& message, const std::string& value)
 {
 	if (message == "RemoveCP")
@@ -374,9 +371,10 @@ void AI_FormationCP::ReceiveMessage(const std::string& message, const std::strin
 	}
 }
 
+// Reset the AI state with a new formation
 void AI_FormationCP::Reset(const std::string& JSONPath)
 {
-	m_FormationState = FormationState::waiting;			// Wait until order to spawn enemies
+	m_FormationState = FormationState::waiting; // Wait until order to spawn enemies
 	m_MovingFTState = SpawnOrderState::top_first;
 	m_SpawnFirstType = true;
 	m_CurrentTimeSpawn = 0.f;
@@ -402,11 +400,13 @@ void AI_FormationCP::Reset(const std::string& JSONPath)
 	jsonReaderCP->ClearJSONFile();
 }
 
+// Start the enemy spawning process
 void AI_FormationCP::SpawnEnemies()
 {
 	m_FormationState = AI_FormationCP::FormationState::spawning_enemies;
 }
 
+// Change the formation state to waiting
 void AI_FormationCP::ChangeToWaitState()
 {
 	m_FormationState = FormationState::waiting;
