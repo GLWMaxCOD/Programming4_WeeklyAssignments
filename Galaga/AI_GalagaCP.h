@@ -17,6 +17,9 @@ namespace engine
 	struct Window;
 	class CollisionComponent;
 }
+
+class AI_ButterflyCP;
+
 class AI_GalagaCP final : public engine::Component, public engine::Observer
 {
 public:
@@ -48,6 +51,9 @@ public:
 	void SetVersusMode(bool isVersusMode);
 	bool IsVersusMode() const;
 
+	void SetEscortButterflies(AI_ButterflyCP* butterflyLeft, AI_ButterflyCP* butterflyRight);
+	void ReplaceDeadEscorts(std::vector<engine::GameObject*>& butterflies);
+
 private:
 	enum class BombinRunState
 	{
@@ -73,9 +79,7 @@ private:
 	engine::CollisionComponent* m_pTractorBeamCollisionCP;
 
 	// Bombing run behaviour
-
-	void InitButterflyEscorts();
-	void UpdateBombingRun(const float deltaTime);
+	void UpdateBombingRun(const float deltaTime, const glm::vec3& currentPos);
 
 	AttackState m_AttackState;
 	BombinRunState m_BombingRunState;
@@ -109,5 +113,8 @@ private:
 	bool m_IsTractorBeamRun;						// To track is the current attack is the tractor beam run
 
 	int m_StartFrame;
+
+	AI_ButterflyCP* m_pButterflyLeft;               // Left escort butterfly
+	AI_ButterflyCP* m_pButterflyRight;              // Right escort butterfly
 };
 #endif // DEBUG

@@ -25,14 +25,21 @@ public:
 
 	void Reset();
 
+	bool IsOwnerActive() const;
+
+	void FollowGalaga(const glm::vec3& galagaPos, float offset);
+	void ReturnToFormation();
+	bool IsEscorting() const { return m_IsEscorting; }
+	void SetEscorting(bool escorting) { m_IsEscorting = escorting; }
+
 private:
 	enum class AttackState
 	{
 		breakFormation,
 		loop,
 		diagonalDive,
-		zigZagSteer
-
+		zigZagSteer,
+		followingGalaga
 	};
 
 	void InitAttackData(const glm::vec3& currentPos, const engine::Window& window);
@@ -41,6 +48,8 @@ private:
 	void UpdateZigZagSteer(const float deltaTime, const glm::vec3& currentPos, const engine::Window& window);
 	void UpdateDiagonalDive(const float deltaTime, const glm::vec3& currentPos, const engine::Window& window);
 	void UpdateBreakLoop(const float deltaTime);
+	void UpdateFollowGalaga(const float deltaTime);
+	void FireMissile();
 
 	EnemyCP* m_pEnemyCP;
 	MoveComponent* m_pMoveCP;
@@ -59,6 +68,13 @@ private:
 	// For Loops
 	float m_RotationTime;
 	float m_RotationRadius;
+
+	glm::vec3 m_OriginalFormationPos;           // To store original formation position
+	glm::vec3 m_CurrentGalagaPos;               // To store the current position of the Galaga being followed
+	float m_Offset;                             // Offset from the Galaga
+	bool m_IsFollowingGalaga;                   // Flag to check if following Galaga
+	float m_EscortSpeedMultiplier;              // Movement speed when escorting
+	bool m_IsEscorting;
 };
 
 #endif

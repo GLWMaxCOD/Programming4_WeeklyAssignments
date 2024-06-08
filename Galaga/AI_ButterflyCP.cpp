@@ -13,7 +13,9 @@ AI_ButterflyCP::AI_ButterflyCP(engine::GameObject* pOwner)
 	m_pEnemyCP{ nullptr }, m_pMoveCP{ nullptr }, m_pButterflyTransfCP{ nullptr }, m_pRotatorCP{ nullptr },
 	m_AttackState{ AttackState::breakFormation },
 	m_DiagonalDiveMaxTime{ 0.f }, m_ElapsedSec{ 0.f }, m_AtRightSide{ false }, m_Direction{ 1.f, 1.f, 0.f },
-	m_MaxSteeringTime{ 0.f }, m_RotationTime{ 1.5f }, m_RotationRadius{ 30.f }
+	m_MaxSteeringTime{ 0.f }, m_RotationTime{ 1.5f }, m_RotationRadius{ 30.f },
+	m_OriginalFormationPos{ 0.f, 0.f, 0.f }, m_CurrentGalagaPos{ 0.f, 0.f, 0.f }, m_Offset{ 0.f }, m_IsFollowingGalaga{ false }, 
+	m_EscortSpeedMultiplier{ 1.75f }, m_IsEscorting{ false }
 {
 	if (pOwner != nullptr)
 	{
@@ -29,10 +31,21 @@ AI_ButterflyCP::~AI_ButterflyCP()
 
 }
 
+bool AI_ButterflyCP::IsOwnerActive() const
+{
+	return GetOwner()->IsActive();
+}
+
 void AI_ButterflyCP::Update(const float deltaTime)
 {
 	if (m_pMoveCP != nullptr && m_pEnemyCP != nullptr && m_pButterflyTransfCP != nullptr)
 	{
+		if (m_IsFollowingGalaga)
+		{
+			UpdateFollowGalaga(deltaTime);
+			return;
+		}
+
 		if (m_pEnemyCP->GetCurrentState() == EnemyCP::ENEMY_STATE::attack)
 		{
 			UpdateAttack(deltaTime);
@@ -40,6 +53,41 @@ void AI_ButterflyCP::Update(const float deltaTime)
 	}
 }
 
+void AI_ButterflyCP::UpdateFollowGalaga(const float deltaTime)
+{
+	glm::vec3 targetPos = m_CurrentGalagaPos + glm::vec3(m_Offset, 0.f, 0.f);
+	glm::vec3 direction = glm::normalize(targetPos - m_pButterflyTransfCP->GetWorldPosition());
+
+	float speedMultiplier = m_EscortSpeedMultiplier;
+	if (std::abs(targetPos.y - m_pButterflyTransfCP->GetWorldPosition().y) < 1.0f)
+	{
+		// Revert to normal speed when close to same height
+		speedMultiplier = 1.0f;
+	}
+
+	// Ensures continuous movement even when at the same height
+	m_pMoveCP->Move(deltaTime, direction * speedMultiplier);
+
+	// Random chance to fire a missile while escorting
+	if (std::rand() % 100 < 50) // 50% chance to fire a missile
+	{
+		FireMissile();
+	}
+}
+
+void AI_ButterflyCP::FollowGalaga(const glm::vec3& galagaPos, float offset)
+{
+	m_CurrentGalagaPos = galagaPos;
+	m_Offset = offset;
+	m_IsFollowingGalaga = true;
+}
+
+void AI_ButterflyCP::ReturnToFormation()
+{
+	m_IsFollowingGalaga = false;
+	m_AttackState = AttackState::breakFormation;
+	m_pEnemyCP->ChangeCurrentState(EnemyCP::ENEMY_STATE::moveToFormation);
+}
 
 void AI_ButterflyCP::UpdateAttack(const float deltaTime)
 {
@@ -229,6 +277,16 @@ void AI_ButterflyCP::Reset()
 	m_AtRightSide = false;
 	m_Direction = glm::vec3{ 1.f, 1.f, 0.f };
 	m_MaxSteeringTime = 0.f;
+	m_IsFollowingGalaga = false;
 
 	GetOwner()->SetIsActive(true);
+}
+
+// New method to fire a missile
+void AI_ButterflyCP::FireMissile()
+{
+	if (m_pEnemyCP != nullptr)
+	{
+		m_pEnemyCP->CalculateMissileDirection();
+	}
 }

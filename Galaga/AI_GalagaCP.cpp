@@ -14,6 +14,7 @@
 #include "HealthComponent.h"
 #include <glm/gtc/constants.hpp>
 #include <iostream>
+#include <algorithm>
 
 AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 	:Component("AI_GalagaCP", pOwner)
@@ -23,7 +24,7 @@ AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 	, m_pMoveCP{ nullptr }, m_pRotatorCP{ nullptr }, ROTATION_TIME{ 1.5f }, m_RotationRadius{ 30.f }, m_DoRotateLeft{ false }
 	, m_pEnemyCP{ nullptr }, m_TractorBeamPos{ glm::vec2{0.f, 0.f} }, m_Direction{ 0.f, 0.f, 0.f }
 	, MAX_TRACTORBEAM_TIME{ 3.5f }, m_ElapsedTime{ 0.f }, m_pTractorBeam{ nullptr }, m_pTractorBeamCollisionCP{ nullptr }, m_PlayerHit{ false }, m_IsRetracting{ false }, m_StartFrame{0}
-	, m_IsTractorBeamRun{ false }
+	, m_IsTractorBeamRun{ false }, m_pButterflyLeft{ nullptr }, m_pButterflyRight{ nullptr }
 {
 
 	if (pOwner != nullptr)
@@ -152,6 +153,37 @@ bool AI_GalagaCP::IsVersusMode() const
 	return m_IsVersusMode;
 }
 
+void AI_GalagaCP::SetEscortButterflies(AI_ButterflyCP* butterflyLeft, AI_ButterflyCP* butterflyRight)
+{
+	m_pButterflyLeft = butterflyLeft;
+	m_pButterflyRight = butterflyRight;
+}
+
+void AI_GalagaCP::ReplaceDeadEscorts(std::vector<engine::GameObject*>& butterflies)
+{
+	auto replaceEscort = [&butterflies](AI_ButterflyCP*& escort)
+		{
+			if (escort == nullptr || !escort->IsOwnerActive())
+			{
+				for (auto& butterfly : butterflies)
+				{
+					if (butterfly != nullptr && butterfly->IsActive())
+					{
+						auto newEscort = butterfly->GetComponent<AI_ButterflyCP>();
+						if (newEscort != nullptr)
+						{
+							escort = newEscort;
+							break;
+						}
+					}
+				}
+			}
+		};
+
+	replaceEscort(m_pButterflyLeft);
+	replaceEscort(m_pButterflyRight);
+}
+
 void AI_GalagaCP::Update(const float deltaTime)
 {
 	if (m_pMoveCP != nullptr && m_pGalagaTransfCP != nullptr)
@@ -236,34 +268,11 @@ void AI_GalagaCP::UpdateAttack(const float deltaTime, const glm::vec3& currentPo
 		switch (m_BombingRunState)
 		{
 		case AI_GalagaCP::BombinRunState::moveToLoopPoint:
-			// Initialize butterfly escorts if necessary
-			InitButterflyEscorts();
 			m_BombingRunState = BombinRunState::divingLoop;
 			break;
 		case AI_GalagaCP::BombinRunState::divingLoop:
-			UpdateBombingRun(deltaTime);
+			UpdateBombingRun(deltaTime, currentPos);
 			break;
-		}
-	}
-}
-
-void AI_GalagaCP::InitButterflyEscorts()
-{
-	auto formationCP = GetOwner()->GetComponent<FormationCP>();
-	if (formationCP != nullptr)
-	{
-		std::vector<engine::GameObject*> butterflies = formationCP->GetEnemies("butterflies");
-		for (auto& butterfly : butterflies)
-		{
-			if (butterfly->IsActive())
-			{
-				auto butterflyAI = butterfly->GetComponent<AI_ButterflyCP>();
-				if (butterflyAI != nullptr)
-				{
-					butterflyAI->Reset();
-					butterflyAI->Update(0); // Force an update to initiate their attack pattern
-				}
-			}
 		}
 	}
 }
@@ -359,7 +368,7 @@ void AI_GalagaCP::UpdateTractorBeam(const float deltaTime)
 	}
 }
 
-void AI_GalagaCP::UpdateBombingRun(const float deltaTime)
+void AI_GalagaCP::UpdateBombingRun(const float deltaTime, const glm::vec3& currentPos)
 {
 	switch (m_BombingRunState)
 	{
@@ -393,6 +402,11 @@ void AI_GalagaCP::UpdateBombingRun(const float deltaTime)
 			m_AttackState = AttackState::finishAttack;
 		}
 		break;
+	}
+	if (m_pButterflyLeft != nullptr && m_pButterflyRight != nullptr)
+	{
+		m_pButterflyLeft->FollowGalaga(currentPos, -40.0f); // Offset 40px left
+		m_pButterflyRight->FollowGalaga(currentPos, 40.0f);  // Offset 40px right
 	}
 }
 
@@ -439,6 +453,13 @@ void AI_GalagaCP::LeaveLevel(const float deltaTime, float galagaYPos, const engi
 		m_TractorBeamState = TractorBeamState::moveIntoPosition;
 		m_IsAttacking = false;
 		m_PlayerHit = false;
+
+		// Notify the escort butterflies to return to their original positions
+		if (m_pButterflyLeft != nullptr && m_pButterflyRight != nullptr)
+		{
+			m_pButterflyLeft->ReturnToFormation();
+			m_pButterflyRight->ReturnToFormation();
+		}
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "FormationCP.h"
 #include "AI_FormationCP.h"
 #include "AI_GalagaCP.h"
+#include "AI_ButterflyCP.h"
 #include "GalagaStrings.h"
 #include "GameOverState.h"
 #include "Servicelocator.h"
@@ -16,6 +17,7 @@
 #include "InputManager.h"
 #include "ResourceManager.h"
 #include <iostream>
+#include <cstdlib> // For std::rand
 
 GameplayState::GameplayState(const std::string& gameMode)
 	:m_GameMode{ gameMode }, m_pFormationCP{ nullptr }, m_vEnemiesData{ },
@@ -100,6 +102,29 @@ void GameplayState::InitEnemies()
 	go_Formation->AddComponent<AI_FormationCP>(go_Formation.get(), m_vEnemiesData.at(0).second.GetSpawnOrderData());
 	scene.Add(go_Formation);
 
+	// Assign specific butterflies to specific Galagas
+	auto& galagas = m_pFormationCP->GetEnemies("galagas");
+	auto& butterflies = m_pFormationCP->GetEnemies("butterflies");
+
+	if (galagas.size() >= 4 && butterflies.size() >= 16)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			auto galaga = galagas[i];
+			auto butterflyLeft = butterflies[8 + (i * 2)];
+			auto butterflyRight = butterflies[9 + (i * 2)];
+
+			auto galagaAI = galaga->GetComponent<AI_GalagaCP>();
+			auto butterflyLeftAI = dynamic_cast<AI_ButterflyCP*>(butterflyLeft->GetComponent<AI_ButterflyCP>());
+			auto butterflyRightAI = dynamic_cast<AI_ButterflyCP*>(butterflyRight->GetComponent<AI_ButterflyCP>());
+
+			if (galagaAI && butterflyLeftAI && butterflyRightAI)
+			{
+				galagaAI->SetEscortButterflies(butterflyLeftAI, butterflyRightAI);
+				galagaAI->ReplaceDeadEscorts(butterflies);
+			}
+		}
+	}
 }
 
 void GameplayState::InitPlayer1()
