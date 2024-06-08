@@ -56,7 +56,7 @@ MissileManagerCP::MissileManagerCP(engine::GameObject* pOwner, int maxMissiles, 
 
 MissileManagerCP::~MissileManagerCP()
 {
-	std::cout << "MissileManagerCP destructor" << std::endl;
+	//std::cout << "MissileManagerCP destructor" << std::endl;
 	m_vMissiles.clear();
 }
 

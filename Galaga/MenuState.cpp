@@ -12,7 +12,7 @@
 
 MenuState::~MenuState()
 {
-	std::cout << "Menu State destructor" << std::endl;
+	//std::cout << "Menu State destructor" << std::endl;
 }
 
 void MenuState::OnEnter()

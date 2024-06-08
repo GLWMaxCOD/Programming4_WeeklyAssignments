@@ -12,7 +12,7 @@ TractorbeamCommand::TractorbeamCommand(engine::GameObject* actor)
 
 TractorbeamCommand::~TractorbeamCommand()
 {
-	std::cout << "Tractorbeam Command destructor" << std::endl;
+	//std::cout << "Tractorbeam Command destructor" << std::endl;
 }
 
 void TractorbeamCommand::Execute(float)

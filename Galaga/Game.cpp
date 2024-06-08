@@ -52,5 +52,5 @@ void Game::AddAllSounds()
 
 Game::~Game()
 {
-	std::cout << "Game destructor" << std::endl;
+	//std::cout << "Game destructor" << std::endl;
 }

@@ -79,7 +79,7 @@ void engine::RenderComponent::ReceiveMessage(const std::string& message, const s
 
 engine::RenderComponent::~RenderComponent()
 {
-	std::cout << "RenderComponent destructor" << std::endl;
+	//std::cout << "RenderComponent destructor" << std::endl;
 }
 
 void engine::RenderComponent::SetVisible(bool visible)

@@ -51,7 +51,7 @@ PlayerScoreCP::PlayerScoreCP(engine::GameObject* pOwner, unsigned int playerIdx)
 
 PlayerScoreCP::~PlayerScoreCP()
 {
-	std::cout << "PlayerScore destructor" << std::endl;
+	//std::cout << "PlayerScore destructor" << std::endl;
 }
 
 void PlayerScoreCP::Update(const float)

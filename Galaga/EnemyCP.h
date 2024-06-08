@@ -34,6 +34,9 @@ public:
 	void ChangeCurrentState(EnemyCP::ENEMY_STATE newState);
 	void CalculateMissileDirection();
 
+	// Firing Missiles - ALL enemy types can fire them
+	void FireMissile(const float deltaTime);
+
 	void Reset(const glm::vec3& startPos, const glm::vec3& formationPos);
 
 	glm::vec3 GetFormationPos() const;
@@ -47,9 +50,6 @@ private:
 
 	void SetDeathAnimation(const std::string& spriteFilePath, int totalCols, int totalFrames, float frameRate, int frameInc, int limitFrame, const glm::vec2& offset);
 	void ResetAnimation(const std::string& spriteFilePath, int totalCols, int totalFrames, float frameRate, int frameInc, int limitFrame, const glm::vec2& offset);
-
-	// Firing Missiles - ALL enemy types can fire them
-	void FireMissile(const float deltaTime);
 
 	glm::vec3 m_FormationPos;						//Position the enemy will be placed in the formation
 	ENEMY_STATE m_CurrentState;

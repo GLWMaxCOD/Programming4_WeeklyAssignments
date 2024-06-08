@@ -8,6 +8,7 @@ class EnemyCP;
 class MoveComponent;
 class MissileManagerCP;
 class RotatorComponent;
+class AI_GalagaCP;
 namespace engine
 {
 	class TransformComponent;
@@ -27,7 +28,8 @@ public:
 
 	bool IsOwnerActive() const;
 
-	void FollowGalaga(const glm::vec3& galagaPos, float offset);
+	void Shoot();
+	void FollowGalaga(const glm::vec3& galagaPos, AI_GalagaCP* galagaCP, float offset);
 	void ReturnToFormation();
 	bool IsEscorting() const { return m_IsEscorting; }
 	void SetEscorting(bool escorting) { m_IsEscorting = escorting; }
@@ -49,7 +51,6 @@ private:
 	void UpdateDiagonalDive(const float deltaTime, const glm::vec3& currentPos, const engine::Window& window);
 	void UpdateBreakLoop(const float deltaTime);
 	void UpdateFollowGalaga(const float deltaTime);
-	void FireMissile();
 
 	EnemyCP* m_pEnemyCP;
 	MoveComponent* m_pMoveCP;
@@ -75,6 +76,14 @@ private:
 	bool m_IsFollowingGalaga;                   // Flag to check if following Galaga
 	float m_EscortSpeedMultiplier;              // Movement speed when escorting
 	bool m_IsEscorting;
+
+	// Shooting mechanism
+	float m_ShootElapsedTime;
+	float m_ShootInterval;
+	void FireMissile();
+	void ResetShootInterval();
+
+	AI_GalagaCP* m_pGalagaCP;
 };
 
 #endif

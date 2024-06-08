@@ -328,7 +328,7 @@ std::string GameObject::Tag() const
 
 GameObject::~GameObject()
 {
-	std::cout << "GameObject destructor" << std::endl;
+	//std::cout << "GameObject destructor" << std::endl;
 
 	m_pTransformCP = nullptr;
 	m_pRenderCP = nullptr;

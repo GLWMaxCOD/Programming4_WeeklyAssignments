@@ -12,7 +12,7 @@ ShootCommand::ShootCommand(engine::GameObject* actor, glm::vec3 direction)
 
 ShootCommand::~ShootCommand()
 {
-	std::cout << "Shoot Command destructor" << std::endl;
+	//std::cout << "Shoot Command destructor" << std::endl;
 }
 
 void ShootCommand::Execute(float)

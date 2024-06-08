@@ -1,4 +1,5 @@
 #include "AI_ButterflyCP.h"
+#include "AI_GalagaCP.h"
 #include "GameObject.h"
 #include "MoveComponent.h"
 #include "MissileManagerCP.h"
@@ -15,7 +16,7 @@ AI_ButterflyCP::AI_ButterflyCP(engine::GameObject* pOwner)
 	m_DiagonalDiveMaxTime{ 0.f }, m_ElapsedSec{ 0.f }, m_AtRightSide{ false }, m_Direction{ 1.f, 1.f, 0.f },
 	m_MaxSteeringTime{ 0.f }, m_RotationTime{ 1.5f }, m_RotationRadius{ 30.f },
 	m_OriginalFormationPos{ 0.f, 0.f, 0.f }, m_CurrentGalagaPos{ 0.f, 0.f, 0.f }, m_Offset{ 0.f }, m_IsFollowingGalaga{ false }, 
-	m_EscortSpeedMultiplier{ 1.75f }, m_IsEscorting{ false }
+	m_EscortSpeedMultiplier{ 1.75f }, m_IsEscorting{ false }, m_ShootElapsedTime{ 0.f }, m_ShootInterval{ 0.f }, m_pGalagaCP{ nullptr }
 {
 	if (pOwner != nullptr)
 	{
@@ -24,6 +25,8 @@ AI_ButterflyCP::AI_ButterflyCP(engine::GameObject* pOwner)
 		m_pEnemyCP = pOwner->GetComponent<EnemyCP>();
 		m_pRotatorCP = pOwner->GetComponent<RotatorComponent>();
 	}
+
+	ResetShootInterval();
 }
 
 AI_ButterflyCP::~AI_ButterflyCP()
@@ -36,13 +39,43 @@ bool AI_ButterflyCP::IsOwnerActive() const
 	return GetOwner()->IsActive();
 }
 
+void AI_ButterflyCP::ResetShootInterval()
+{
+	m_ShootInterval = 1.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (3.0f - 1.0f)));
+	m_ShootElapsedTime = 0.0f;
+}
+
+void AI_ButterflyCP::FireMissile()
+{
+	if (m_pEnemyCP != nullptr)
+	{
+		m_pEnemyCP->CalculateMissileDirection();
+		m_pEnemyCP->FireMissile(0.0f);
+	}
+}
+
 void AI_ButterflyCP::Update(const float deltaTime)
 {
 	if (m_pMoveCP != nullptr && m_pEnemyCP != nullptr && m_pButterflyTransfCP != nullptr)
 	{
 		if (m_IsFollowingGalaga)
 		{
+			// Check if the Galaga is active
+			if (m_pGalagaCP && !m_pGalagaCP->IsOwnerActive())
+			{
+				ReturnToFormation();
+				return;
+			}
+
 			UpdateFollowGalaga(deltaTime);
+
+			// Update shooting timer
+			m_ShootElapsedTime += deltaTime;
+			if (m_ShootElapsedTime >= m_ShootInterval)
+			{
+				FireMissile();
+				ResetShootInterval();
+			}
 			return;
 		}
 
@@ -50,6 +83,15 @@ void AI_ButterflyCP::Update(const float deltaTime)
 		{
 			UpdateAttack(deltaTime);
 		}
+	}
+}
+
+void AI_ButterflyCP::Shoot()
+{
+	if (m_pEnemyCP != nullptr)
+	{
+		m_pEnemyCP->CalculateMissileDirection();
+		m_pEnemyCP->FireMissile(0.0f); // Fire a missile immediately
 	}
 }
 
@@ -67,19 +109,21 @@ void AI_ButterflyCP::UpdateFollowGalaga(const float deltaTime)
 
 	// Ensures continuous movement even when at the same height
 	m_pMoveCP->Move(deltaTime, direction * speedMultiplier);
-
-	// Random chance to fire a missile while escorting
-	if (std::rand() % 100 < 50) // 50% chance to fire a missile
-	{
-		FireMissile();
-	}
 }
 
-void AI_ButterflyCP::FollowGalaga(const glm::vec3& galagaPos, float offset)
+void AI_ButterflyCP::FollowGalaga(const glm::vec3& galagaPos, AI_GalagaCP* galagaCP, float offset)
 {
 	m_CurrentGalagaPos = galagaPos;
 	m_Offset = offset;
 	m_IsFollowingGalaga = true;
+
+	m_pGalagaCP = galagaCP;
+
+	if (m_pEnemyCP != nullptr)
+	{
+		m_pEnemyCP->CalculateMissileDirection();
+	}
+	ResetShootInterval();
 }
 
 void AI_ButterflyCP::ReturnToFormation()
@@ -279,14 +323,7 @@ void AI_ButterflyCP::Reset()
 	m_MaxSteeringTime = 0.f;
 	m_IsFollowingGalaga = false;
 
-	GetOwner()->SetIsActive(true);
-}
+	ResetShootInterval();
 
-// New method to fire a missile
-void AI_ButterflyCP::FireMissile()
-{
-	if (m_pEnemyCP != nullptr)
-	{
-		m_pEnemyCP->CalculateMissileDirection();
-	}
+	GetOwner()->SetIsActive(true);
 }

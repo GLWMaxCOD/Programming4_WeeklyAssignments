@@ -173,6 +173,7 @@ void AI_GalagaCP::ReplaceDeadEscorts(std::vector<engine::GameObject*>& butterfli
 						if (newEscort != nullptr)
 						{
 							escort = newEscort;
+							butterfly->SetIsActive(false); // Mark the new escort as used
 							break;
 						}
 					}
@@ -403,10 +404,16 @@ void AI_GalagaCP::UpdateBombingRun(const float deltaTime, const glm::vec3& curre
 		}
 		break;
 	}
+
 	if (m_pButterflyLeft != nullptr && m_pButterflyRight != nullptr)
 	{
-		m_pButterflyLeft->FollowGalaga(currentPos, -40.0f); // Offset 40px left
-		m_pButterflyRight->FollowGalaga(currentPos, 40.0f);  // Offset 40px right
+		m_pButterflyLeft->FollowGalaga(currentPos, this, -40.0f); // Offset 40px left
+		m_pButterflyRight->FollowGalaga(currentPos, this, 40.0f);  // Offset 40px right
+	}
+	else
+	{
+		// Replace dead escorts if any
+		//ReplaceDeadEscorts(engine::SceneManager::GetInstance().GetActiveScene().GetAll());
 	}
 }
 
@@ -530,4 +537,9 @@ void AI_GalagaCP::ChangeSprite(const std::string& spritePath)
 		// Change spriteSheet to the being hit version
 		render->SetTexture(spritePath);
 	}
+}
+
+bool AI_GalagaCP::IsOwnerActive() const
+{
+	return GetOwner()->IsActive();
 }

@@ -11,7 +11,7 @@ StartCommand::StartCommand(MenuState* gameState)
 
 StartCommand::~StartCommand()
 {
-	std::cout << "Start Command destructor" << std::endl;
+	//std::cout << "Start Command destructor" << std::endl;
 }
 
 void StartCommand::Execute(float)

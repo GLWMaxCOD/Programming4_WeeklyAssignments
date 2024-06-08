@@ -22,7 +22,7 @@ TextComponent::TextComponent(engine::GameObject* pOwner, const std::string& text
 
 TextComponent::~TextComponent()
 {
-	std::cout << "TextComponent destructor" << std::endl;
+	//std::cout << "TextComponent destructor" << std::endl;
 }
 
 void TextComponent::Update(const float)

@@ -118,5 +118,5 @@ void engine::TransformComponent::ReceiveMessage(const std::string& message, cons
 
 engine::TransformComponent::~TransformComponent()
 {
-	std::cout << "TransformComponent destructor" << std::endl;
+	//std::cout << "TransformComponent destructor" << std::endl;
 }

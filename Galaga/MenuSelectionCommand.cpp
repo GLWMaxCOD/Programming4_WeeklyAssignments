@@ -12,7 +12,7 @@ MenuSelectionCommand::MenuSelectionCommand(MenuSelectionCP* pMenuSelectionCP, in
 
 MenuSelectionCommand::~MenuSelectionCommand()
 {
-	std::cout << "MenuSelectionCommand destructor" << std::endl;
+	//std::cout << "MenuSelectionCommand destructor" << std::endl;
 }
 
 void MenuSelectionCommand::Execute(float)

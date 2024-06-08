@@ -23,7 +23,7 @@ RotatorComponent::RotatorComponent(engine::GameObject* pOwner)
 
 RotatorComponent::~RotatorComponent()
 {
-	std::cout << "RotatorCP destructor" << std::endl;
+	//std::cout << "RotatorCP destructor" << std::endl;
 }
 
 void RotatorComponent::Update(const float)

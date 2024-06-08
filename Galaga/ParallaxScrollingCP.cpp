@@ -19,7 +19,7 @@ ParallaxScrollingCP::ParallaxScrollingCP(engine::GameObject* pOwner)
 
 ParallaxScrollingCP::~ParallaxScrollingCP()
 {
-	std::cout << "ParallaxScrolling destructor" << std::endl;
+	//std::cout << "ParallaxScrolling destructor" << std::endl;
 }
 
 void ParallaxScrollingCP::Update(const float deltaTime)

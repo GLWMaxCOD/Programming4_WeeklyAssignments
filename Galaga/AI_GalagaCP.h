@@ -30,6 +30,8 @@ public:
 	virtual void ReceiveMessage(const std::string& message, const std::string& value) override;
 	void OnNotify(engine::GameObject* gameObject, const engine::Event& event) override;
 
+	bool IsOwnerActive() const;
+
 	void Reset();
 	void ChangeSprite(const std::string& spritePath);
 

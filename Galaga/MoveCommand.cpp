@@ -25,5 +25,5 @@ void MoveCommand::Execute(float deltaTime)
 
 MoveCommand::~MoveCommand()
 {
-	std::cout << "MoveCommand destructor" << std::endl;
+	//std::cout << "MoveCommand destructor" << std::endl;
 }

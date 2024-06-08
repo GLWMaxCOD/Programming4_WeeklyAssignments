@@ -52,7 +52,7 @@ void GameplayState::LoadDataPaths()
 
 GameplayState::~GameplayState()
 {
-	std::cout << "Gameplay State destructor" << std::endl;
+	//std::cout << "Gameplay State destructor" << std::endl;
 }
 
 void GameplayState::OnEnter()

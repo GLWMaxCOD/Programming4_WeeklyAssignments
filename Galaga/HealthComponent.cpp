@@ -13,7 +13,7 @@ HealthComponent::HealthComponent(engine::GameObject* pOwner, unsigned int lives)
 
 HealthComponent::~HealthComponent()
 {
-	std::cout << "Health Component destructor" << std::endl;
+	//std::cout << "Health Component destructor" << std::endl;
 }
 
 void HealthComponent::ResetHealth(unsigned int newHealth)

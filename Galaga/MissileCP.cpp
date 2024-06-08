@@ -24,7 +24,7 @@ MissileCP::MissileCP(engine::GameObject* pOwner, bool IsPlayerMissile)
 
 MissileCP::~MissileCP()
 {
-	std::cout << "MissileCP destructor" << std::endl;
+	//std::cout << "MissileCP destructor" << std::endl;
 }
 
 void MissileCP::Update(const float)
