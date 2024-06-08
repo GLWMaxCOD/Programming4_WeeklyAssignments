@@ -141,6 +141,9 @@
     <ClCompile Include="NameSelectionCommand.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="SkipStageCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MoveCommand.h">
@@ -255,6 +258,9 @@
       <Filter>Components\UI</Filter>
     </ClInclude>
     <ClInclude Include="NameSelectionCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="SkipStageCommand.h">
       <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>

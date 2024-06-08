@@ -152,6 +152,18 @@ void engine::SceneManager::SetSceneWindow(const engine::Window& window)
 	m_Window = window;
 }
 
+const bool engine::SceneManager::AreScenesLeft() const
+{
+	size_t nextScene = m_ActiveScene + 1;
+	if (nextScene < m_scenes.size())
+	{
+		// At least one more scene is left
+		return true;
+	}
+
+	return false;
+}
+
 const engine::Window& engine::SceneManager::GetSceneWindow() const
 {
 	return m_Window;

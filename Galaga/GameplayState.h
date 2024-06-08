@@ -22,6 +22,9 @@ public:
 	GameState* GetChangeState() override;
 	void UpdateState(const float deltaTime) override;
 
+	void SkipStage();
+	bool ArePlayersAlive();
+
 private:
 	// Struct that contains data for the Formations of enemies
 	struct FormationJsonData
@@ -49,7 +52,6 @@ private:
 	void InitPlayer2();
 	void InitPlayer2Versus();
 
-	bool ArePlayersAlive();
 	bool NextStage();
 
 	void UpdateChangingStage(const float deltaTime);

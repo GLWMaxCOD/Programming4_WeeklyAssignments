@@ -24,6 +24,7 @@ public:
 	void SetVersusMode(bool isVersusMode);
 
 	void SpawnEnemies();
+	void ChangeToWaitState();
 
 private:
 

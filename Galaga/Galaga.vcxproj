@@ -213,6 +213,7 @@
     <ClCompile Include="PlayerScoreCP.cpp" />
     <ClCompile Include="RotatorComponent.cpp" />
     <ClCompile Include="ShootCommand.cpp" />
+    <ClCompile Include="SkipStageCommand.cpp" />
     <ClCompile Include="StartCommand.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="TractorbeamCommand.cpp" />
@@ -252,6 +253,7 @@
     <ClInclude Include="ParallaxScrollingCP.h" />
     <ClInclude Include="PlayerInputCP.h" />
     <ClInclude Include="RotatorComponent.h" />
+    <ClInclude Include="SkipStageCommand.h" />
     <ClInclude Include="SoundIDs.h" />
     <ClInclude Include="StartCommand.h" />
     <ClInclude Include="TextComponent.h" />

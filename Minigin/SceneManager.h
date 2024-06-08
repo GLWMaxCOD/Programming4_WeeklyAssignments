@@ -38,6 +38,7 @@ namespace engine
 
 		void SetActiveScene(const std::string& sceneName);
 		void SetSceneWindow(const engine::Window& window);
+		const bool AreScenesLeft() const;
 
 	private:
 		friend class Singleton<SceneManager>;
