@@ -74,6 +74,9 @@ private:
 
 	// Bombing run behaviour
 
+	void InitButterflyEscorts();
+	void UpdateBombingRun(const float deltaTime);
+
 	AttackState m_AttackState;
 	BombinRunState m_BombingRunState;
 	TractorBeamState m_TractorBeamState;
@@ -102,6 +105,8 @@ private:
 
 	bool m_PlayerHit;								// To avoid from the player being instakilled by Tractorbeam, it's too OP
 	bool m_IsRetracting;							// To track if the tractor beam is retracting
+
+	bool m_IsTractorBeamRun;						// To track is the current attack is the tractor beam run
 
 	int m_StartFrame;
 };

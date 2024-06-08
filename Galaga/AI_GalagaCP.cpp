@@ -1,4 +1,5 @@
 #include "AI_GalagaCP.h"
+#include "AI_ButterflyCP.h"
 #include "MoveComponent.h"
 #include "FormationCP.h"
 #include "RotatorComponent.h"
@@ -22,6 +23,7 @@ AI_GalagaCP::AI_GalagaCP(engine::GameObject* pOwner)
 	, m_pMoveCP{ nullptr }, m_pRotatorCP{ nullptr }, ROTATION_TIME{ 1.5f }, m_RotationRadius{ 30.f }, m_DoRotateLeft{ false }
 	, m_pEnemyCP{ nullptr }, m_TractorBeamPos{ glm::vec2{0.f, 0.f} }, m_Direction{ 0.f, 0.f, 0.f }
 	, MAX_TRACTORBEAM_TIME{ 3.5f }, m_ElapsedTime{ 0.f }, m_pTractorBeam{ nullptr }, m_pTractorBeamCollisionCP{ nullptr }, m_PlayerHit{ false }, m_IsRetracting{ false }, m_StartFrame{0}
+	, m_IsTractorBeamRun{ false }
 {
 
 	if (pOwner != nullptr)
@@ -85,7 +87,7 @@ void AI_GalagaCP::InitData(const engine::Window window)
 		{
 			rotationCenter.x += m_RotationRadius;
 			rotationAngle = glm::pi<float>();
-			targetRotation = glm::two_pi<float>();		// Half rotation
+			targetRotation = glm::two_pi<float>();        // Half rotation
 			positiveRot = true;
 		}
 
@@ -93,7 +95,10 @@ void AI_GalagaCP::InitData(const engine::Window window)
 			rotationCenter, positiveRot, rotationAngle);
 	}
 
-	if (m_DoTractorBeam)
+	// Randomly decide if this will be a tractor beam run
+	m_IsTractorBeamRun = (std::rand() % 2 == 0);
+
+	if (m_IsTractorBeamRun)
 	{
 		// Determine on which x Position will need to go to do the Tractor beam
 		float maxXpos = window.width - 150.f;
@@ -212,7 +217,7 @@ void AI_GalagaCP::LoopAndDive(const float deltaTime)
 
 void AI_GalagaCP::UpdateAttack(const float deltaTime, const glm::vec3& currentPos)
 {
-	if (m_DoTractorBeam)
+	if (m_IsTractorBeamRun && m_DoTractorBeam)
 	{
 		// TRACTOR BEAM BEHAVIOUR
 		switch (m_TractorBeamState)
@@ -227,13 +232,38 @@ void AI_GalagaCP::UpdateAttack(const float deltaTime, const glm::vec3& currentPo
 	}
 	else
 	{
-		// BOMBING RUN BEHAVIOUR
+		// BOMBING RUN BEHAVIOUR with butterflies as escort
 		switch (m_BombingRunState)
 		{
 		case AI_GalagaCP::BombinRunState::moveToLoopPoint:
+			// Initialize butterfly escorts if necessary
+			InitButterflyEscorts();
+			m_BombingRunState = BombinRunState::divingLoop;
 			break;
 		case AI_GalagaCP::BombinRunState::divingLoop:
+			UpdateBombingRun(deltaTime);
 			break;
+		}
+	}
+}
+
+void AI_GalagaCP::InitButterflyEscorts()
+{
+	auto formationCP = GetOwner()->GetComponent<FormationCP>();
+	if (formationCP != nullptr)
+	{
+		std::vector<engine::GameObject*> butterflies = formationCP->GetEnemies("butterflies");
+		for (auto& butterfly : butterflies)
+		{
+			if (butterfly->IsActive())
+			{
+				auto butterflyAI = butterfly->GetComponent<AI_ButterflyCP>();
+				if (butterflyAI != nullptr)
+				{
+					butterflyAI->Reset();
+					butterflyAI->Update(0); // Force an update to initiate their attack pattern
+				}
+			}
 		}
 	}
 }
@@ -329,6 +359,43 @@ void AI_GalagaCP::UpdateTractorBeam(const float deltaTime)
 	}
 }
 
+void AI_GalagaCP::UpdateBombingRun(const float deltaTime)
+{
+	switch (m_BombingRunState)
+	{
+	case BombinRunState::moveToLoopPoint:
+		if (m_pRotatorCP != nullptr)
+		{
+			m_pRotatorCP->Rotate(deltaTime);
+			if (m_pRotatorCP->IsRotationFinished())
+			{
+				m_BombingRunState = BombinRunState::divingLoop;
+				if (m_pEnemyCP != nullptr)
+				{
+					m_pEnemyCP->CalculateMissileDirection();
+				}
+			}
+		}
+		else
+		{
+			// If no rotator just go directly to attack behaviour
+			m_BombingRunState = BombinRunState::divingLoop;
+		}
+		break;
+
+	case BombinRunState::divingLoop:
+		// Implement the diving loop logic here, similar to the butterfly's diagonal dive and zigzag steer
+		// For simplicity, this example does a simple downward dive
+		glm::vec3 direction = glm::vec3{ 0.f, 1.f, 0.f };
+		m_pMoveCP->Move(deltaTime, direction);
+		if (m_pGalagaTransfCP->GetWorldPosition().y > engine::SceneManager::GetInstance().GetSceneWindow().height)
+		{
+			m_AttackState = AttackState::finishAttack;
+		}
+		break;
+	}
+}
+
 void AI_GalagaCP::OnNotify(engine::GameObject* gameObject, const engine::Event& event)
 {
 	if (event.IsSameEvent("CollisionWith Player"))
@@ -407,6 +474,7 @@ void AI_GalagaCP::Reset()
 	m_IsAttacking = false;
 	m_PlayerHit = false;
 	m_StartFrame = 0;
+	m_IsTractorBeamRun = false;
 
 	// Reset the tractor beam size and state
 	if (m_pTractorBeamCollisionCP != nullptr)

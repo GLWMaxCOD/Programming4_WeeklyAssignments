@@ -229,4 +229,6 @@ void AI_ButterflyCP::Reset()
 	m_AtRightSide = false;
 	m_Direction = glm::vec3{ 1.f, 1.f, 0.f };
 	m_MaxSteeringTime = 0.f;
+
+	GetOwner()->SetIsActive(true);
 }
